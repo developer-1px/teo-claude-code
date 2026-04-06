@@ -1,0 +1,26 @@
+{
+  "skill_name": "improve",
+  "evals": [
+    {
+      "id": 1,
+      "name": "eval-birdseye",
+      "prompt": "/improve birdseye",
+      "expected_output": "Job 기반 평가. '조망' 수준의 keyline 도출, Job Map에서 정보 구조 수준 개선안 도출 (예: 의존도 순서 배치). '범례 추가' 같은 표면 개선이 아닌 의사결정 지원 개선.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "eval-cms",
+      "prompt": "/improve cms",
+      "expected_output": "CMS의 Job(콘텐츠 편집, 구조 관리)을 분해하고 Job Map 단계별 Desired Outcome 작성. 기능 나열이 아닌 편집 의사결정 흐름 개선.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "eval-chat",
+      "prompt": "/improve chat",
+      "expected_output": "채팅 UI의 Job을 분해. '버튼 추가', '스타일 변경' 같은 표면이 아닌 대화 흐름/의사결정 수준의 개선안.",
+      "files": []
+    }
+  ]
+}
