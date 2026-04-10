@@ -16,7 +16,7 @@ description: 자율 실행 오케스트레이터. cast 편성표를 소비하여
 
 대화에 이미 discussion/PRD/요청이 있으면 바로 상황 판단으로 넘어간다. **컨텍스트가 없으면**(새 세션에서 "/go"만 입력) 아래 순서로 탐색한다:
 
-1. **활성 PRD** — `docs/superpowers/prds/*-prd.md` 중 역PRD 열이 비어있는 PRD
+1. **활성 PRD** — `docs/1-projects/*/prds/*-prd.md` 또는 `docs/2-areas/*/prds/*-prd.md` 중 역PRD 열이 비어있는 PRD
    - 1개 → 해당 PRD 기반으로 자동 진행
    - 여러 개 → 날짜 순서대로 처리
 2. **백로그** — `/backlog list`로 처리 가능한 항목
@@ -35,7 +35,7 @@ description: 자율 실행 오케스트레이터. cast 편성표를 소비하여
 | 기존 파일 수정, 범위 명확 | Cast → Execute → Verify |
 | discussion/PRD에서 이미 plan 수준 상세도 | Cast → Execute → Verify |
 | PRD 없는 단순 요청 | Cast → Execute → Verify |
-| 파일 1~2개, 긴장 없음 | Execute → Verify (cast 스킵, 메인 단독) |
+| 파일 1~2개, 긴장 없음 | Execute (메인 실행 + 평가 에이전트) → Verify |
 | 버그 수정, 디버깅 | Debug → Verify |
 
 ## Phase: Plan
@@ -108,9 +108,42 @@ Agent(B2 프롬프트, worktree)  ← 동시
 - 충돌이 없으면 순차 merge
 - 충돌이 있으면 메인이 해결
 
+### Step 5: Evaluate 루프 (최대 5회)
+
+실행 에이전트 완료 후, **별도 평가 에이전트**를 디스패치하여 결과를 채점한다. 평가→수정을 최대 5라운드 반복한다.
+
+```
+round = 0
+while round < 5:
+  평가 에이전트 디스패치(PRD/task.md + git diff)
+  if 합격:
+    break
+  실행 에이전트에 불합격 피드백 전달 → 재실행
+  round += 1
+```
+
+#### 평가 에이전트 프롬프트 필수 포함 사항
+
+1. **평가 기준** — PRD 또는 task.md의 체크리스트
+2. **git diff** — 실행 에이전트가 변경한 내용
+3. **4가지 실패 모드 탐지 지시**:
+   - 했다고 거짓말 — 만들었다 하고 실제로 안 됨
+   - 컨텍스트 누락 — PRD 항목 중 구현 안 된 것
+   - 부정 케이스 누락 — 되면 안 되는 것이 되는 경우
+   - 디자인 부재 — 기능은 되는데 시각적으로 안 함
+4. **검증 방법은 자율** — 브라우저 확인, diff 대조, 스크린샷 등 에이전트가 판단
+5. **합격/불합격 + 불합격 사유** 형식으로 결과 반환 지시
+
+#### 평가 에이전트 원칙
+
+- **코드베이스를 주지 않는다** — diff만 준다. 코드를 읽으면 관대해진다
+- **cast 편성표의 평가 페르소나를 프롬프트에 반영**한다
+- 합격 시 → Phase: Verify로 진행
+- 5회 불합격 시 → 불합격 사유를 사용자에게 보고하고 판단을 구한다
+
 ---
 
-PRD 없는 작업은 Execute 시작 전에 `docs/superpowers/tasks/{날짜}-{이름}-task.md`를 작성한다.
+PRD 없는 작업은 Execute 시작 전에 해당 서비스/레이어의 `prds/{이름}-task.md`를 작성한다.
 
 ### PRD 양방향 링크 주석
 
