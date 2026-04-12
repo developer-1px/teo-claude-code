@@ -55,7 +55,7 @@ discuss (왜/뭘) → /story (누가/어떤 여정) → /prd (어떻게) → Pla
 
 ### 파일 경로
 
-`docs/2-areas/apps/<service>/stories.md`
+`docs/1-projects/<service>/stories.md`
 
 ### 기존 파일이 있으면
 
@@ -79,7 +79,7 @@ discuss (왜/뭘) → /story (누가/어떤 여정) → /prd (어떻게) → Pla
 
 ### 파일이 없으면
 
-1. 디렉토리 생성 (`docs/2-areas/apps/<service>/`)
+1. 디렉토리 생성 (`docs/1-projects/<service>/`)
 2. 빈 맵 파일 생성:
 
 ```markdown
@@ -186,13 +186,24 @@ discuss (왜/뭘) → /story (누가/어떤 여정) → /prd (어떻게) → Pla
 - ...
 
 다음 단계:
-- 특정 스토리를 `/prd`로 명세하려면 → "S1을 PRD로"
+- 화면 구조를 설계하려면 → `/ia <service>`
+- 특정 스토리를 바로 `/prd`로 명세하려면 → "S1을 PRD로"
 - 계속 채우려면 → 추가할 내용을 말씀해주세요
 ```
 
-### /prd 전환 시
+### /ia 전환 시 (권장)
 
-사용자가 "S{n}을 PRD로" 또는 특정 스토리를 지정하면:
+화면 레이어가 채워졌으면 `/ia`로 화면 구조를 설계한다:
+
+1. 화면(Screens) 테이블을 `/ia`의 입력으로 전달한다
+2. `/ia`가 사이트맵 → 네비게이션 모델 → 콘텐츠 모델을 설계한다
+3. 이후 `/wireframe` → `/prd` → `/do`로 이어진다
+
+**파이프라인:** `/story` → `/ia` → `/wireframe` → `/prd` → `/do`
+
+### /prd 전환 시 (직행)
+
+작은 기능이나 IA가 불필요한 경우, 사용자가 "S{n}을 PRD로" 또는 특정 스토리를 지정하면:
 
 1. 해당 스토리 행을 추출한다
 2. 연관된 기능(Features에서 해당 스토리 참조)을 추출한다

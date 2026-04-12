@@ -118,9 +118,27 @@ printf '{"tool_name":"Write","tool_input":{"file_path":"...", "content":"[정상
 - 기존 CSS 파일에 ax() 축 소유 속성이 있으면 위반 (훅은 새 코드만 검사)
 - `display`, `background`, `border-radius`, `box-shadow`, `font-size`, `color`, `padding`, `gap` 등
 
-### 4. 사이즈 미고정 오버레이 → **훅 승격 완료 (규칙 17)**
+### 4. 단순 작업에 과잉 워크플로우
+- 결과물이 10줄 이하, 파일 1~2개, 기존 패턴 반복이면 discuss/PRD/cast/에이전트 편대 금지
+- 판단 기준: "산출물의 복잡도"가 아니라 "의사결정의 복잡도". 방향이 명확하면 바로 구현
+- 위반 신호: 리서치 에이전트 3개+, PRD 8단계를 전부 채움, 리뷰 에이전트 3개 병렬 — 결과물 대비 과잉
+- 올바른 흐름: 규모 판단 → 작으면 /do 또는 직접 구현. discuss/PRD는 "방향을 모를 때"만
+
+### 5. 사이즈 미고정 오버레이 → **훅 승격 완료 (규칙 17)**
 - ~~Quick Open, Dialog 등 오버레이 패널에 width가 없으면 콘텐츠에 따라 크기 변동~~
 - `surface:'overlay'`에 `width` 축이 없으면 훅이 자동 차단
+
+### 6. 콘텐츠 영역 텍스트 선택 차단 → **Pit of Success로 해결**
+- ~~Aria 인터랙티브 컨테이너 안 콘텐츠에서 마우스 텍스트 선택 불가~~
+- 원인: `useAriaView`의 `pointerdown preventDefault`가 콘텐츠 영역까지 전파
+- 해결: MarkdownViewer/CodeBlock/VirtualCodeBlock이 `select-text` 클래스를 자체 소유 + `useAriaView`가 `.select-text` 영역을 가드
+- 새 콘텐츠 컴포넌트를 만들면 `select-text` 클래스 필요
+
+### 7. 자명한 다음 행동에 불필요한 선택지 질문
+- /go Verify 통과 후 "handoff할까 커밋할까?" 같은 질문은 판단 회피
+- 맥락상 다음 행동이 명확하면(구현 완료 → /close, 미완료 → /handoff) 바로 실행
+- "A할까 B할까"를 묻기 전에 "내가 판단할 수 있는가?"를 자문
+- 위반 신호: 사용자에게 자명한 2지선다를 던짐, "어떻게 할까요?" 식 질문
 
 ## 훅 확장 시 주의사항
 
