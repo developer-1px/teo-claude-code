@@ -7,7 +7,10 @@
   "plugins": [
     {
       "name": "teo-claude-code",
-      "source": "./",
+      "source": {
+        "source": "github",
+        "repo": "developer-1px/teo-claude-code"
+      },
       "description": "TEO의 AI 협업 워크플로우 스킬 모음 — discuss→prd→go 파이프라인, TOC 기반 문제 구조화, 디자인 시스템 통합"
     }
   ]
