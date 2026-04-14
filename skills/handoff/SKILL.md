@@ -1,77 +1,110 @@
 ---
-description: 세션 중간 이탈 시 완료분 정리 + 미완료분을 다음 세션으로 구조화 전달. 사용자가 "/handoff"를 명시적으로 입력했을 때만 실행한다. AI가 자율 판단으로 발동하지 않는다.
+name: handoff
+description: 작업을 깔끔하게 마무리하거나 다음 세션으로 이어 넘기는 단일 오케스트레이터. verify(typecheck/lint/test/simplify/naming-audit) → commit → push → 남은 것 backlog화 → handoff 문서 생성을 한 번에 처리한다. 세션 시작 시 `/handoff`를 치면 가장 최근 미소비 handoff를 이어받는다. "/handoff", "마무리", "닫자", "정리하자", "여기까지", "다음에 이어서", "중단" 등 명시적 의도 표현 시 사용. **사용자가 명시적으로 호출할 때만 실행한다. AI가 자율 판단으로 발동하지 않는다.**
 ---
 
 ## 역할
 
-세션 **중간 이탈의 오케스트레이터**. close가 "사이클 완료 후 닫기"라면, handoff는 "미완료 상태에서 바톤 터치".
+작업 단위의 **경계선 오케스트레이터**. 기존 close/handoff/backlog 3개 스킬이 담당하던 것을 하나로 수렴한다.
 
-핵심 차이:
+- **나가는 길**: 지금까지 한 일을 검증·커밋·push하고, 끝내지 못한 것은 backlog로 빼고, 다음 세션이 읽을 컨텍스트 문서를 남긴다.
+- **들어오는 길**: 지난 세션이 남긴 handoff를 읽어 컨텍스트를 복원하고 이어서 작업한다.
 
-| | /close | /handoff |
-|--|--------|----------|
-| 시점 | 완료 후 | 중간 이탈 |
-| 초점 | 회고 + 누적 | 컨텍스트 전달 |
-| 무게 | retrospect 필수 | 경량 |
-| 산출물 | area, PROGRESS | handoff 문서 |
+방향(나가는/들어오는)은 작업 상태를 보고 자동 판단하되, 스킬 자체는 사용자가 `/handoff`를 칠 때만 실행된다.
 
-## 파이프라인 위치
+## 절대 규칙
+
+- **자율 발동 금지** — 대화 흐름만 보고 "지금 handoff할 시점이야"라고 판단해 실행하지 않는다. 사용자의 명시적 트리거가 있을 때만.
+- **SessionStart 훅은 알림만** — 훅이 미소비 handoff를 감지해도 자동으로 스킬을 호출하지 않는다. 사용자에게 "미소비 handoff 있음"을 보고할 뿐이다.
+- **파괴적 작업은 확인** — main 브랜치 push, 대량 backlog 이동 등은 사용자 확인 후 진행한다.
+
+## Step 0: 방향 판단
 
 ```
-작업 중 → "여기까지" → /handoff → [세션 종료]
-                                        ↓
-                          [다음 세션] → /go → handoff 파일 자동 탐지 → 이어서
+git status가 dirty이거나 세션 시작 후 새 커밋이 있다 → 나가는 길 (Step A)
+working tree가 깨끗하고 docs/0-inbox/handoff-*.md 중 consumed_by 없는 파일이 있다 → 들어오는 길 (Step B)
+양쪽 다 해당 → 사용자에게 질문 ("이어받기 먼저? 아니면 지금까지 한 일 먼저 마무리?")
+양쪽 다 아님 → "마무리할 변경도, 이어받을 handoff도 없습니다" 보고 후 종료
 ```
 
-## Step 0: 미소비 handoff 탐지
+---
 
-`docs/0-inbox/handoff-*.md`를 ls로 확인한다. 존재하면 사용자에게 먼저 보고:
+## Step A: 나가는 길 (end-of-work)
 
-- "미소비 handoff N건: [목록]. 이어서 처리할까요, 새 handoff 생성할까요?"
-- 이어서 처리 → 해당 파일을 읽고 컨텍스트 복원, 처리 완료 시 파일 삭제
-- 새 handoff 생성 → Step 1로 진행
+### A1. Verify 게이트
 
-없으면 바로 Step 1.
+아래 체인을 순서대로 실행. 각 단계에서 실패 발생 시 에이전트가 자율적으로 수정한 후 재검증한다. 수정이 스킬/스펙 수준 변경을 요구하면 멈추고 사용자에게 보고.
 
-## Step 1: /simplify
+1. `pnpm typecheck` — TypeScript 에러 0
+2. `pnpm lint` — eslint 에러 0
+3. `pnpm test` — vitest 전체 통과
+4. `pnpm check:deps` — 레이어 의존 위반 0
+5. `/simplify` — 변경 코드 품질·재사용·효율 리뷰 + 자동 수정 (수정 발생 시 1~4 재검증)
+6. `/naming-audit` — 네이밍 일관성/적합성 점검 (수정 발생 시 1~4 재검증)
 
-커밋 전에 `/simplify`를 실행한다. CLAUDE.md 규칙: "커밋 전: `/simplify` 필수".
+**검증 범위**: 세션 중 변경된 파일이 내 것이 아닐 가능성이 있으면 `scripts/activeSessions.sh $SESSION_ID`로 동시 작업 여부를 확인하고, 타 세션의 기존 실패는 이 사이클의 책임이 아니다.
 
-## Step 2: 커밋
+### A2. Commit
 
 uncommitted 변경이 있으면 커밋한다.
 
-- `git status`로 확인
-- 변경 있으면 → 적절한 커밋 메시지로 커밋
-- 변경 없으면 → 건너뛴다
+- `git status`로 대상 파일 식별. 타 세션이 같이 작업 중이면 **내 파일만 명시적으로 add**한다 (`git add -A` 금지).
+- 커밋 메시지는 변경의 의도 중심으로 작성. 형식은 프로젝트 CLAUDE.md의 관례를 따른다.
+- retro 보고서(`docs/**/retrospect-*.md` 또는 대화 중 생성된 L2~L4 수정)가 있으면 같은 커밋 또는 별도 커밋으로 포함.
 
-## Step 3: 세션 요약 생성
+변경이 없으면 건너뛴다.
 
-이 세션에서 한 일을 구조화한다.
+### A3. retro 산출물 반영 (조건부)
 
-1. **세션 커밋 추출** — 세션 시작 시점(대화 첫 메시지의 gitStatus)의 HEAD부터 현재 HEAD까지 `git log --oneline` 추출
-2. **변경 요약** — 각 커밋의 핵심을 한 줄로
-3. **관련 PRD** — 이 세션에서 참조/생성한 PRD 파일 경로
+retro 보고서가 존재하거나 대화 중 retro가 수행됐으면:
 
-## Step 4: 남은 것 식별
+1. **L1 코드 갭** — 즉시 수정 가능한 건 지금 수정 + 재검증 + 커밋. 별도 사이클이 필요한 건 A5의 backlog로 넘긴다.
+2. **PROGRESS.md** — 모듈 추가/삭제, Maturity, Gaps 갱신.
+3. **ARCHITECTURE.md** — 레이어 경계가 바뀐 경우에만 갱신.
+4. **`/publish`** — Living Documentation 파이프라인. module 단위 문서 완전성 감사 + area MDX 갱신.
 
-미완료 작업을 구조화한다.
+retro가 없으면 이 단계 전체를 건너뛴다.
 
-1. **대화에서 추출** — "남은 것", "다음에", "TODO", "아직" 등 미완료 시그널
-2. **활성 PRD** — 역PRD 열이 비어있는 항목 = 미구현
-3. **사용자의 명시적 언급** — "다음에 visual UI 작업" 같은 직접 지시
-4. 각 항목에 **우선순위/순서 힌트** 부여 (대화 맥락에서 판단)
+### A4. Push
 
-## Step 5: handoff 문서 생성
+- 현재 브랜치가 **feature/topic 브랜치**면 → `git push`를 바로 실행.
+- 현재 브랜치가 **main/master**이면 → 사용자에게 먼저 확인 후 push.
+- 원격 추적이 없으면 `-u origin <branch>`로 upstream 설정.
+- 실패 시 원인을 보고하고 멈춘다. 강제 push, `--no-verify`는 금지.
 
-`docs/0-inbox/handoff-{YYYY-MM-DD}-{slug}.md` 파일을 생성한다.
+### A5. 남은 것 → backlog
 
-### 템플릿
+대화 컨텍스트와 산출물에서 미완료 신호를 추출한다:
+
+- 사용자가 말한 "다음에", "남은 것", "나중에", "일단 넘어가자", "TODO"
+- 활성 PRD 중 역PRD 열이 비어있는 항목
+- retro L1 중 이번에 수정하지 않은 항목
+- verify 게이트가 발견했지만 타 세션 영역이라 미뤄둔 것
+
+각 항목을 **맥락 없이 이해 가능한가**로 분류한다:
+
+| 분류 | 위치 | 형식 |
+|------|------|------|
+| 한 줄로 충분 | `docs/BACKLOGS.md` | `- [ ] {항목} — {출처} ({YYYY-MM-DD})` |
+| 배경/조건/검증 필요 | `docs/5-backlogs/{camelCase}.md` | 배경·내용·검증·출처 4섹션 |
+
+PRD가 있던 항목을 보류하는 경우 `git mv`로 `docs/5-backlogs/`에 옮겨 prds/에는 구현할 것만 남긴다.
+
+**원칙**: 이 단계는 다음 Step A6 handoff 문서에 "남은 것"으로 반영되기 위한 전처리다. backlog 저장 자체가 작업 흐름을 끊어서는 안 되며, 추출한 항목을 사용자에게 장황하게 나열하지 말고 최종 handoff 문서에서 링크로 보여준다.
+
+### A6. Handoff 문서 생성
+
+`docs/0-inbox/handoff-{YYYY-MM-DD}-{slug}.md` 파일을 생성한다. `{slug}`는 세션 주제를 대표하는 camelCase/kebab-case 짧은 이름.
 
 ```markdown
+---
+created_at: {YYYY-MM-DD}
+session_id: {세션 식별자 — 가능한 경우}
+---
+
 # Handoff: {제목}
 
-> {날짜} 세션에서 {한 줄 요약}
+> {한 줄 요약 — 이 세션에서 무엇을 했고 어디까지 갔는가}
 
 ## 완료
 
@@ -82,63 +115,129 @@ uncommitted 변경이 있으면 커밋한다.
 ## 남은 것
 
 ### 즉시 (다음 세션 첫 작업)
-1. [구체적 작업] — [관련 파일/PRD]
+1. [구체적 작업] — [관련 파일 경로 또는 PRD 경로]
 
-### 이후
-- [항목] — [맥락]
+### 이후 (backlog 링크)
+- [항목] → `docs/5-backlogs/xxx.md` 또는 `docs/BACKLOGS.md#항목`
 
 ## 컨텍스트
 
 - **PRD**: `docs/2-areas/.../xxx-prd.md`
-- **관련 memory**: [있으면]
-- **주의**: [다음 세션이 알아야 할 것]
+- **관련 memory**: (있으면 파일명)
+- **주의**: 다음 세션이 놓치면 안 되는 것 (디자인 의도, 실패했던 접근, 미해결 질문)
 
-## 다음 행동 제안
+## 이어받는 법
 
-`/go`로 시작하면 이 handoff를 자동으로 픽업한다.
-구체적으로: [첫 번째로 해야 할 일]
+다음 세션에서 `/handoff`를 치면 이 파일을 자동으로 찾아 읽는다.
+구체적 첫 행동: [한 줄]
 ```
 
-## Step 6: memory 저장
+### A7. memory 노트 (선택)
 
-handoff 문서의 핵심을 memory에도 저장한다 (project 타입). 다음 세션의 memory 로드 시 handoff 존재를 인지할 수 있도록.
+handoff의 핵심을 memory에 project 타입으로 저장. 다음 세션 memory 로드 시 "최근 handoff 있음"을 AI가 인지할 수 있는 짧은 포인터. 본문은 handoff 파일에 있으므로 memory에는 파일명과 한 줄 요약만.
 
-## 수신 (새 세션에서)
+### A8. 결과 보고
 
-SessionStart 훅(`detectHandoff.mjs`)이 미소비 handoff를 자동 탐지한다.
+```markdown
+## /handoff (나가는 길) 완료
 
-### 흐름
+- [x] verify: typecheck · lint · test · deps · simplify · naming-audit
+- [x] commit: {해시} {메시지}
+- [x] push: {브랜치} → origin
+- [x] backlog: {N}건 이동 (간단 M건, 상세 K건)
+- [x] handoff 문서: docs/0-inbox/handoff-{date}-{slug}.md
 
-1. **훅이 미소비 handoff 목록을 출력**한다 (consumed_by frontmatter 없는 파일)
-2. AI가 사용자에게 물어본다: "이 handoff를 이어할까요, 새로 시작할까요?"
-3. 사용자가 선택하면 → 해당 파일의 frontmatter에 `consumed_by`와 `consumed_at`을 추가한다
-4. 사용자가 새로 시작하면 → 무시하고 진행
+다음 세션에서 `/handoff`로 이어받을 수 있습니다.
+```
 
-### 소비 표기
+---
 
-선택된 handoff 파일의 frontmatter 맨 아래에 추가:
+## Step B: 들어오는 길 (resume)
+
+### B1. 가장 최근 미소비 handoff 선택
+
+`docs/0-inbox/handoff-*.md` 중 frontmatter에 `consumed_by`가 없는 것만 대상. 여러 개면 `created_at` 최신 1개를 기본 선택하고 나머지를 목록으로 보여준다.
+
+```
+미소비 handoff:
+  1. 2026-04-14 theme-merge (가장 최근) ← 기본 선택
+  2. 2026-04-12 composites-gap
+  3. ...
+
+1번으로 이어받을까요? 다른 걸 고르려면 번호를 지정하세요.
+```
+
+사용자가 명시하지 않으면 1번으로 진행.
+
+### B2. 컨텍스트 복원
+
+선택된 handoff 파일을 읽고:
+
+1. "완료" 섹션 — 지난 커밋 요약. 필요하면 `git show` / `git log`로 실제 변경 확인.
+2. "남은 것" > "즉시" — 다음 첫 행동.
+3. "컨텍스트" — PRD, memory 포인터, 주의사항. 필요한 파일을 Read한다.
+4. "이후" 백로그 링크 — 지금 이어받을 세션에서 같이 처리할지 사용자에게 선택권을 준다.
+
+현재 working tree가 깨끗한지 재확인. 사전에 다른 세션이 손댄 흔적이 있으면 사용자에게 보고.
+
+### B3. 소비 표기
+
+선택된 handoff 파일의 frontmatter에 다음 필드를 추가한다:
 
 ```yaml
-consumed_by: {session_id}
+consumed_by: {세션 식별자 또는 YYYY-MM-DD-HHMM}
 consumed_at: {YYYY-MM-DD}
 ```
 
-이미 `consumed_by`가 있는 파일은 훅이 필터링하므로 다른 세션에서 중복 표시되지 않는다.
+이후 훅과 Step B1의 목록에서 자동으로 필터링된다. 파일 삭제는 하지 않는다 — 이력 자료로 남긴다.
 
-### 삭제
+### B4. 이어서 작업
 
-삭제는 자동화하지 않는다. 사용자가 직접 삭제하거나 /inbox 정리 등 별도 흐름에서 처리한다.
+"즉시" 항목을 현재 세션의 첫 할 일로 TaskCreate에 올리고, 사용자가 `/go`든 일반 대화든 편한 방식으로 이어갈 수 있게 컨텍스트만 깔아둔 상태에서 스킬을 종료한다. handoff 스킬은 이어받기의 시작만 담당한다 — 구현 오케스트레이션은 `/go`나 다른 스킬로 넘긴다.
 
-## /go 연동
+### B5. 결과 보고
 
-`/go`의 Step 0에서도 `docs/0-inbox/handoff-*.md` 파일을 탐지한다:
+```markdown
+## /handoff (들어오는 길) 완료
 
-- consumed_by 없는 파일만 대상
-- 1개 → 해당 handoff 기반으로 자동 진행
-- 여러 개 → 날짜 순서대로 최신 우선
+- 이어받은 handoff: `docs/0-inbox/handoff-{date}-{slug}.md`
+- 세션 주제: {제목}
+- 첫 행동: {즉시 항목 1번}
+- 관련 PRD/memory: (목록)
 
-## 절대 규칙
+이어서 작업을 시작하세요.
+```
 
-- handoff 문서는 **다음 세션의 AI가 읽는 문서**다. 사람이 아니라 AI가 소비자. 구체적 파일 경로, 커밋 해시, PRD 위치를 명시한다.
-- retrospect를 하지 않는다 — handoff는 경량이어야 한다.
-- 대화 컨텍스트에서 추출할 수 없는 "남은 것"이 있으면 사용자에게 확인한다.
+---
+
+## 기존 스킬과의 관계
+
+이 스킬은 다음 3개 스킬의 역할을 흡수한다. 개별 스킬은 제거된다.
+
+| 기존 | 흡수 위치 |
+|------|---------|
+| `/close` | Step A 전체 (특히 A3의 retro 반영, A4 push) |
+| `/handoff` (구) | Step A6 문서 생성 + Step B 수신 |
+| `/backlog` (저장) | Step A5 자동화 (대화·retro 시그널에서 추출) |
+| `/backlog list` | Step B1 미소비 handoff 목록 + handoff 문서의 "이후" 섹션 |
+| `/backlog pick` | Step B2 컨텍스트 복원 + 사용자 선택 |
+
+조회·꺼내기를 별도 커맨드로 분리하지 않은 이유: 작업 재개는 곧 가장 최근 handoff를 이어받는 것과 같고, 그 안에 backlog 링크가 이미 포함되어 있다. 사용자가 따로 "뭐 밀렸더라?" 하고 묻는 상황이 있으면 그때 평소 대화로 파일을 열어보면 된다 — 전용 커맨드가 작업 흐름을 더 매끄럽게 하지 않는다.
+
+## SessionStart 훅
+
+기존 `detectHandoff.mjs` 훅은 유지한다. 역할만 명확히 한다:
+
+- 미소비 handoff 파일 목록을 세션 시작 알림으로 출력한다.
+- 이 스킬을 자동 호출하지 않는다.
+- 사용자가 직접 `/handoff`를 치기 전까지 아무 동작도 하지 않는다.
+
+## 실패 모드 체크리스트
+
+스킬 완료 전에 AI가 스스로 확인할 것:
+
+- [ ] verify 체인 중 하나라도 실패인데 "통과"라고 쓰지 않았는가
+- [ ] push가 실제로 성공했는가 (`git log @{u}..` 비어있는지)
+- [ ] "남은 것"에 실제로 있는 미완료를 빠뜨리지 않았는가
+- [ ] handoff 파일의 "즉시" 항목이 다른 AI가 읽어도 재현 가능한 수준으로 구체적인가
+- [ ] Step B에서 `consumed_by` 표기를 실제로 썼는가
