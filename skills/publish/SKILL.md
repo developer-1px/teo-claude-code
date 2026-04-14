@@ -1,5 +1,5 @@
 ---
-description: Living Documentation 오케스트레이터. module/layer 단위로 문서 완전성을 감사하고 빈 곳을 채운다. "/publish", "/publish listbox", "/publish ui", "문서 완전한가", "publish" 등을 말할 때 사용. /close의 Step 4에서 /area 대신 호출된다. retrospect 후 역PRD 이식, 데모·registry 확인, area 갱신을 하나의 파이프라인으로 수행.
+description: Living Documentation 오케스트레이터. module/layer 단위로 문서 완전성을 감사하고 빈 곳을 채운다. "/publish", "/publish listbox", "/publish ui", "문서 완전한가", "publish" 등을 말할 때 사용. /handoff(나가는 길) A3에서 /area 대신 호출된다. retrospect 후 역PRD 이식, 데모·registry 확인, area 갱신을 하나의 파이프라인으로 수행.
 ---
 
 ## /publish — Living Documentation 오케스트레이터

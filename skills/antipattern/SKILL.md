@@ -117,6 +117,8 @@ printf '{"tool_name":"Write","tool_input":{"file_path":"...", "content":"[정상
 ### 3. CSS last-mile 경계
 - 기존 CSS 파일에 ax() 축 소유 속성이 있으면 위반 (훅은 새 코드만 검사)
 - `display`, `background`, `border-radius`, `box-shadow`, `font-size`, `color`, `padding`, `gap` 등
+- **ui/ 내부 하드코딩 클래스**: `className="foo"`로 별도 CSS 클래스를 만들어 ax() 축 소유 속성(padding, layout 등)을 정의하면 위반. ax()로 표현 가능하면 ax() 사용. CSS 클래스는 transition/pseudo-element/columns 등 ax() 밖의 속성만 허용
+- 특히 role:'control' Button에 padding override CSS를 만드는 패턴은 role 축의 크기 SSOT를 깨뜨림
 
 ### 4. 단순 작업에 과잉 워크플로우
 - 결과물이 10줄 이하, 파일 1~2개, 기존 패턴 반복이면 discuss/PRD/cast/에이전트 편대 금지
@@ -136,9 +138,15 @@ printf '{"tool_name":"Write","tool_input":{"file_path":"...", "content":"[정상
 
 ### 7. 자명한 다음 행동에 불필요한 선택지 질문
 - /go Verify 통과 후 "handoff할까 커밋할까?" 같은 질문은 판단 회피
-- 맥락상 다음 행동이 명확하면(구현 완료 → /close, 미완료 → /handoff) 바로 실행
+- 맥락상 다음 행동이 명확하면(작업 경계 → /handoff) 바로 실행
 - "A할까 B할까"를 묻기 전에 "내가 판단할 수 있는가?"를 자문
 - 위반 신호: 사용자에게 자명한 2지선다를 던짐, "어떻게 할까요?" 식 질문
+
+### 8. 반복 렌더링 요소를 plain div로 출력
+- `.map()`으로 반복되는 요소가 클릭/키보드 인터랙션이 있어야 하는데 plain `<div>`로 렌더링하면 위반
+- 파일 목록, 세션 목록, 태그 목록 등 — 사용자가 선택/활성화할 수 있는 항목은 interactive item이어야 함
+- 올바른 대안: ui/ 완성품(NavList, ListBox 등)을 사용하거나, 최소한 `interactive: 'item'` 축 + 키보드 접근성 확보
+- 판단 기준: "이 목록의 항목을 사용자가 클릭/Enter로 무언가 할 수 있는가?" → Yes면 item 필수
 
 ## 훅 확장 시 주의사항
 
