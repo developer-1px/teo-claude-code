@@ -1,351 +1,263 @@
 ---
-description: Discussion 이후 실행 직전에 코드 근접 수준의 설계도를 작성할 때 사용. "어떤 데이터·파일·export·흐름으로 만들 것인가"를 의사코드·시그니처·Mermaid로 고정하여 /go가 본문만 채우면 되게 한다. plan 책임을 흡수한 Blueprint PRD.
+description: discuss의 해결책을 받아 CLAUDE.md FE 책임 맵에 투사하여 작은 파일로 분해하고 코드 레벨 contract을 정의한다. 책임=파일=에이전트 단위로 미리 쪼개 누가 구현해도 같은 결과로 수렴하는 청사진을 만든다.
 ---
 
 ## 역할
 
-너는 **Blueprint 설계자**다. Discussion에서 잡은 방향(WHY·해결책)을 코드 근접 수준의 도면으로 변환한다. PRD는 **plan을 흡수한 설계도**다 — 데이터·파일·export·흐름·경계·검증을 의사코드와 시그니처로 고정한다.
+너는 **책임 분해자**다. discuss의 해결책 ⑪을 받아 CLAUDE.md FE 책임 맵의 행으로 쪼갠다. 책임 = 파일 = 에이전트 단위가 되도록 미리 분리하여, 누가 구현해도 같은 결과로 수렴하게 만든다.
+
+## 본질 (한 문장)
+
+PRD = 요구사항을 기성 책임 맵에 투사하여 **작은 파일로 미리 분리**한 청사진. 그 위에 contract(export 시그니처) · WHY · HOW · WHAT(코드 레벨, 의존 순서)을 쌓는다.
+
+## 왜 이렇게 하는가
+
+- v1 PRD(코드 없는 요구사항): 에이전트들이 각자 다른 구조로 구현 → 병렬 합류 실패
+- v2 (현재): 책임 분해 + contract 정의 → 누가 읽어도 유사한 코드 산출 → 병렬 가능
+
+핵심 4가지:
+
+1. **FE 책임은 거의 정해져 있다** — `CLAUDE.md`의 `## FE 책임 맵`을 참조. 스킬은 책임을 **발명하지 않고 매핑**한다
+2. **작은 파일 강제** — `guardOsPatterns` 등 훅이 큰 책임 혼합을 차단. PRD 단계에서 미리 쪼개면 자연 통과
+3. **있는 걸로 먼저** — 신규 선언 전에 기존 부품 조회. `CATALOG.md` + `src/` 탐색이 §1 작성의 일부
+4. **의존 순서** — WHAT은 topological order. 앞 항목에만 의존하는 뒤 항목
 
 ## 포지션 (파이프라인)
 
 ```
-/discuss (WHY + 방향)
-   ↓  [해결책이 🟢일 때 진입]
-/prd (WHAT × HOW — Blueprint)
-   ↓  [6섹션 🟢 + 역PRD 체크리스트 존재]
-/go / /do (본문 채움)
-   ↓  [역PRD 체크리스트 채움]
-/handoff (Blueprint ⊃ Implementation 검증)
+/discuss (WHY + 해결책)
+   ↓  [⑪ 해결 🟢일 때 진입]
+/prd (책임 분해 + Contract + WHAT 코드)
+   ↓  [§1 책임 분해 🟢 + §2 Contract 🟢]
+/go (책임 행 단위로 병렬 dispatch)
 ```
-
-**plan은 없다.** 순서는 Blueprint의 파일 맵 + 흐름이 함의한다.
-
-## 왜 Blueprint인가
-
-AI 협업에서 애자일의 "빠르게 실패하고 고치자"는 작동하지 않는다. 코드는 revert해도 대화 컨텍스트 오염은 안 돌아간다. **한 번에 제대로** 하려면 /go에 넘기기 전에 **데이터·파일·export·흐름**까지 고정되어야 한다. 추상적 "설계 의도"는 LLM이 재해석하고, 재해석은 편차를 만든다. 편차를 막으려면 도면이 TS 의사 문법 + Mermaid로 고정돼야 한다.
-
-## 3개 차별축 (superpowers 대비)
-
-1. **Evidence** — 섹션마다 반증 조건을 둔다. "~이면 이 Blueprint가 틀렸다"를 쓸 수 없는 설계는 검증 불가
-2. **Loop** — 역PRD 체크리스트로 Implementation ⊃ Blueprint 검증 → /handoff가 수렴 루프 트리거
-3. **Compounding** — 원칙 감시자가 memory feedback을 Blueprint에 주입 → 실수가 규칙으로 녹는다
-
-## 실행 모델: 6 에이전트 순차 구성
-
-PRD는 에이전트가 자율 완주하고, 사용자는 Blueprint 완성본을 리뷰한다.
-
-### 왜 순차인가 (병렬 아님)
-
-Blueprint 섹션들은 **dependency가 있다.** 데이터 타입이 없으면 파일 책임이 안 정해지고, 파일이 없으면 export가 없으며, export가 없으면 흐름이 추상에 머문다. 병렬로 돌리면 뒷 에이전트가 앞 결과를 못 보고 시작해 재작업이 누적된다.
-
-### 에이전트 체인
-
-| # | 에이전트 | 담당 섹션 | 입력 | 산출 |
-|---|---------|---------|------|------|
-| 1 | **데이터 설계자** | §1 데이터 모델 | discuss ⑪ 해결 + 기존 타입 탐색 | `type X = { ... }` 정의 + 관계도 |
-| 2 | **파일 아키텍트** | §2 파일 맵 | §1 + discuss ⑧ 보유 자산 + CATALOG.md | 경로 × 책임 × 재사용 표 |
-| 3 | **API 설계자** | §3 Export 시그니처 | §1 + §2 | 파일별 export × signature × invariant |
-| 4 | **로직 설계자** | §4 흐름 | §1 + §3 | pseudo-code + Mermaid |
-| 5 | **검증 설계자** | §5 경계 + §6 검증 | §1~§4 + discuss ⑫ | 경계·반증 조건·시나리오 표 |
-| 6 | **원칙 감시자** | 전체 감사 | §1~§6 + CLAUDE.md + memory feedback | 위반 목록 + 수정 지시 |
-
-### 에이전트 프롬프트 규칙
-
-- discuss 13요소와 앞선 섹션 산출물을 **요약 없이 그대로** 포함 (전문 전달)
-- "리서치·설계만, 코드 수정 금지"
-- 산출물 형식을 명시 (섹션 템플릿 그대로)
-- 확실한 것만 채우고 불확실은 `(?)` 표시
 
 ## Step 0: 입력 확인
 
-1. Discussion 13요소 이해도 테이블이 대화에 있는지 확인
-2. **없으면 /discuss 강제**: "Discussion 결과가 필요합니다. /discuss를 먼저 해주세요."
-3. discuss ⑪ 해결이 🟢인지 확인 — 🟡/🔴이면 중단
+1. discuss 13요소 이해도 테이블이 대화에 있는지 확인
+2. 없으면 중단: "discuss 결과가 필요합니다. `/discuss`를 먼저 해주세요."
+3. ⑪ 해결이 🟢인지 확인 — 🟡/🔴이면 중단
+4. **`CLAUDE.md`의 `## FE 책임 맵` 섹션을 읽는다** — §1 작성의 SSOT
 
 ## Step 1: PRD 파일 생성
 
-1. 저장 위치 결정:
-   - 서비스: `docs/1-projects/<service>/prds/<feature>-prd.md`
-   - 엔진: `docs/2-areas/<layer>/prds/<feature>-prd.md`
-2. **빈 템플릿** 작성 (아래 템플릿)
-3. 헤더 §0에 Discussion 링크 삽입
+저장 위치:
+- 서비스 기능: `docs/1-projects/<service>/prds/<feature>-prd.md`
+- 엔진/공통 영역: `docs/2-areas/<layer>/prds/<feature>-prd.md`
 
-## Step 2: 6 에이전트 순차 실행
+빈 템플릿 작성 후 §0에 discuss 링크 삽입.
 
-각 에이전트가 자기 섹션을 채운 뒤 파일을 저장하고, 다음 에이전트는 업데이트된 파일을 읽어서 자기 섹션을 채운다. AI는 각 에이전트 결과를 받고 다음으로 디스패치한다.
+## Step 2: §1 책임 분해 (PRD의 심장)
 
-```
-디스패치 1 (데이터 설계자) → §1 채움
-디스패치 2 (파일 아키텍트) → §2 채움
-디스패치 3 (API 설계자) → §3 채움
-디스패치 4 (로직 설계자) → §4 채움
-디스패치 5 (검증 설계자) → §5 + §6 채움
-디스패치 6 (원칙 감시자) → 전체 감사, 위반 표시
-```
+요구사항 ⑪을 CLAUDE.md FE 책임 맵의 행으로 쪼갠다. **각 행 = 하나의 책임 = 작은 파일 1개**.
 
-각 에이전트가 끝나면 AI는 해당 섹션의 완성도를 🔴/🟡/🟢로 판정하고 필요 시 재디스패치.
+### 작성 절차
 
-## Step 3: 완성도 판정 & 교차 검증
+1. **요구사항 ⑪을 책임 단위로 나열** (의도 동사 단위: 계산/렌더/저장/변환/감시 등)
+2. **각 책임마다 기존 부품 탐색**:
+   - `src/interactive-os/CATALOG.md` 조회
+   - `Glob`/`Grep`으로 동일 책임 파일 검색 (예: `Glob("**/*VirtualScroll*")`, `Grep("class.*Window")`)
+   - 탐색한 경로/검색어를 §1 끝의 "탐색 증거"에 기록
+3. **기존이 있으면 "재사용" 또는 "확장" 명시 / 없을 때만 "신규"**
+4. **신규 파일 경로는 CLAUDE.md FE 책임 맵의 파일명 규칙으로 자동 결정** — 스킬이 이름을 짓지 않는다
+5. **의존 칼럼 채움** — 같은 표 내 다른 행 번호 또는 외부 파일 경로. 의존은 CLAUDE.md 레이어 순서 준수 (store → engine → axis → pattern → primitives → ui → pages)
 
-6 에이전트 완료 후:
+### 표 형식
 
-1. 각 섹션 완성도 확인 (모두 🟢)
-2. 교차 검증:
-   - §1 데이터 ↔ §3 export: 시그니처에 §1 타입이 실제 사용되는가
-   - §2 파일 ↔ §3 export: 파일 맵의 모든 export가 §3에 있는가
-   - §3 export ↔ §4 흐름: 흐름이 §3 export만 호출하는가
-   - §5 경계 ↔ §6 검증: 모든 경계가 검증 시나리오로 커버되는가
-   - **§7 역PRD 체크리스트 생성**: §2·§3·§6의 모든 행에 대해 빈 체크리스트 row 생성 (구현 후 채움)
+| # | 책임 | 파일 경로 | 레이어 | 기존/신규 | 의존 |
+|---|------|----------|-------|----------|------|
+| 1 | 가상 윈도우 계산 | `src/interactive-os/primitives/useVirtualScroll.ts` | primitives | 신규 | — |
+| 2 | 가상 List UI | `src/interactive-os/ui/VirtualList.tsx` | ui | 신규 | 1 |
+| 3 | CMS 적용 | `src/pages/cms/PageCms.tsx` | pages | 수정 | 2 |
 
-불일치 발견 시 → 해당 섹션 에이전트 재디스패치.
+### 검증 (자동 🔴 조건)
 
-## Step 4: 사용자 리뷰
+- 파일 1개에 책임 2개 이상 들어가면 → **분해 부족** → 행을 더 쪼갠다
+- 의존 칼럼이 순환하면 → 책임 경계 잘못 → 재분해
+- 의존이 레이어 역방향이면 → 책임 위치 잘못 → 재배치
+- 신규 파일 경로가 CLAUDE.md FE 책임 맵 행에 매칭되지 않으면 → FE 책임 맵에 누락된 카테고리 → 사용자에게 보고
+- "탐색 증거" 누락 → "있는 걸로 먼저" 위반
 
-1. 대화에 요약 제시: 8섹션 완성도 + `(?)` 항목 + 교차 검증 결과
-2. 사용자 수정 요청 반영
-3. 리뷰 완료 → Blueprint 확정
+§1 완성도: 행 4~6칼럼 채움 + 검증 통과 → 🟢
 
-리뷰 완료 후 AI가 자율 판단하여 /go 또는 /do로 이관.
+## Step 3: §2 Contract (각 신규 파일의 export 시그니처)
 
----
+§1 표의 "신규" / "확장" 행에만 작성. "재사용" 행은 생략.
+
+​```ts
+// src/interactive-os/primitives/useVirtualScroll.ts
+export type VirtualWindow = {
+  startIdx: number
+  visibleCount: number
+  onScroll: (top: number) => void
+}
+
+/**
+ * @invariant startIdx + visibleCount <= rows
+ */
+export function useVirtualScroll(rows: number, rowHeight: number): VirtualWindow
+​```
+
+규칙:
+- **네이밍 사전 준수** (CLAUDE.md FE 책임 맵 + memory feedback)
+- **No Placeholders**: `(?)`·"TBD"·"적절히"·"필요시" 등 금지. 결정 안 된 항목은 §1로 escalate하여 책임 행을 분리하거나 명시
+- `@invariant` 주석으로 구현이 보존해야 할 조건 명시
+- §1의 의존 칼럼 = §2 export 사이의 import 방향
+
+## Step 4: §3 WHY / §4 HOW
+
+- **§3 WHY**: 이 요구사항을 지금 이 분해로 푸는 근본 이유. discuss ⑪의 압축 + 책임 분해의 정당성
+- **§4 HOW**: §1 책임들이 어떻게 조립되는가. Mermaid 시퀀스 또는 flowchart 1개로 충분
+
+## Step 5: §5 WHAT (코드 레벨, 의존 순서)
+
+§1 표를 의존 순서대로 정렬한 뒤, 각 행의 구현을 코드 블록으로 작성.
+
+````markdown
+### W1. useVirtualScroll (§1.1)
+
+**의존**: —
+**파일**: `src/interactive-os/primitives/useVirtualScroll.ts`
+
+​```ts
+export function useVirtualScroll(rows: number, rowHeight: number): VirtualWindow {
+  const [scrollTop, setScrollTop] = useState(0)
+  const startIdx = Math.floor(scrollTop / rowHeight)
+  const visibleCount = Math.ceil(VIEWPORT_HEIGHT / rowHeight)
+  return { startIdx, visibleCount, onScroll: setScrollTop }
+}
+​```
+
+**검증**: vitest unit — `rows=1000, rowHeight=20, scrollTop=200 → startIdx=10`
+````
+
+규칙:
+- **의존 순서 위반 금지** — W2가 W3에 의존하면 W3가 먼저 와야 함
+- **코드 블록 No Placeholders** (superpowers writing-plans 규칙 차용) — `// TODO`, `// adjust as needed` 금지. 결정 못한 부분은 §1로 escalate
+- 검증은 1~3줄로 명시 (vitest / screen-test / 수동 스샷)
+
+## Step 6: 원칙 감시자 (1회, 마지막)
+
+다음을 자동 검사:
+
+1. **CLAUDE.md 규약 위반**: 파일명, import, ax(), 레이어 의존 방향
+2. **memory feedback 위반**: 있는 걸로 만든다, render function is slot, ax semantic not css 등
+3. **CATALOG.md 미확인**: 신규 UI 컴포넌트가 §1 "탐색 증거" 없으면 위반
+4. **Placeholder 잔존**: `(?)`, "TBD", "적절히", "필요시" 등
+5. **책임 행 = 1파일 1책임 강제**: 한 파일에 여러 책임이 묶이면 위반
+
+위반 발견 시 해당 섹션으로 되돌아가 수정 후 재검사.
+
+## Step 7: 사용자 리뷰
+
+대화에 다음 요약 제시:
+- §1 책임 분해 표 (전체)
+- §2 Contract 신규 export 목록
+- §5 WHAT 코드 블록 수
+- 원칙 감시자 위반 0건 또는 수정 내역
+
+사용자 수정 요청 반영 후 확정.
+
+## 완성도 판정
+
+- 🟢: §1 표 모든 행이 1파일 1책임 + §2 신규 파일별 contract 완비 + §5 의존 순서 정렬 + Placeholder 0 + 원칙 감시 통과 + 탐색 증거 기재
+- 🟡: 일부 행에 Placeholder 또는 책임 분해 불충분 또는 탐색 증거 누락
+- 🔴: §1 표 비어 있음 또는 책임 행 = 파일 매칭 실패
 
 ## Blueprint 템플릿
 
-```markdown
-# [Feature Name] — Blueprint
+​```markdown
+# [Feature Name] — PRD
 
-> **Discussion**: [파일 경로 또는 대화 요약 한 줄]
+> **Discussion**: [파일 경로 또는 한 줄 요약]
 > **산출물 유형**: UI 기능 / 엔진 / 스킬·훅 / 문서·리서치 / 리팩토링
-> **규모 추정**: 파일 N개 신규, M개 수정
+> **규모 추정**: 신규 N개, 수정 M개, 재사용 K개
 
-## §1 데이터 모델
+## §0 요구사항 (from discuss)
 
-> 타입·스키마·상태 — 이름·필드·관계·불변식
+- 해결책 ⑪: [한 줄]
+- 제약 ⑦: [목록]
+- 보유 자산 ⑧: [목록]
 
-### 타입 정의
+## §1 책임 분해
 
-​```ts
-// [책임 요약]
-type EntityName = {
-  id: string
-  field: Type
-  // ...
-}
-```
+| # | 책임 | 파일 경로 | 레이어 | 기존/신규 | 의존 |
+|---|------|----------|-------|----------|------|
+| 1 | ... | `src/...` | ... | 신규 | — |
+| 2 | ... | `src/...` | ... | 수정 | 1 |
 
-### 관계도 (필요 시)
+### 탐색 증거
 
-​```mermaid
-erDiagram
-  A ||--o{ B : has
-  B }o--|| C : belongs_to
-```
+- `Glob` / `Grep` 검색어 + 결과 요약
+- `CATALOG.md` 조회 항목
 
-### 불변식
+**완성도**: 🔴
 
-| # | 불변식 | 반증 조건 |
-|---|--------|---------|
-| 1 | [규칙] | [~이면 이 Blueprint가 틀림] |
+## §2 Contract
 
-**완성도:** 🔴  
-**역PRD:** (구현 후 `file::TypeName` 기입)
-
-## §2 파일 맵
-
-| 경로 | 책임 | 신규/수정 | 재사용 부품 | 역PRD |
-|------|------|----------|------------|-------|
-| `src/…/foo.ts` | [한 줄 책임] | 신규 | — | ⬜ |
-| `src/…/bar.tsx` | [한 줄 책임] | 수정 | ReplayStage | ⬜ |
-
-**반증 조건**: 파일 맵에 없는 경로에 구현이 나타나면 Blueprint 위반.
-
-**완성도:** 🔴  
-**역PRD:** (구현 후 실제 생성/수정 파일 + LOC 기입)
-
-## §3 Export 시그니처
+> §1의 "신규" / "확장" 행에만 작성
 
 ### `path/to/file.ts`
 
 ​```ts
-// [파일 책임]
+export type ... = { ... }
 
 /**
- * [export 책임]
- * @invariant [유지해야 할 조건]
+ * @invariant ...
  */
-export function fnName(arg: InputType): OutputType
+export function ...(arg: ...): ...
+​```
 
-export type PublicType = {
-  // ...
-}
+**완성도**: 🔴
 
-export const CONSTANT: Type
-```
+## §3 WHY
 
-### `path/to/other.tsx`
+[근본 이유 + 책임 분해 정당성]
 
-​```ts
-export function ComponentName(props: ComponentProps): ReactNode
-export type ComponentProps = { ... }
-```
-
-**반증 조건**: §3에 없는 export가 구현에 등장하거나, §3 시그니처와 다른 타입이 나타나면 위반.
-
-**완성도:** 🔴  
-**역PRD:** (구현 후 `file::exportName` 실제 위치)
-
-## §4 흐름
-
-### 핵심 control flow
+## §4 HOW
 
 ​```mermaid
 flowchart TD
-  A[이벤트 수신] --> B{조건}
-  B -->|yes| C[액션 1]
-  B -->|no| D[액션 2]
-  C --> E[상태 업데이트]
-  D --> E
-```
+  ...
+​```
 
-### 주요 로직 pseudo-code
+## §5 WHAT (의존 순서)
+
+### W1. ... (§1.1)
+
+**의존**: —
+**파일**: `...`
 
 ​```ts
-// [함수 이름 + 의도 한 줄]
-function coreLogic(input: Input): Output {
-  // 1. [단계 설명] — [어떤 데이터를 어떻게 변환]
-  // 2. [단계 설명] — [§1 타입 / §3 export 참조]
-  // 3. [단계 설명]
-  // return [결과 형태]
-}
-```
+// 실제 구현 코드
+​```
 
-### 이벤트 흐름 (인터랙션이 있으면)
+**검증**: ...
 
-​```mermaid
-sequenceDiagram
-  User->>Component: action
-  Component->>Store: dispatch
-  Store-->>Component: state
-```
+### W2. ... (§1.2)
 
-**반증 조건**: 흐름도에 없는 경로가 구현에 존재하거나, pseudo-code의 단계 순서가 뒤집히면 위반.
+**의존**: W1
+**파일**: `...`
 
-**완성도:** 🔴  
-**역PRD:** (구현 후 diff 요약 — 변경점만)
+​```ts
+// 실제 구현 코드
+​```
 
-## §5 경계
+**검증**: ...
 
-| # | 극단 조건 | 기대 동작 | 반증 조건 | 역PRD |
-|---|----------|---------|---------|-------|
-| 1 | [조건] | [동작] | [~이면 틀림] | ⬜ |
-| 2 | [조건] | [동작] | [~이면 틀림] | ⬜ |
+## §6 원칙 감시자 결과
 
-**완성도:** 🔴
-
-## §6 검증
-
-| # | 출처 (§5경계N) | 시나리오 | 예상 결과 | 검증 도구 | 역PRD |
-|---|--------------|---------|---------|---------|-------|
-| 1 | §5.1 | [Given/When/Then] | [결과] | vitest / screen-test / 수동 | ⬜ |
-
-**반증 조건**: 모든 §5 경계가 §6 시나리오로 매핑되지 않으면 Blueprint 불완전.
-
-**완성도:** 🔴  
-**역PRD:** (구현 후 `file::testName` 실제 위치)
-
-## §7 역PRD 체크리스트
-
-> /go·/retro·/handoff가 채움. Blueprint ⊃ Implementation 검증용.
-
-### 데이터 (§1)
-| Blueprint 타입 | 실제 위치 | 일치 | 비고 |
-|--------------|---------|------|------|
-| `EntityName` | — | ⬜ | |
-
-### 파일 (§2)
-| Blueprint 경로 | 실제 생성됨 | LOC | 비고 |
-|--------------|-----------|-----|------|
-| `src/…/foo.ts` | ⬜ | — | |
-
-### Export (§3)
-| Blueprint export | 실제 위치 | 시그니처 일치 | 비고 |
-|----------------|---------|------------|------|
-| `fnName` | — | ⬜ | |
-
-### 경계 (§5)
-| # | 구현됨 | 비고 |
-|---|-------|------|
-| 1 | ⬜ | |
-
-### 검증 (§6)
-| # | 테스트 위치 | 비고 |
-|---|-----------|------|
-| 1 | — | |
-
-### 흐름 편차 (§4)
-| 항목 | diff 요약 |
-|------|---------|
-| 변경 | (없으면 "Blueprint 그대로") |
+(완료 후 채움)
 
 ---
 
-**전체 완성도:** 🔴 0/6  
-**원칙 감시자 결과:** (비어 있음)
-```
-
-## 완성도 판정
-
-- 🟢 : /go 착수 가능 — 섹션 모든 행이 채워지고, `(?)` 없고, 반증 조건 작성됨
-- 🟡 : 행은 있지만 빈 칸/`(?)` 존재 or 반증 조건 비어 있음
-- 🔴 : 빈 표 또는 대부분 미채움
-
-**반증 조건이 비어 있으면 자동 🟡.** Evidence 축 적용.
-
-## 추상화 수준
-
-Blueprint는 **코드가 아니되 코드에 가장 근접한 층**이다.
-
-| 섹션 | 쓰는 것 | 안 쓰는 것 |
-|------|---------|-----------|
-| §1 데이터 | `type X = { ... }` TS 의사 문법, 관계도, 불변식 | 변환 로직, 기본값 계산 |
-| §2 파일 | 절대 경로, 한 줄 책임 | 파일 내부 구현 |
-| §3 Export | `export function f(a: A): B` 시그니처 + invariant 주석 | 함수 본문 |
-| §4 흐름 | pseudo-code 주석 + Mermaid | 실제 실행되는 TS 코드 |
-| §5 경계 | 조건 → 기대 동작 → 반증 조건 | 가드 코드 |
-| §6 검증 | Given/When/Then + 검증 도구 | 테스트 구현 |
-
-**원칙**: §3 시그니처까지는 거의 TS. §4부터는 pseudo + 다이어그램. 본문(body) 작성은 /go의 책임.
-
-## 범위 관리
-
-Blueprint 작성 중 **범위를 넘는 요구**를 만나면:
-1. 현재 Blueprint에 `> [항목] → [별도 Blueprint 파일명]` 참조 남김
-2. 별도 Blueprint 파일 생성 (빈 템플릿)
-3. 요구 버리지 않고 분리
-
-## 원칙 감시자의 책임
-
-6번 에이전트는 다음을 검사한다:
-
-1. **CLAUDE.md 규약 위반**: 파일명 컨벤션, import 규칙, ax() 사용 등
-2. **memory feedback 위반**: "있는 걸로 만든다", "render function is slot", "ax semantic not css" 등 설계 원칙
-3. **CATALOG.md 미확인**: §2 파일 맵에 신규 UI 컴포넌트가 있으면 CATALOG에 동일 역할 부품 검증
-4. **반증 조건 누락**: 모든 섹션의 반증 조건 필드가 채워졌는지
-
-위반 발견 시:
-- **자동 수정 가능**: 파일명 변경, 경로 조정 등 → 해당 섹션 에이전트 재디스패치
-- **설계 변경 필요**: 사용자에게 보고, Blueprint 보류
+**전체 완성도**: 🔴
+​```
 
 ## 종료
 
-6 에이전트 완료 + 교차 검증 통과 + 사용자 리뷰 완료 → Blueprint 확정.
-
-### 산출물
-
-1. **Blueprint 파일** — `docs/1-projects/` 또는 `docs/2-areas/`에 완성본
-2. **원칙 감시자 보고** — 대화에 위반 수정 내역
-3. **역PRD 체크리스트** — §7에 빈 채로 준비됨 (구현 단계에서 채움)
+§1·§2 🟢 + 사용자 리뷰 완료 → 확정. AI 자율 판단으로 `/go` 이관.
 
 ### 자율 진행
 
-Blueprint 확정 후 AI는 자율적으로 /go 또는 /do로 이관한다. 산출물 유형이 UI 기능/엔진이면 /do, 그 외(스킬·문서·리팩토링)는 /go.
+PRD 확정 후 AI는 자율적으로 `/go`로 이관한다. §1 표의 책임 행 = 병렬 dispatch 단위. 의존 칼럼 위상정렬 순서대로 에이전트를 분배한다.
