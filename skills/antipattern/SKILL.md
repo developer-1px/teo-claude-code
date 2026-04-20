@@ -148,6 +148,51 @@ printf '{"tool_name":"Write","tool_input":{"file_path":"...", "content":"[정상
 - 올바른 대안: ui/ 완성품(NavList, ListBox 등)을 사용하거나, 최소한 `interactive: 'item'` 축 + 키보드 접근성 확보
 - 판단 기준: "이 목록의 항목을 사용자가 클릭/Enter로 무언가 할 수 있는가?" → Yes면 item 필수
 
+### 9. NormalizedData → plain array → 수동 JSX 렌더 (pages/)
+- pages/ widget에서 `store.relationships[ROOT_ID]`나 `store.entities`를 순회하여 plain array로 추출 후 JSX로 수동 렌더링하면 NormalizedData→UI 채널 우회
+- 위반 신호:
+  - `function selectXxx(store) { return ids.map(id => store.entities[id]) }` + 이 array를 그대로 `.map(x => <div>...)` 렌더
+  - 같은 파일에 `definePage`/`createStore`는 썼는데 Aria 컴포넌트(`ListBox`, `TreeView`, `TabList`, …)가 없음
+- 올바른 대안: `const listData = useMemo(() => buildListData(items), [items]); return <ListBox data={listData} renderItem={ListItem} />`
+- 효과: ARIA 속성(selected/posinset/setsize/tabindex roving)·키맵·plugin 합성이 자동으로 붙음
+- **훅 일부 승격**: 규칙 6이 `role="list|listitem|tab|row|cell|..."` 수동 선언을 차단 (표면적 증상). 하지만 "NormalizedData 추출→수동 JSX"는 role 없이도 가능해서 정적 탐지 한계 — 이 체크리스트로 보완
+- 판단 기준: "내가 지금 `.map(x => <div>)` 하고 있고, x가 store에서 왔는가?" → Yes면 ui/ 컴포넌트에 data prop 주입으로 재작성
+
+### 10. 상태 계층 선택 (useState / createModuleStore / createCommandEngine)
+
+컴포넌트 바깥으로 나갈 상태를 고를 때 세 질문으로 결정:
+
+| 질문 | useState | createModuleStore | createCommandEngine |
+|------|---------|-------------------|---------------------|
+| 주인이 누구? | 단일 컴포넌트 | 앱 전역 | 앱 전역 + 도메인 |
+| 몇 곳이 읽나? | 1 컴포넌트 + props | 여러 컴포넌트가 독립 구독 | 여러 컴포넌트 + middleware/plugin |
+| 변경 로그/undo? | 아니오 | 아니오 | 예 |
+
+- **useState**: 컴포넌트 수명에 묶이면 충분. 90% 케이스.
+- **createModuleStore**: 앱 전역이되 단일 값 토글·설정 (theme/locale/viewMode/sidebarCollapsed). localStorage 키가 있으면 거의 이쪽.
+- **createCommandEngine**: 엔티티 그래프 + 선택/편집/undo가 필요한 도메인 (list/tree/grid/editor).
+
+**승격 신호** (useState → createModuleStore):
+- 같은 `localStorage` 키를 여러 파일의 `useState`가 읽거나 쓰고 있음
+- 훅(`src/hooks/use*.ts`)에서 `useState` + `localStorage.setItem` 같이 쓰고 있음 → **규칙 41로 차단됨**
+- 한 페이지에서 set한 값이 다른 페이지에서 stale하게 보임
+
+**승격 신호** (createModuleStore → createCommandEngine):
+- 여러 필드가 상호 의존해서 validator가 필요해짐
+- undo/redo, 변경 로그, middleware(logging/debounce/optimistic)가 필요해짐
+- 엔티티-관계 구조(트리, 연결, 포커스된 항목)로 커짐
+
+**판단 기준**: "이 값의 변경을 '명령'처럼 로깅·취소·검증해야 하는가?" → Yes면 command engine.
+
+### 11. 모듈-스코프 let + 수동 getter/setter (구독 없음)
+
+pages/ 또는 hooks/에서 `let S: T`를 모듈 스코프에 선언하고 `export function get*()` / `export function set*()`만 export하면, **나중에 구독이 필요해지는 순간** 수동 pub/sub를 다시 짜게 된다 (= 규칙 40 위반 코드를 배양하는 전 단계).
+
+- 위반 신호: `let _data`, `let S:`, `let persistTimer` + `export function getX()` / `export function setX()` 조합
+- 오늘 구독이 없어도 미래에 UI가 이 값을 실시간 반영해야 하면 반드시 `createModuleStore`로 이관된다 — 처음부터 `createModuleStore`로 시작하면 미래 비용 0
+- 정적 탐지 한계: `let _` + `export set*`는 localStorage 캐시·계산 상수 등 합법 케이스와 겹쳐 자동 차단 불가. 코드리뷰에서 사람이 판정.
+- 판단 기준: "이 값이 변하면 UI가 즉시 반응해야 하는가?" → Yes면 `createModuleStore`. No면 그대로 유지 OK.
+
 ## 훅 확장 시 주의사항
 
 - **false positive 최소화**: 규칙이 너무 넓으면 정상 코드도 차단하여 개발 흐름이 멈춤. 의심스러우면 체크리스트에 먼저 두고, 패턴이 명확해지면 훅으로 승격
