@@ -1,3 +1,8 @@
+---
+name: handoff
+description: 작업을 깔끔하게 마무리하거나 다음 세션으로 이어 넘기는 단일 오케스트레이터. 산업 표준 GitHub Flow (branch → commit → push → PR → CI → merge → cleanup) 위에 프로젝트 특유의 A0 역PRD 감사 + A1 verify 6단 + A8~A9 미완료 계승을 덧댄다. Blueprint PRD가 있으면 역PRD 체크리스트를 먼저 채우고 Blueprint ⊃ Implementation 검증을 통과해야 나머지 단계가 진행된다. 세션 시작 시 `/handoff`를 치면 가장 최근 미소비 handoff를 이어받는다. "/handoff", "마무리", "닫자", "정리하자", "여기까지", "다음에 이어서", "중단" 등 명시적 의도 표현 시 사용. **사용자가 명시적으로 호출할 때만 실행한다. AI가 자율 판단으로 발동하지 않는다.**
+---
+
 ## 역할
 
 작업 단위의 **경계선 오케스트레이터**. 산업 표준 dev-completion 시퀀스 (test → review gate → branch → PR → CI → merge → cleanup) 위에 이 프로젝트 특유의 두 층을 덧댄다:
