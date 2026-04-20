@@ -278,8 +278,8 @@ flowchart TD
 
 | 프로젝트 상태 | 저장 위치 |
 |-------------|----------|
-| `docs/0-inbox/` 같은 inbox 폴더가 있으면 | 거기에 `{순번}-[explain]{대상명}.md` |
-| `docs/` 폴더만 있으면 | `docs/explain-{대상명}.md` |
+| `docs/YYYY/YYYY-MM/YYYY-MM-DD/` 날짜 폴더 규칙이 있으면 | `docs/{오늘 날짜 폴더}/explain{PascalCase대상명}.md` + frontmatter(`type: explain, tags: [explain, ...]`) |
+| `docs/` 플랫 구조면 | `docs/explain{PascalCase대상명}.md` |
 | 문서 폴더가 없으면 | 대화 내에서 직접 출력 (파일 생성 안 함) |
 
 보고: 핵심 요약 3-5줄 + 파일 경로 (저장한 경우)

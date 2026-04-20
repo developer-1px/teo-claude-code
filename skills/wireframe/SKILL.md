@@ -14,7 +14,7 @@ memory/MEMORY.md를 읽어 기존 맥락을 로드한다.
 ## 파이프라인 위치
 
 ```
-discuss → /story → /ia (화면 구조) → /wireframe (부품 조립) → /prd → /do
+discuss → /story → /ia (화면 구조) → /wireframe (부품 조립) → /prd → /go
 ```
 
 - /ia의 콘텐츠 모델이 입력이다
@@ -95,7 +95,7 @@ ia의 콘텐츠 모델 각 영역에 ui/ 부품을 매핑한다.
 
 ### 파일 경로
 
-`docs/1-projects/<service>/wireframes.md`
+`docs/YYYY/YYYY-MM/YYYY-MM-DD/{service}Wireframes.md` (frontmatter: `type: wireframe, project: <service>`)
 
 ### 기존 파일이 있으면
 
@@ -236,5 +236,5 @@ ia의 콘텐츠 모델 각 영역에 ui/ 부품을 매핑한다.
 ## 종료 시그널
 
 - 사용자가 종료 표현
-- 사용자가 `/prd`, `/do` 등 다른 스킬 호출
+- 사용자가 `/prd`, `/go` 등 다른 스킬 호출
 - 전환 제안 후 사용자가 승인

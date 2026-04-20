@@ -15,7 +15,7 @@ description: Living Documentation 오케스트레이터. module/layer 단위로 
 
 ## 7섹션 체크리스트
 
-UI module(`docs/2-areas/ui/*.md`)의 완전성 기준:
+UI module 문서(mddb 쿼리 `type=area, layer=ui`)의 완전성 기준:
 
 | # | 섹션 | 판정 기준 | 자동 채움 소스 |
 |---|------|----------|--------------|
@@ -37,8 +37,8 @@ UI module(`docs/2-areas/ui/*.md`)의 완전성 기준:
 ## Step 1: 완전성 감사
 
 1. scope 결정:
-   - slug → `docs/2-areas/ui/{slugToMdFile[slug]}.md` 1개
-   - layer → `docs/2-areas/{layer}/*.md` 전체
+   - slug → mddb 쿼리 `type=area, slug={slug}` 1개
+   - layer → mddb 쿼리 `type=area, layer={layer}` 전체
    - 없음 → `git diff`로 변경된 src 파일 → 해당 layer/module 자동 감지
 
 2. 각 MD 파일을 7섹션 체크리스트로 감사
@@ -102,7 +102,6 @@ UI Layer 완전성:
    - 있으면 → MD에 ApgKeyboardTable 블록 삽입
    - 없으면 → Keyboard 섹션에 "APG 비표준" 명시
 
-3. 테스트 커버리지가 부족하면 → `/demo-coverage` 호출 제안 (자동 실행 아님)
 
 ## Step 4: 점수 (선택적)
 

@@ -55,7 +55,7 @@ discuss (왜/뭘) → /story (누가/어떤 여정) → /prd (어떻게) → Pla
 
 ### 파일 경로
 
-`docs/1-projects/<service>/stories.md`
+`docs/YYYY/YYYY-MM/YYYY-MM-DD/{service}Stories.md` (frontmatter: `type: story, project: <service>`)
 
 ### 기존 파일이 있으면
 
@@ -79,8 +79,8 @@ discuss (왜/뭘) → /story (누가/어떤 여정) → /prd (어떻게) → Pla
 
 ### 파일이 없으면
 
-1. 디렉토리 생성 (`docs/1-projects/<service>/`)
-2. 빈 맵 파일 생성:
+1. 오늘 날짜 폴더 확인/생성 (`docs/YYYY/YYYY-MM/YYYY-MM-DD/`)
+2. 빈 맵 파일 생성 (frontmatter: `type: story, project: <service>, tags: [story, <service>]`):
 
 ```markdown
 # <Service Name> — User Story Map
@@ -197,9 +197,9 @@ discuss (왜/뭘) → /story (누가/어떤 여정) → /prd (어떻게) → Pla
 
 1. 화면(Screens) 테이블을 `/ia`의 입력으로 전달한다
 2. `/ia`가 사이트맵 → 네비게이션 모델 → 콘텐츠 모델을 설계한다
-3. 이후 `/wireframe` → `/prd` → `/do`로 이어진다
+3. 이후 `/wireframe` → `/prd` → `/go`로 이어진다
 
-**파이프라인:** `/story` → `/ia` → `/wireframe` → `/prd` → `/do`
+**파이프라인:** `/story` → `/ia` → `/wireframe` → `/prd` → `/go`
 
 ### /prd 전환 시 (직행)
 

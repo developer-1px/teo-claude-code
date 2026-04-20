@@ -1,6 +1,6 @@
 ---
 name: blueprint
-description: 앱 레이아웃을 FlatLayout definePage로 설계한다. 요구사항이나 레퍼런스 앱 이름을 받아 기능 전수 열거 → 레이아웃 구조 분석 → definePage 설계 → widget × ui/ 부품 매칭 → Coverage 검증 → GAP 발견까지 수행한다. "레이아웃 설계", "앱 만들어봐", "화면 구조", "blueprint", "definePage로 설계", "~처럼 만들면", "Gmail 레이아웃" 등을 말할 때 사용. 코드를 편집하지 않고 preview만 출력한다. /do 전에 청사진을 먼저 잡고 싶을 때 사용.
+description: 앱 레이아웃을 FlatLayout definePage로 설계한다. 요구사항이나 레퍼런스 앱 이름을 받아 기능 전수 열거 → 레이아웃 구조 분석 → definePage 설계 → widget × ui/ 부품 매칭 → Coverage 검증 → GAP 발견까지 수행한다. "레이아웃 설계", "앱 만들어봐", "화면 구조", "blueprint", "definePage로 설계", "~처럼 만들면", "Gmail 레이아웃" 등을 말할 때 사용. 코드를 편집하지 않고 preview만 출력한다. /go 전에 청사진을 먼저 잡고 싶을 때 사용.
 ---
 
 ## 왜 이 스킬이 필요한가
@@ -188,7 +188,7 @@ export const [AppProvider, useApp] = createDomainContext<AppContextValue>('App')
 
 ## 제약
 
-- **코드 편집 없음** — preview만. 실제 구현은 `/do`로 전환
+- **코드 편집 없음** — preview만. 실제 구현은 `/go`로 전환
 - **CATALOG.md 필수 읽기** — "있는 걸로 만든다" 원칙
 - **LAYOUT.md 필수 읽기** — 노드 조합 규칙 준수
 - **Coverage ❌ 0개 필수** — Feature List의 모든 항목이 widget에 배치될 때까지 Phase 2~3을 반복

@@ -1,6 +1,6 @@
 ---
 name: layout-score
-description: FlatLayout definePage + widget의 구조를 체크리스트로 평가하고 수렴 루프를 돌려 개선한다. 텍스트 체크(L1/L2) + 스샷 검증(L3)의 3층 교차 구조. "레이아웃 평가", "definePage 점수", "이 페이지 레이아웃 봐줘", "/layout-score" 등을 말할 때 사용. /improve-design이 픽셀 단위 안티패턴이라면 /layout-score는 구조 단위 책임 경계.
+description: FlatLayout definePage + widget의 구조를 체크리스트로 평가하고 수렴 루프를 돌려 개선한다. 텍스트 체크(L1/L2) + 스샷 검증(L3)의 3층 교차 구조. "레이아웃 평가", "definePage 점수", "이 페이지 레이아웃 봐줘", "/layout-score" 등을 말할 때 사용. 구조 단위 책임 경계를 검증한다.
 ---
 
 # layout-score — FlatLayout 수렴 루프
@@ -141,7 +141,6 @@ Read로 `screenshots/{label}.png` 를 읽고 눈으로 확인:
 
 ## 관련 스킬
 
-- `/improve-design` — 픽셀 안티패턴 탐지 (L3 내부). 이 스킬과 상호 보완
 - `/design-extract` — 레퍼런스 토큰 실측 (L3 입력 준비)
 - `/blueprint` — 앱 레이아웃 설계 (이 스킬의 입력 생성)
 
