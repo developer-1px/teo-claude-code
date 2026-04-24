@@ -1,0 +1,12 @@
+{
+  "eval_id": 2,
+  "config": "without_skill",
+  "expectations": [
+    {"text": "stops_before_fixing", "passed": true, "evidence": "코드 수정 없이 진단 수행"},
+    {"text": "lists_prior_attempts", "passed": true, "evidence": "1. 필터 조건 2. 정렬 순서 3. 캐시 무효화 나열"},
+    {"text": "identifies_pattern", "passed": true, "evidence": "'같은 레이어(getVisibleNodes)를 건드렸다는 점이 핵심 신호'"},
+    {"text": "redefines_problem", "passed": true, "evidence": "'결정은 축의 VisibilityFilter가 합니다'로 상위 레이어 지목"},
+    {"text": "no_defense", "passed": true, "evidence": "방어 없음"},
+    {"text": "asks_confirmation", "passed": false, "evidence": "확인 요청 없이 '이 순서로 검증하라'고 지시"}
+  ]
+}

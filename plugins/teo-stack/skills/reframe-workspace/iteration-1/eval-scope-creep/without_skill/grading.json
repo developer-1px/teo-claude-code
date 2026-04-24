@@ -1,0 +1,12 @@
+{
+  "eval_id": 3,
+  "config": "without_skill",
+  "expectations": [
+    {"text": "stops_before_fixing", "passed": true, "evidence": "분석 수행, 즉시 수정 안 함"},
+    {"text": "lists_prior_attempts", "passed": true, "evidence": "3개 시도 나열"},
+    {"text": "identifies_pattern", "passed": true, "evidence": "'세 레이어를 모두 건드리고 있다'"},
+    {"text": "redefines_problem", "passed": true, "evidence": "'렌더링 순서를 직접 수정하는 것이 문제다. command부터 다시 검증하라'"},
+    {"text": "no_defense", "passed": true, "evidence": "방어 없음. 다만 '세 레이어를 건드리는 것 자체는 문제가 아니다'는 중립적 판단"},
+    {"text": "asks_confirmation", "passed": false, "evidence": "확인 요청 없이 지시형 종료"}
+  ]
+}

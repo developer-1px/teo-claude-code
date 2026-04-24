@@ -1,0 +1,26 @@
+{
+  "skill_name": "reframe",
+  "evals": [
+    {
+      "id": 1,
+      "name": "symptom-loop",
+      "prompt": "나 지금 TreeGrid에서 포커스가 자꾸 사라지는 버그 고치고 있는데, focusRecovery 플러그인에서 setTimeout 타이밍 조절도 해봤고, useEffect deps도 바꿔봤고, ref 캐싱도 해봤는데 계속 똑같아. 세 번째 시도인데 이게 아닌 것 같아. 다시 생각해봐",
+      "expected_output": "현재 시도들을 나열하고, 전부 '포커스 복구 타이밍'만 건드리고 있다는 패턴을 발견하고, 진짜 원인(예: 리렌더링 자체가 문제이거나, 포커스를 빼앗는 다른 컴포넌트가 있거나)으로 재정의해야 함",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "wrong-layer",
+      "prompt": "Combobox에서 필터링 결과가 이상해. getVisibleNodes 쪽 로직을 세 번이나 고쳤는데 여전히 안 맞아. 처음엔 필터 조건 바꿨고, 두 번째는 정렬 순서 바꿨고, 세 번째는 캐시 무효화 추가했어. 방향이 틀린 것 같아",
+      "expected_output": "engine 레이어(getVisibleNodes)를 반복 수정하고 있다는 패턴을 발견하고, 문제가 store 데이터 자체나 combobox의 입력값 처리 등 다른 레이어에 있을 수 있다고 재정의해야 함",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "scope-creep",
+      "prompt": "CMS 페이지에서 드래그앤드롭으로 노드 이동하려고 하는데, 처음엔 dnd 플러그인 수정했고, 그 다음엔 store command 추가했고, 지금은 렌더링 순서까지 건드리고 있어. 점점 범위가 커지고 있는데 이게 맞나?",
+      "expected_output": "수정 범위가 plugin→store→rendering으로 확산되고 있다는 패턴을 발견하고, 원래 의도(노드 이동)를 재정의하여 기존 move command나 기존 dnd 플러그인이 이미 할 수 있는 건 아닌지 확인해야 함",
+      "files": []
+    }
+  ]
+}

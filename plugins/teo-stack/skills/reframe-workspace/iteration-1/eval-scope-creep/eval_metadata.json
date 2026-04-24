@@ -1,0 +1,13 @@
+{
+  "eval_id": 3,
+  "eval_name": "scope-creep",
+  "prompt": "CMS 페이지에서 드래그앤드롭으로 노드 이동하려고 하는데, 처음엔 dnd 플러그인 수정했고, 그 다음엔 store command 추가했고, 지금은 렌더링 순서까지 건드리고 있어. 점점 범위가 커지고 있는데 이게 맞나?",
+  "assertions": [
+    {"text": "stops_before_fixing: 즉시 코드 수정에 뛰어들지 않고 분석부터 한다"},
+    {"text": "lists_prior_attempts: 지금까지의 시도를 구조적으로 나열한다"},
+    {"text": "identifies_pattern: 범위가 plugin→store→rendering으로 확산되고 있다는 패턴을 발견한다"},
+    {"text": "redefines_problem: 순서의 SSOT 또는 store command 자체로 문제를 재정의한다"},
+    {"text": "no_defense: 기존 접근을 방어하지 않는다"},
+    {"text": "asks_confirmation: 새 방향 제안 후 사용자 확인을 구한다"}
+  ]
+}

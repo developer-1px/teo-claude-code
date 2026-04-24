@@ -1,0 +1,22 @@
+{
+  "name": "teo-stack",
+  "version": "0.1.0",
+  "description": "interactive-os 기반 파이프라인 스킬 — discuss→story→prd→go 파이프라인, Documents(PARA), Quality, Code Quality, Design",
+  "author": {
+    "name": "유용태",
+    "url": "https://github.com/developer-1px"
+  },
+  "homepage": "https://github.com/developer-1px/teo-claude-code",
+  "repository": "https://github.com/developer-1px/teo-claude-code",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "korean",
+    "workflow",
+    "prd",
+    "discuss",
+    "pipeline",
+    "para",
+    "interactive-os"
+  ]
+}

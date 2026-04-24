@@ -1,0 +1,13 @@
+{
+  "eval_id": 1,
+  "eval_name": "symptom-loop",
+  "prompt": "나 지금 TreeGrid에서 포커스가 자꾸 사라지는 버그 고치고 있는데, focusRecovery 플러그인에서 setTimeout 타이밍 조절도 해봤고, useEffect deps도 바꿔봤고, ref 캐싱도 해봤는데 계속 똑같아. 세 번째 시도인데 이게 아닌 것 같아. 다시 생각해봐",
+  "assertions": [
+    {"text": "stops_before_fixing: 즉시 코드 수정에 뛰어들지 않고 분석부터 한다"},
+    {"text": "lists_prior_attempts: 지금까지의 시도를 구조적으로 나열한다"},
+    {"text": "identifies_pattern: 세 시도가 같은 레이어(focusRecovery 내부)만 건드렸다는 패턴을 발견한다"},
+    {"text": "redefines_problem: focusRecovery 외부(포커스를 빼앗는 원인)로 문제를 재정의한다"},
+    {"text": "no_defense: 기존 접근을 방어하지 않는다"},
+    {"text": "asks_confirmation: 새 방향 제안 후 사용자 확인을 구한다"}
+  ]
+}

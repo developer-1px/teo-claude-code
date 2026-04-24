@@ -1,0 +1,12 @@
+{
+  "eval_id": 2,
+  "config": "with_skill",
+  "expectations": [
+    {"text": "stops_before_fixing", "passed": true, "evidence": "'코드 수정을 중단합니다'로 시작"},
+    {"text": "lists_prior_attempts", "passed": true, "evidence": "3개 시도를 번호 매겨 나열 + 각 결과 기록"},
+    {"text": "identifies_pattern", "passed": true, "evidence": "'세 번 모두 getVisibleNodes만 건드렸다'"},
+    {"text": "redefines_problem", "passed": true, "evidence": "'getVisibleNodes는 필터를 적용하는 곳이지 정의하는 곳이 아니다. VisibilityFilter 선언부가 문제'"},
+    {"text": "no_defense", "passed": true, "evidence": "방어 문장 없음"},
+    {"text": "asks_confirmation", "passed": true, "evidence": "'이 재정의가 맞는지 확인해주세요. 세 번 틀린 뒤라 이 방향도 틀릴 수 있습니다'"}
+  ]
+}

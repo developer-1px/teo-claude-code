@@ -1,0 +1,12 @@
+{
+  "eval_id": 1,
+  "config": "without_skill",
+  "expectations": [
+    {"text": "stops_before_fixing", "passed": true, "evidence": "코드 수정 없이 분석과 관찰 방법 제안"},
+    {"text": "lists_prior_attempts", "passed": false, "evidence": "'세 번 다 같은 층위에서 시도한 거야'로 요약만 함, 개별 시도를 구조적으로 나열하지 않음"},
+    {"text": "identifies_pattern", "passed": true, "evidence": "'전부 포커스가 사라진 뒤 복구하는 방법을 바꾼 거지, 왜 포커스가 사라지는지를 안 본 거야'"},
+    {"text": "redefines_problem", "passed": true, "evidence": "'증상(포커스 복구)이 아니라 원인(포커스 소실)을 봐'로 재정의"},
+    {"text": "no_defense", "passed": true, "evidence": "기존 접근 방어 없음"},
+    {"text": "asks_confirmation", "passed": false, "evidence": "확인 요청 없이 바로 다음 행동 지시"}
+  ]
+}

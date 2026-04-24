@@ -1,0 +1,20 @@
+{
+  "name": "teo-universal",
+  "version": "0.1.0",
+  "description": "한국어 기반 범용 사고·문서 스킬 — 민토 피라미드, Evaporating Cloud, Occam Gate, 이상 시뮬레이션, 재진단, 외부 리서치",
+  "author": {
+    "name": "유용태",
+    "url": "https://github.com/developer-1px"
+  },
+  "homepage": "https://github.com/developer-1px/teo-claude-code",
+  "repository": "https://github.com/developer-1px/teo-claude-code",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "korean",
+    "thinking-tools",
+    "minto",
+    "toc",
+    "research"
+  ]
+}

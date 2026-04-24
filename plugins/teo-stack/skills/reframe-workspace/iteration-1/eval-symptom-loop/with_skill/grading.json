@@ -1,0 +1,12 @@
+{
+  "eval_id": 1,
+  "config": "with_skill",
+  "expectations": [
+    {"text": "stops_before_fixing", "passed": true, "evidence": "Step 1에서 '코드 수정을 중단한다'로 시작, 분석만 수행"},
+    {"text": "lists_prior_attempts", "passed": true, "evidence": "1. setTimeout 타이밍 2. useEffect deps 3. ref 캐싱 — 번호 매겨 구조적 나열"},
+    {"text": "identifies_pattern", "passed": true, "evidence": "'세 시도 모두 포커스를 복구하는 쪽을 만지고 있다'는 패턴 명시"},
+    {"text": "redefines_problem", "passed": true, "evidence": "'recovery는 살리는 쪽이지 죽이는 쪽이 아니다. 죽이는 쪽을 찾아야 한다'로 재정의"},
+    {"text": "no_defense", "passed": true, "evidence": "기존 시도를 방어하는 문장 없음"},
+    {"text": "asks_confirmation", "passed": true, "evidence": "'이 방향이 맞는지 확인해줘. 세 번 틀린 뒤의 재정의라 이것도 틀릴 수 있다'"}
+  ]
+}

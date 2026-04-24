@@ -1,0 +1,13 @@
+{
+  "eval_id": 2,
+  "eval_name": "wrong-layer",
+  "prompt": "Combobox에서 필터링 결과가 이상해. getVisibleNodes 쪽 로직을 세 번이나 고쳤는데 여전히 안 맞아. 처음엔 필터 조건 바꿨고, 두 번째는 정렬 순서 바꿨고, 세 번째는 캐시 무효화 추가했어. 방향이 틀린 것 같아",
+  "assertions": [
+    {"text": "stops_before_fixing: 즉시 코드 수정에 뛰어들지 않고 분석부터 한다"},
+    {"text": "lists_prior_attempts: 지금까지의 시도를 구조적으로 나열한다"},
+    {"text": "identifies_pattern: 세 시도가 같은 함수(getVisibleNodes)만 건드렸다는 패턴을 발견한다"},
+    {"text": "redefines_problem: engine이 아닌 상위 레이어(axis/pattern의 VisibilityFilter)로 문제를 재정의한다"},
+    {"text": "no_defense: 기존 접근을 방어하지 않는다"},
+    {"text": "asks_confirmation: 새 방향 제안 후 사용자 확인을 구한다"}
+  ]
+}

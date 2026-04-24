@@ -1,0 +1,12 @@
+{
+  "eval_id": 3,
+  "config": "with_skill",
+  "expectations": [
+    {"text": "stops_before_fixing", "passed": true, "evidence": "Step 1에서 흐름 정리부터 시작"},
+    {"text": "lists_prior_attempts", "passed": true, "evidence": "3개 시도 번호 매겨 나열 + 결과"},
+    {"text": "identifies_pattern", "passed": true, "evidence": "'플러그인→store→렌더링으로 범위가 확산 중'"},
+    {"text": "redefines_problem", "passed": true, "evidence": "'순서의 SSOT가 하나가 아니다가 근본 원인'으로 재정의"},
+    {"text": "no_defense", "passed": true, "evidence": "방어 없음"},
+    {"text": "asks_confirmation", "passed": true, "evidence": "'이 방향이 맞는지 확인해 달라. 이미 한번 틀린 상태니까'"}
+  ]
+}
