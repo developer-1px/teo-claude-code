@@ -1,6 +1,6 @@
-# teo-universal 승격 로드맵
+# teo-stack 승격 로드맵
 
-범용 플러그인에 포함될 후보 스킬을 티어로 관리합니다. 티어가 올라올 때마다 `plugins/universal/skills/`로 `git mv`합니다.
+범용 플러그인에 포함될 후보 스킬을 티어로 관리합니다. 티어가 올라올 때마다 `plugins/teo-stack/skills/`로 `git mv`합니다.
 
 ## 승격 기준
 
@@ -16,11 +16,11 @@
 
 | Skill | 현재 위치 | 필요 작업 |
 |-------|----------|----------|
-| `fix` | teo-stack | "최근 작업물" 참조를 일반화, 자동 재현 단계에서 프로젝트 코드 가정 제거 |
-| `srp` | teo-stack | 예시 코드의 프로젝트 특유 파일명 일반화 |
-| `ocp` | teo-stack | 같은 작업 |
-| `naming-audit` | teo-stack | `/go` verify 자동 호출 결합 제거 |
-| `design-extract` | teo-stack | 토큰 저장 경로 하드코딩 제거, 사용자 확인 후 저장 |
+| `fix` | teo-project | "최근 작업물" 참조를 일반화, 자동 재현 단계에서 프로젝트 코드 가정 제거 |
+| `srp` | teo-project | 예시 코드의 프로젝트 특유 파일명 일반화 |
+| `ocp` | teo-project | 같은 작업 |
+| `naming-audit` | teo-project | `/go` verify 자동 호출 결합 제거 |
+| `design-extract` | teo-project | 토큰 저장 경로 하드코딩 제거, 사용자 확인 후 저장 |
 
 ## Tier 2 — 중간 리팩토링 필요
 
@@ -44,6 +44,6 @@
 1. 후보 스킬 하나를 선택해 범용화 감사(에이전트 또는 수동)로 프로젝트 의존 지점을 모두 나열
 2. SKILL.md를 범용화 편집 (Thinking 5 때와 동일한 규칙)
 3. 정적 검사: 금칙어 grep 0건
-4. `git mv plugins/teo-stack/skills/<name> plugins/universal/skills/<name>`
-5. `plugins/universal/README.md`에 추가, 본 ROADMAP에서 해당 행 제거
-6. 버전 bump: `teo-universal`의 `plugin.json` minor +1
+4. `git mv plugins/teo-project/skills/<name> plugins/teo-stack/skills/<name>`
+5. `plugins/teo-stack/README.md`에 추가, 본 ROADMAP에서 해당 행 제거
+6. 버전 bump: `teo-stack`의 `plugin.json` minor +1

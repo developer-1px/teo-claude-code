@@ -1,54 +1,37 @@
 # teo-claude-code
 
-Claude Code 스킬·에이전트 모음. **하나의 마켓플레이스 안에 2개의 플러그인**으로 구성됩니다.
+Claude Code 스킬·에이전트 마켓플레이스. 2개 플러그인으로 구성됩니다.
 
-## 플러그인 구성
+## 플러그인
 
-| 플러그인 | 대상 | 구성 |
+| 플러그인 | 용도 | 대상 |
 |---------|------|------|
-| [**teo-universal**](plugins/universal/) | 누구나 / 모든 프로젝트 | 한국어 범용 사고·문서 스킬 7개 (Thinking 5 + minto + research) |
-| [**teo-stack**](plugins/teo-stack/) | interactive-os 개발자 | 프로젝트 파이프라인 스킬 30개 + 에이전트 4개 (discuss→story→prd→go, PARA, Quality, Design) |
+| [**`teo-stack`**](plugins/teo-stack/) | `/discuss` 허브 + TOC/민토 사고 스킬 8개 | 공개 — 본인 다른 프로젝트·관심 있는 사용자 |
+| [`teo-project`](plugins/teo-project/) | interactive-os 전용 파이프라인 스킬 29개 + 에이전트 4개 | [PRIVATE] 개인·팀 내부 용도, **타 프로젝트 비호환** |
+
+> `teo-stack`은 [superpowers](https://github.com/obra/superpowers)와 **보완** 관계입니다. superpowers가 다루는 영역(brainstorming·debugging·TDD·planning·verification)은 그쪽을 쓰고, 이 플러그인은 `/discuss` 중심의 논의 구조화·대립 해소·뺄셈 사고·민토 해설·외부 리서치를 담당합니다.
 
 ## 설치
 
-### 마켓플레이스 등록
-
 ```bash
-# Claude Code 프롬프트에서
 /plugin marketplace add developer-1px/teo-claude-code
-```
-
-### 플러그인 설치
-
-```bash
-# 범용 스킬만
-/plugin install teo-universal@teo-marketplace
-
-# 프로젝트 파이프라인까지 (interactive-os 전제)
 /plugin install teo-stack@teo-marketplace
 ```
 
-### 로컬 개발
+`teo-project`는 비공개 용도이므로 `teo-stack`만 설치하시면 됩니다.
 
-레포를 클론해서 직접 쓰려면 스킬 디렉토리를 `~/.claude/skills/`로 심볼릭 링크:
+## 로컬 개발
 
 ```bash
 git clone https://github.com/developer-1px/teo-claude-code.git
 cd teo-claude-code
-for s in plugins/*/skills/*/; do
+for s in plugins/teo-stack/skills/*/; do
   ln -sfn "$PWD/$s" ~/.claude/skills/$(basename "$s")
-done
-mkdir -p ~/.claude/agents
-for a in plugins/teo-stack/agents/*.md; do
-  ln -sfn "$PWD/$a" ~/.claude/agents/$(basename "$a")
 done
 ```
 
-## 문서
+## 구성 문서
 
-- 스킬별 치트시트 → 각 플러그인의 README
-- 범용 승격 후보 로드맵 → [`plugins/universal/ROADMAP.md`](plugins/universal/ROADMAP.md)
-
-## 라이선스
-
-MIT
+- [`plugins/teo-stack/README.md`](plugins/teo-stack/README.md) — 공개 플러그인 상세
+- [`plugins/teo-stack/ROADMAP.md`](plugins/teo-stack/ROADMAP.md) — teo-project → teo-stack 승격 로드맵
+- [`plugins/teo-project/README.md`](plugins/teo-project/README.md) — 프로젝트 전용 스킬 카탈로그

@@ -1,7 +1,7 @@
 {
   "name": "teo-stack",
   "version": "0.1.0",
-  "description": "interactive-os 기반 파이프라인 스킬 — discuss→story→prd→go 파이프라인, Documents(PARA), Quality, Code Quality, Design",
+  "description": "한국어 기반 discuss 허브 + TOC/민토 사고 스킬. superpowers가 다루지 않는 '논의 구조화·대립 해소·뺄셈 사고·민토 해설·외부 리서치' 축을 담당",
   "author": {
     "name": "유용태",
     "url": "https://github.com/developer-1px"
@@ -12,11 +12,11 @@
   "keywords": [
     "skills",
     "korean",
-    "workflow",
-    "prd",
     "discuss",
-    "pipeline",
-    "para",
-    "interactive-os"
+    "toc",
+    "minto",
+    "evaporating-cloud",
+    "occam-gate",
+    "research"
   ]
 }
