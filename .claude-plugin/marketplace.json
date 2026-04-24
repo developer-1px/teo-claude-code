@@ -12,15 +12,16 @@
         "repo": "developer-1px/teo-claude-code",
         "path": "plugins/teo-stack"
       },
-      "description": "한국어 기반 discuss 허브 + TOC/민토 사고 스킬 + Code Quality(SRP/OCP/naming). superpowers가 다루지 않는 축을 담당",
-      "version": "0.4.0",
+      "description": "한국어 기반 discuss 허브 + TOC/민토 사고 스킬 + Code Quality(SRP/OCP/naming) + /glossary 도메인 용어 사전. superpowers가 다루지 않는 축을 담당",
+      "version": "0.5.0",
       "keywords": [
         "skills",
         "korean",
         "discuss",
         "toc",
         "minto",
-        "research"
+        "research",
+        "glossary"
       ]
     },
     {

@@ -1,7 +1,7 @@
 {
   "name": "teo-stack",
-  "version": "0.4.0",
-  "description": "한국어 기반 discuss 허브 + TOC/민토 사고 스킬. superpowers가 다루지 않는 '논의 구조화·대립 해소·뺄셈 사고·민토 해설·외부 리서치' 축을 담당",
+  "version": "0.5.0",
+  "description": "한국어 기반 discuss 허브 + TOC/민토 사고 스킬. superpowers가 다루지 않는 '논의 구조화·대립 해소·뺄셈 사고·민토 해설·외부 리서치·도메인 용어 사전' 축을 담당",
   "author": {
     "name": "유용태",
     "url": "https://github.com/developer-1px"
@@ -17,6 +17,8 @@
     "minto",
     "evaporating-cloud",
     "occam-gate",
-    "research"
+    "research",
+    "glossary",
+    "ubiquitous-language"
   ]
 }
