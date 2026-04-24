@@ -224,12 +224,12 @@ defineXxx('section', {
 3. registry + defineXxx 함수 작성
 4. 기존 switch/if의 각 case를 독립적인 `defineXxx()` 호출로 변환
 5. 소비자(기존 switch 함수들)를 registry 조회 + resolve로 교체
-6. typecheck 실행
+6. 프로젝트 정적 검증 실행
 
 #### 검증
 
 리팩토링 완료 후:
-1. `pnpm typecheck` — 타입 검증
+1. 프로젝트의 정적 검증(예: `tsc --noEmit`, `pnpm typecheck`, `npm run build`, `eslint` 중 있는 것)
 2. **소비자 무분기 검증**: 소비자 함수에 타입별 if/switch/case가 **0개**인가? 소비자가 특정 타입 이름을 알고 있으면 실패.
 3. **변경 시나리오 재검증**: "새 항목 추가 시 수정 지점이 0~1곳인가?"
 4. **삭제 시나리오**: "항목 삭제 시 수정 지점이 0~1곳인가?"

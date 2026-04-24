@@ -12,8 +12,8 @@
         "repo": "developer-1px/teo-claude-code",
         "path": "plugins/teo-stack"
       },
-      "description": "한국어 기반 discuss 허브 + TOC/민토 사고 스킬. superpowers가 다루지 않는 '논의 구조화·대립 해소·뺄셈 사고·민토 해설·외부 리서치' 축을 담당",
-      "version": "0.1.0",
+      "description": "한국어 기반 discuss 허브 + TOC/민토 사고 스킬 + Code Quality(SRP/OCP/naming). superpowers가 다루지 않는 축을 담당",
+      "version": "0.4.0",
       "keywords": [
         "skills",
         "korean",

@@ -92,8 +92,8 @@ Complex(X) 판정을 받은 책임은 코드에 주석으로 남긴다:
 2. 원본 파일에서 제거 + 새 파일 import
 3. Complex(X) 항목에 @FIXME 주석 삽입
 4. 다른 파일의 import 경로 갱신
-5. typecheck 실행하여 검증
+5. 프로젝트의 정적 검증(타입체크/린트/빌드) 실행하여 회귀 확인
 
 #### 검증
 
-리팩토링 완료 후 `pnpm typecheck`를 실행한다. 실패하면 수정한다.
+리팩토링 완료 후 프로젝트의 정적 검증(예: `tsc --noEmit`, `pnpm typecheck`, `npm run build`, `eslint` 중 있는 것)을 실행한다. 실패하면 수정한다.

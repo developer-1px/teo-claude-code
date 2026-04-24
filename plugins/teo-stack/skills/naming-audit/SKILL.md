@@ -1,5 +1,6 @@
 ---
-description: 네이밍 일관성(consistency)과 적합성(aptness) 감사. 동의어 드리프트, 형식 불일치, 패턴 과적, 역할 분산을 감지한다. "/naming-audit", "이름 점검", "네이밍 확인" 등을 말할 때 사용. /go의 Verify phase에서 자동 호출된다.
+name: naming-audit
+description: 네이밍 일관성(consistency)과 적합성(aptness) 감사. 동의어 드리프트, 형식 불일치, 패턴 과적, 역할 분산을 감지한다. "/naming-audit", "이름 점검", "네이밍 확인", "네이밍 일관성" 등을 말할 때 사용. 프로젝트에 전용 수집 스크립트(scripts/namingReport.ts 등)가 있으면 그걸 쓰고, 없으면 ripgrep/grep으로 직접 수집한다.
 ---
 
 # Naming Audit
@@ -19,16 +20,45 @@ Check if `.claude/naming-dictionary.md` exists.
 
 ### Step 1a: Incremental mode (dictionary exists)
 
-1. Run `git diff {last_commit}..HEAD --name-only -- 'src/'` to get changed files.
-2. If no src/ files changed → report "No naming changes since last audit" and **stop**.
-3. Run `npx tsx scripts/collectDiffSymbols.ts {last_commit}` to collect all identifiers from changed files.
-4. Compare new/modified/deleted identifiers against the dictionary.
-5. Go to **Step 3** with scope limited to the delta.
-6. After reporting, go to **Step 5** (update dictionary).
+1. Detect source root: `src/` if exists, else `lib/`, else repo root excluding `node_modules`/`dist`/`build`.
+2. Run `git diff {last_commit}..HEAD --name-only -- '{source_root}/'` to get changed files.
+3. If no files changed → report "No naming changes since last audit" and **stop**.
+4. Collect identifiers from changed files — see **§ Collection strategy** below.
+5. Compare new/modified/deleted identifiers against the dictionary.
+6. Go to **Step 3** with scope limited to the delta.
+7. After reporting, go to **Step 5** (update dictionary).
 
 ### Step 1b: Full mode (no dictionary)
 
-Run `npx tsx scripts/namingReport.ts` to collect all exported identifiers and type orbit from `src/`.
+Collect all exported identifiers from the source root — see **§ Collection strategy** below.
+
+### § Collection strategy
+
+프로젝트가 전용 스크립트를 제공하면 그걸 쓰고, 아니면 ripgrep/grep 폴백을 쓴다.
+
+**우선순위 1 — 프로젝트 전용 스크립트**: `scripts/namingReport.ts`·`scripts/collectDiffSymbols.ts` 류가 있으면 실행 (예: `npx tsx scripts/namingReport.ts`). 속도가 빠르고 타입 정보를 포함할 수 있다.
+
+**우선순위 2 — ripgrep 폴백** (대부분의 프로젝트): 다음 패턴으로 exported identifiers를 수집한다.
+
+```bash
+# 함수·const·class·interface·type·enum exports
+rg -n -o --no-filename \
+   -e 'export (async )?function ([a-zA-Z_][a-zA-Z0-9_]+)' \
+   -e 'export const ([a-zA-Z_][a-zA-Z0-9_]+)' \
+   -e 'export (abstract )?class ([a-zA-Z_][a-zA-Z0-9_]+)' \
+   -e 'export interface ([a-zA-Z_][a-zA-Z0-9_]+)' \
+   -e 'export type ([a-zA-Z_][a-zA-Z0-9_]+)' \
+   -e 'export enum ([a-zA-Z_][a-zA-Z0-9_]+)' \
+   -r '$2$3' \
+   --glob '!node_modules' --glob '!dist' --glob '!build' \
+   {source_root}
+```
+
+언어에 따라 패턴을 조정한다 (Python: `^def |^class |^[A-Z_][A-Z0-9_]+ =`, Go: `^func |^type |^var `).
+
+ripgrep(`rg`)이 없으면 `git grep -E` 또는 POSIX `grep -rE`로 대체한다.
+
+**우선순위 3 — LLM 직접 수집**: repo가 작거나(< 100 파일) 위 도구가 모두 실패하면 Glob + Read로 직접 수집한다. 느리므로 최후 수단.
 
 ### Step 2: Build the Key Pool
 
@@ -93,7 +123,7 @@ Example — `get` (19 identifiers):
 
 This is the 초벌구이 — a mechanical heuristic that surfaces candidates for human judgment.
 
-`npx tsx scripts/namingReport.ts` outputs a **Return Type Variance** section that groups exported functions by verb prefix and shows their return types. Use this data directly:
+프로젝트 전용 스크립트가 있으면 **Return Type Variance** 섹션을 그대로 쓰고, 없으면 동사 접두사별로 export 함수를 그룹화한 뒤 각 함수의 시그니처(`Read` 또는 `rg -A 1`)에서 반환 타입을 LLM이 직접 읽어 변이도를 추정한다:
 
 - **HIGH** (3+ distinct return types) → strong signal for role overloading. Investigate with C.
 - **MEDIUM** (2 return types) → weak signal. Check if the difference is meaningful.

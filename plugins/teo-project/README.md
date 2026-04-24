@@ -38,14 +38,13 @@
 | `/screen-test` | Screen test writer | 화면 수준 통합 테스트 작성 |
 | `/layout-score` | Layout evaluator | definePage 레이아웃 평가·수렴 |
 
-### Code Quality
+### Code Quality (프로젝트 전용)
 
 | Skill | What | 설명 |
 |-------|------|------|
-| `/srp` | SRP audit | 단일 책임 원칙 점검·리팩토링 |
-| `/ocp` | OCP audit | 개방-폐쇄 원칙 점검·리팩토링 |
-| `/naming-audit` | Naming consistency | 네이밍 일관성·적합성 감사 |
 | `/antipattern` | Hook harness converter | 안티패턴을 훅 정적 검사로 전환 |
+
+> `/srp`, `/ocp`, `/naming-audit`은 [`teo-stack`](../teo-stack/)으로 승격됨.
 
 ### Design
 

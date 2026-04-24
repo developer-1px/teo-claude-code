@@ -16,11 +16,19 @@
 
 | Skill | 현재 위치 | 필요 작업 |
 |-------|----------|----------|
-| `fix` | teo-project | "최근 작업물" 참조를 일반화, 자동 재현 단계에서 프로젝트 코드 가정 제거 |
-| `srp` | teo-project | 예시 코드의 프로젝트 특유 파일명 일반화 |
-| `ocp` | teo-project | 같은 작업 |
-| `naming-audit` | teo-project | `/go` verify 자동 호출 결합 제거 |
 | `design-extract` | teo-project | 토큰 저장 경로 하드코딩 제거, 사용자 확인 후 저장 |
+| `story` | teo-project | 후속 `/prd` 의존 언급 완화 |
+| `ia` | teo-project | `/wireframe` 연결 문구 일반화 |
+| `prd` | teo-project | CLAUDE.md FE 책임 맵 의존 → 일반 "프로젝트 파일 구조" 인터뷰로 |
+| `improve` | teo-project | 프로젝트별 Job 정의 훅으로 분리 |
+| `antipattern` | teo-project | 특정 훅 파일명(`guardOsPatterns.mjs` 등) → 일반 예시로 |
+
+### 승격 완료 (참고)
+
+- `v0.1.0` — Thinking 5 + minto + research (초기 7개)
+- `v0.2.0` — `/discuss` 허브 승격, 허브-스포크 관계 복원
+- `v0.3.0` — `/team` 승격 (teo-universal → teo-stack 네이밍 변경 포함)
+- `v0.4.0` — Code Quality 3종(`/srp`, `/ocp`, `/naming-audit`) 승격
 
 ## Tier 2 — 중간 리팩토링 필요
 
