@@ -12,7 +12,6 @@
 |-------|------|------|------------|
 | `/story` | User story map builder | 유저스토리 맵 인터뷰 | `/discuss`(teo-stack) 이후, PRD 이전. 구현 단위를 사용자 체감 언어로 도출 |
 | `/prd` | Implementation spec writer | 구현 명세 작성 | 방향은 잡혔는데 구체 동작이 미정일 때 |
-| `/team` | Agent team composer | 에이전트 편성 | 실행 전 복잡도 판단 후 서브에이전트 편성 |
 | `/go` | Autonomous executor | 자율 실행 오케스트레이터 | "실행해", "만들어줘". Plan→Execute→Verify |
 | `/do` | OS-based dev pipeline | os 기반 8단계 파이프라인 | "구현해", "코딩해" |
 | `/close` | Cycle closer | 구현 사이클 마무리 | retrospect 완료 후 |
