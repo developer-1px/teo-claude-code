@@ -10,11 +10,12 @@ description: 사용자의 요청을 답변 대신 날짜 폴더(docs/YYYY/YYYY-M
 ## 파일명 규칙
 
 ```
-docs/YYYY/YYYY-MM/YYYY-MM-DD/{slug}.md
+docs/YYYY/YYYY-MM/YYYY-MM-DD/{NN}_{slug}.md
 ```
 
+- **NN**: 해당 날짜 폴더 내 생성 순번. 2자리 zero-padded (`01_`, `02_`, ..., `99_`)
+- 새 문서 생성 시: 폴더의 기존 파일을 `ls`로 세고 max(NN)+1을 사용한다. 비어있으면 `01_`부터
 - **슬러그**: camelCase, 영문으로 시작 (예: `historyDelta`, `useAriaExplain`)
-- 순번/날짜 prefix 금지 (폴더가 이미 날짜, 파일명은 내용 식별자)
 - `[tag]` prefix 금지 (tags는 frontmatter로)
 
 ### 분류 (frontmatter에서)
@@ -56,10 +57,6 @@ updated: {YYYY-MM-DD}
 ## 내용
 
 {사용자 요청을 구조화한 본문}
-
-## 다음 행동
-
-{이 문서에서 파생되는 액션이 있으면 기록. 없으면 생략}
 ```
 
 ## 실행 절차
