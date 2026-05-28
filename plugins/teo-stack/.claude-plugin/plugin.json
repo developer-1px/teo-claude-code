@@ -1,7 +1,7 @@
 {
   "name": "teo-stack",
   "version": "0.5.0",
-  "description": "한국어 기반 discuss 허브 + TOC/민토 사고 스킬. superpowers가 다루지 않는 '논의 구조화·대립 해소·뺄셈 사고·민토 해설·외부 리서치·도메인 용어 사전' 축을 담당",
+  "description": "한국어 기반 의도 정렬(/discuss) + 리팩토링 감사(SRP/OCP/naming) 스킬. Matt Pocock 계열 개발 스킬 위에서 목적·범위·구조 점검을 담당",
   "author": {
     "name": "유용태",
     "url": "https://github.com/developer-1px"

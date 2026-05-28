@@ -1,7 +1,7 @@
 {
   "name": "teo-project",
   "version": "0.1.0",
-  "description": "[PRIVATE] interactive-os 전용 파이프라인 스킬. 타 프로젝트 비호환 — 본인·팀 내부 용도",
+  "description": "[ARCHIVED] interactive-os 전용 파이프라인 스킬. 설치 대상이 아닌 참고 자료",
   "author": {
     "name": "유용태",
     "url": "https://github.com/developer-1px"
@@ -10,6 +10,7 @@
   "repository": "https://github.com/developer-1px/teo-claude-code",
   "license": "MIT",
   "keywords": [
+    "archived",
     "private",
     "interactive-os",
     "pipeline",

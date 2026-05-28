@@ -12,7 +12,7 @@
         "repo": "developer-1px/teo-claude-code",
         "path": "plugins/teo-stack"
       },
-      "description": "한국어 기반 discuss 허브 + TOC/민토 사고 스킬 + Code Quality(SRP/OCP/naming) + /glossary 도메인 용어 사전. superpowers가 다루지 않는 축을 담당",
+      "description": "한국어 기반 의도 정렬(/discuss) + 리팩토링 감사(SRP/OCP/naming) 스킬. Matt Pocock 계열 개발 스킬 위에서 목적·범위·구조 점검을 담당",
       "version": "0.5.0",
       "keywords": [
         "skills",
@@ -22,20 +22,6 @@
         "minto",
         "research",
         "glossary"
-      ]
-    },
-    {
-      "name": "teo-project",
-      "source": {
-        "source": "github",
-        "repo": "developer-1px/teo-claude-code",
-        "path": "plugins/teo-project"
-      },
-      "description": "[PRIVATE] interactive-os 전용 파이프라인 스킬. 타 프로젝트 비호환",
-      "version": "0.1.0",
-      "keywords": [
-        "private",
-        "interactive-os"
       ]
     }
   ]

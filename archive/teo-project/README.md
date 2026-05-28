@@ -1,8 +1,10 @@
 # teo-project [PRIVATE]
 
+> **Archived.** 이 디렉터리는 과거 interactive-os 전용 스킬을 보관하는 참고 자료입니다. 현재 설치·운영 대상은 [`teo-stack`](../../plugins/teo-stack/)뿐입니다.
+>
 > ⚠️ **타 프로젝트 비호환**. interactive-os 컨벤션(`os 부품`, `ax()` 12축, `FlatLayout`, PARA 문서 규약, `L1/L2/L3` 이해도 레벨 등)을 전제로 작성됐습니다. 개인·팀 내부 용도로만 쓰입니다.
 >
-> 프로젝트 중립 사고 스킬이 필요하면 [`teo-stack`](../teo-stack/)을 사용하세요 — `/discuss` 허브 + TOC/민토 도구가 모여 있습니다.
+> 프로젝트 중립 사고 스킬이 필요하면 [`teo-stack`](../../plugins/teo-stack/)을 사용하세요 — `/discuss` 허브 + TOC/민토 도구가 모여 있습니다.
 
 ## Skills Cheat Sheet
 
@@ -25,7 +27,7 @@
 | `/design-think` | Design-first thinking | 디자이너 사고 순서로 시각 결정 (구버전) |
 | `/design-think-v2` | Design-first thinking v2 | 같은 목적, 화면 단위 대화형 |
 
-> 범용 사고 스킬(`/ideal`, `/conflict`, `/doubt`, `/explain`, `/reframe`, `/minto`, `/research`)은 [`teo-universal`](../universal/)에 있습니다.
+> 범용 사고 스킬(`/ideal`, `/conflict`, `/doubt`, `/explain`, `/reframe`, `/minto`, `/research`)은 [`teo-stack`](../../plugins/teo-stack/)에 있습니다.
 
 ### Quality (품질 루프)
 
@@ -44,7 +46,7 @@
 |-------|------|------|
 | `/antipattern` | Hook harness converter | 안티패턴을 훅 정적 검사로 전환 |
 
-> `/srp`, `/ocp`, `/naming-audit`은 [`teo-stack`](../teo-stack/)으로 승격됨.
+> `/srp`, `/ocp`, `/naming-audit`은 [`teo-stack`](../../plugins/teo-stack/)으로 승격됨.
 
 ### Design
 

@@ -1,13 +1,14 @@
 # teo-stack
 
-한국어 기반 **`/discuss` 허브 + TOC/민토 사고 스킬** 모음. [superpowers](https://github.com/obra/superpowers)와 **보완** 관계로, 공식 플러그인이 다루지 않는 축을 담당합니다.
+한국어 기반 **의도 정렬 + 리팩토링 감사 스킬** 모음.
+
+개발 기본 흐름은 Matt Pocock 계열 스킬을 사용합니다. `teo-stack`은 구현 파이프라인을 대체하지 않고, 그 앞뒤에서 목적을 맞추거나 코드 구조를 점검할 때 사용합니다.
 
 ## 포지셔닝
 
 ```
-superpowers가 담당 →  brainstorming · debugging · TDD · planning · verification · code-review
-teo-stack이 담당   →  논의 구조화 · 대립 해소 · 뺄셈 사고 · 민토 해설 · 외부 리서치
-                       (모두 /discuss 허브 주변에 정렬)
+Matt Pocock 계열 스킬 →  구현 · 디버깅 · TDD · 이슈화 · PRD · 코드베이스 개선
+teo-stack            →  의도 정렬 · 범위 정렬 · SRP/OCP/네이밍 리팩토링 감사
 ```
 
 ## 허브-스포크 구조
@@ -27,7 +28,7 @@ teo-stack이 담당   →  논의 구조화 · 대립 해소 · 뺄셈 사고 ·
                        /minto   /reframe
 ```
 
-`/discuss`에서 특정 요소가 막히면 스포크 스킬로 드릴다운, 결과를 허브에 반영하여 복귀. 스포크 스킬은 단독 호출도 가능.
+`/discuss`는 표면 요청 뒤의 목적과 범위를 맞출 때 사용합니다. 스포크 스킬은 필요할 때만 드릴다운으로 사용하고, 평소 개발 흐름의 기본값으로 두지 않습니다.
 
 ## 스킬 13종
 
@@ -35,7 +36,7 @@ teo-stack이 담당   →  논의 구조화 · 대립 해소 · 뺄셈 사고 ·
 
 | Skill | 설명 | 언제 |
 |-------|------|------|
-| `/discuss` | TOC 13요소 + FRT 게이트 기반 **판단 제시형** 업무 파트너 | 요청이 모호하거나 "왜 하는지"부터 정리가 필요할 때. superpowers:brainstorming이 소크라틱 질문형이라면 `/discuss`는 "제 판단: A, 이유: …" 선(先)제시형 |
+| `/discuss` | TOC 13요소 + FRT 게이트 기반 **판단 제시형** 업무 파트너 | 요청이 모호하거나 "왜 하는지"부터 정리가 필요할 때. 구현 전 목적·범위·제약을 먼저 맞춘다 |
 
 ### 드릴다운 스포크
 
@@ -52,7 +53,7 @@ teo-stack이 담당   →  논의 구조화 · 대립 해소 · 뺄셈 사고 ·
 | Skill | 설명 | 언제 |
 |-------|------|------|
 | `/minto` | 파편화된 생각을 민토 피라미드로 재배치, 논리적 빈칸 발견 | 메모·노트·아이디어 구조화 |
-| `/reframe` | 반복된 패치가 먹히지 않을 때 손 떼고 문제부터 다시 이해 | "왜 자꾸 그래". superpowers:systematic-debugging과 차별 — 버그 진단이 아니라 **문제 재진단** |
+| `/reframe` | 반복된 패치가 먹히지 않을 때 손 떼고 문제부터 다시 이해 | "왜 자꾸 그래". 버그 진단이 아니라 **문제 재진단** |
 | `/team` | 에이전트 팀 편성 (계획자/실행자/평가자 3역할 + 특화 페르소나) | 병렬 에이전트 실행 전 편성표가 필요할 때. Task/Agent 디스패치 전 역할·소통 프로토콜 설계 |
 | `/glossary` | 도메인 분석 + 유비쿼터스 언어 사전 — 3모드(Init/Capture/Passive Detect)로 `./glossary.md`에 용어·관계·동의어·맥락을 누적 | "용어 정리", "도메인 분석", "유비쿼터스 언어". DDD 방법론 의례는 제외, 산출물(용어)에만 집중 |
 
@@ -64,21 +65,17 @@ teo-stack이 담당   →  논의 구조화 · 대립 해소 · 뺄셈 사고 ·
 | `/ocp` | 개방-폐쇄 원칙(OCP) 감사·리팩토링 — switch/if 분기를 Co-location·defineXxx·Strategy 등의 패턴으로 수정 지점 1곳화 | "switch 너무 많다", "분기 정리". 새 항목 추가 시 여러 곳이 동시에 바뀌는 구조를 발견했을 때 |
 | `/naming-audit` | 네이밍 일관성(consistency)·적합성(aptness) 감사 — 동의어 드리프트, 형식 불일치, 패턴 과적(한 접두사 과다 역할), 역할 분산 감지 | "이름 점검", "네이밍 확인". ripgrep 기반, 프로젝트 전용 수집 스크립트 있으면 우선 사용 |
 
-## superpowers와의 경계 (겹침 방지)
+## Matt Pocock 계열 스킬과의 경계
 
 | 상황 | 써야 할 스킬 |
 |------|-----------|
-| 버그·테스트 실패·예상치 못한 동작 진단 | `superpowers:systematic-debugging` |
-| 창의 작업·기능 설계 시작점 | `superpowers:brainstorming` |
-| 구현 플랜 작성 | `superpowers:writing-plans` |
-| 테스트 주도 개발 | `superpowers:test-driven-development` |
-| 완료 전 검증 | `superpowers:verification-before-completion` |
-| **요청 자체가 모호·진짜 동기 불명** | `/discuss` |
-| **두 방향 딜레마** | `/conflict` |
-| **구현 완료 후 불필요 제거** | `/doubt` |
-| **코드/설계 해설 문서 생성** | `/explain` |
-| **Best Practice·표준 외부 조사** | `/research` |
-| **도메인 용어·개념 사전 작성** | `/glossary` |
+| 버그·테스트 실패·예상치 못한 동작 진단 | Matt Pocock `diagnose` 계열 |
+| 테스트 주도 개발 | Matt Pocock `tdd` 계열 |
+| PRD·이슈·작업 분해 | Matt Pocock `to-prd`, `to-issues`, `triage` 계열 |
+| 코드베이스 구조 개선 기회 탐색 | Matt Pocock `improve-codebase-architecture`, `zoom-out` 계열 |
+| **요청 자체가 모호·진짜 동기 불명** | `teo-stack` `/discuss` |
+| **파일 책임·확장 구조·네이밍 리팩토링 감사** | `teo-stack` `/srp`, `/ocp`, `/naming-audit` |
+| **새 개념이 과한지 줄여야 하는지 판단** | `teo-stack` `/doubt` |
 
 ## 설치
 
@@ -89,9 +86,9 @@ teo-stack이 담당   →  논의 구조화 · 대립 해소 · 뺄셈 사고 ·
 
 ## 설계 원칙
 
-- 프로젝트 고유 용어 없음 (interactive-os 컨벤션은 `teo-project`에 격리)
+- 프로젝트 고유 용어 없음 (interactive-os 컨벤션은 `archive/teo-project`에 격리)
 - 한국어 기본, 프로젝트 무관 동작
-- `/discuss` 허브-스포크 관계는 유지하되, 각 스포크 스킬은 단독 호출도 가능
-- superpowers와 겹치지 않음
+- 개발 파이프라인을 대체하지 않고 의도 정렬과 리팩토링 감사에 집중
+- `/discuss` 허브-스포크 관계는 유지하되, 각 스포크 스킬은 필요할 때만 단독 호출
 
-향후 `teo-project` → `teo-stack` 승격 후보는 [`ROADMAP.md`](ROADMAP.md).
+과거 승격 기록은 [`ROADMAP.md`](ROADMAP.md)에 보관합니다.
