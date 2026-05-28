@@ -1,0 +1,4 @@
+interface:
+  display_name: "SRP 리팩토링"
+  short_description: "파일 책임 불일치를 찾아 안전하게 분리"
+  default_prompt: "Use $srp to inspect file responsibilities and refactor files whose names and responsibilities diverge."

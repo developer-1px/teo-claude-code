@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ideal"
+  short_description: "추상적 목표를 구체 산출물로 시뮬레이션"
+  default_prompt: "Use $ideal to turn this abstract desired outcome into a concrete artifact or example."

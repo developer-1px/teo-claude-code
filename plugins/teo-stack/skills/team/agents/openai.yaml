@@ -1,0 +1,4 @@
+interface:
+  display_name: "Team"
+  short_description: "과제 수행용 에이전트 팀과 역할을 편성"
+  default_prompt: "Use $team to design an agent team with planner, executor, evaluator, and task-specific roles."

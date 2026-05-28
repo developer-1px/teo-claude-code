@@ -1,0 +1,4 @@
+interface:
+  display_name: "Explain"
+  short_description: "코드와 설계를 답부터 시작해 구조적으로 해설"
+  default_prompt: "Use $explain to explain this code or design with a direct answer and structured reasoning."

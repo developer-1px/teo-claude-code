@@ -1,0 +1,4 @@
+interface:
+  display_name: "Conflict"
+  short_description: "양립 불가능해 보이는 선택지의 숨은 전제를 찾아 돌파구 도출"
+  default_prompt: "Use $conflict to resolve an A vs B dilemma by finding the hidden assumption and injection."

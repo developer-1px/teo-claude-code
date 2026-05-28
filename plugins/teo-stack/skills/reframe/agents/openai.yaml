@@ -1,0 +1,4 @@
+interface:
+  display_name: "Reframe"
+  short_description: "반복된 오해를 멈추고 문제를 다시 정의"
+  default_prompt: "Use $reframe to stop the current fix direction and redefine what problem is actually being solved."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Glossary"
+  short_description: "프로젝트 핵심 용어와 관계를 glossary로 정리"
+  default_prompt: "Use $glossary to extract project terms, relationships, and naming boundaries into a glossary."

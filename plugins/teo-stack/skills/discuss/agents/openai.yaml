@@ -1,0 +1,4 @@
+interface:
+  display_name: "Discuss"
+  short_description: "의도와 범위를 맞춘 뒤 goal 액션 플랜 작성"
+  default_prompt: "Use $discuss to align hidden intent and scope before producing a goal-ready action plan."

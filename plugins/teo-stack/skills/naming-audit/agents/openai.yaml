@@ -1,0 +1,4 @@
+interface:
+  display_name: "Naming Audit"
+  short_description: "네이밍 일관성과 적합성을 감사"
+  default_prompt: "Use $naming-audit to audit naming consistency, aptness, drift, and overloaded patterns."

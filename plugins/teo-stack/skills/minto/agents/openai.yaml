@@ -1,0 +1,4 @@
+interface:
+  display_name: "Minto"
+  short_description: "파편화된 생각을 민토 피라미드로 구조화"
+  default_prompt: "Use $minto to organize these scattered notes into a Minto pyramid and find logical gaps."
