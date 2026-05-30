@@ -1,4 +1,4 @@
 interface:
   display_name: "SRP 리팩토링"
   short_description: "파일 책임 불일치를 찾아 안전하게 분리"
-  default_prompt: "Use $srp to inspect file responsibilities and refactor files whose names and responsibilities diverge."
+  default_prompt: "Use $srp to inspect file responsibilities and refactor files whose names and responsibilities diverge. If the user says srp 300 or /goal srp 300, treat 300 only as the LOC threshold for finding candidate files, never as a target line count. Keep files with one responsibility even when they exceed the threshold; split only when the actual implementation has two or more responsibilities, and state the split plan in a table before moving code."
