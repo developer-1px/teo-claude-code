@@ -1,0 +1,4 @@
+interface:
+  display_name: "Reference"
+  short_description: "BP/de facto와의 거리와 차이를 읽히는 레퍼런스로 합성"
+  default_prompt: "$reference를 사용해 숨은 조사 의도와 배경을 먼저 추론하고 비교 대상의 범주와 피어셋을 고정한 뒤, BP/de facto와 얼마나 가까운지와 더 가까운 유사 레퍼런스를 문단 중심의 reference narrative로 정리해 주세요."

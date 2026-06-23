@@ -1,4 +1,0 @@
-interface:
-  display_name: "Research"
-  short_description: "내부 자산 감사 후 외부 지식을 조사·합성"
-  default_prompt: "Use $research to audit internal context, identify knowledge gaps, and synthesize external findings."

@@ -25,7 +25,7 @@
 
 ### 승격 완료 (참고)
 
-- `v0.1.0` — Thinking 5 + minto + research (초기 7개)
+- `v0.1.0` — Thinking 5 + minto + research(현 `/reference`) (초기 7개)
 - `v0.2.0` — `/discuss` 허브 승격, 허브-스포크 관계 복원
 - `v0.3.0` — `/team` 승격 (teo-universal → teo-stack 네이밍 변경 포함)
 - `v0.4.0` — Code Quality 3종(`/srp`, `/ocp`, `/naming-audit`) 승격

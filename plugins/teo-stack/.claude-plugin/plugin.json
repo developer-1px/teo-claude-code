@@ -1,7 +1,7 @@
 {
   "name": "teo-stack",
-  "version": "0.5.0",
-  "description": "한국어 기반 의도 정렬(/discuss) + 리팩토링 감사(SRP/OCP/naming) 스킬. Matt Pocock 계열 개발 스킬 위에서 목적·범위·구조 점검을 담당",
+  "version": "0.7.0",
+  "description": "현재 Codex 등록 스킬 미러와 한국어 의도 정렬, reference map, 리팩토링 감사 스킬을 함께 보관하는 플러그인",
   "author": {
     "name": "유용태",
     "url": "https://github.com/developer-1px"
@@ -11,14 +11,21 @@
   "license": "MIT",
   "keywords": [
     "skills",
+    "codex-skills",
+    "skill-mirror",
     "korean",
     "discuss",
     "toc",
     "minto",
     "evaporating-cloud",
     "occam-gate",
-    "research",
+    "reference",
+    "research-alias",
+    "best-practice",
+    "de-facto",
+    "frontier",
     "glossary",
-    "ubiquitous-language"
+    "ubiquitous-language",
+    "entity-interface-refactor"
   ]
 }

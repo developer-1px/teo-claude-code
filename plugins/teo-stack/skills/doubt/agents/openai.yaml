@@ -1,4 +1,4 @@
 interface:
   display_name: "Doubt"
-  short_description: "불필요한 개념과 구조를 줄이는 의심 검토"
-  default_prompt: "Use $doubt to check whether this change can be simplified before adding new concepts."
+  short_description: "불필요한 개념과 구조를 줄이는 의심 검토 스킬"
+  default_prompt: "Use $doubt to review whether this change can be simplified before adding new concepts."
