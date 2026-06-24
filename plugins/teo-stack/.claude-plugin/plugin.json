@@ -1,6 +1,6 @@
 {
   "name": "teo-stack",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "현재 Codex 등록 스킬 미러와 한국어 의도 정렬, reference map, 리팩토링 감사 스킬을 함께 보관하는 플러그인",
   "author": {
     "name": "유용태",
