@@ -1,7 +1,7 @@
 {
   "name": "teo-stack",
-  "version": "0.7.1",
-  "description": "현재 Codex 등록 스킬 미러와 한국어 의도 정렬, reference map, 리팩토링 감사 스킬을 함께 보관하는 플러그인",
+  "version": "0.8.0",
+  "description": "한국어 기반 의도 정렬, reference map, 리팩토링 감사 오리지널 스킬 모음",
   "author": {
     "name": "유용태",
     "url": "https://github.com/developer-1px"
@@ -11,8 +11,6 @@
   "license": "MIT",
   "keywords": [
     "skills",
-    "codex-skills",
-    "skill-mirror",
     "korean",
     "discuss",
     "toc",
@@ -26,6 +24,7 @@
     "frontier",
     "glossary",
     "ubiquitous-language",
-    "entity-interface-refactor"
+    "entity-interface-refactor",
+    "app-owned-boundary-refactor"
   ]
 }

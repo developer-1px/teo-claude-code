@@ -1,4 +1,0 @@
-interface:
-  display_name: "Go Preflight Tree"
-  short_description: "Plan Go changes with Goal, Do, and Don't"
-  default_prompt: "Use $go-preflight-tree before implementing this Go change."

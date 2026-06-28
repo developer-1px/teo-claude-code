@@ -1,23 +1,23 @@
 # teo-claude-code
 
-Claude Code 스킬 마켓플레이스. 현재 실사용 플러그인은 `teo-stack` 하나입니다.
+Claude Code / Codex용 개인 스킬 마켓플레이스. 현재 실사용 플러그인은 `teo-stack` 하나입니다.
 
-개발 기본 흐름은 Matt Pocock 계열 스킬을 사용합니다. `teo-stack`은 그 위에서 **의도 정렬**과 **리팩토링 감사**가 필요할 때만 꺼내는 보조 스택입니다.
+`teo-stack`은 외부 개발 플로우 스킬을 묶어 배포하지 않고, 이 repo에서 직접 만든 의도 정렬·reference·리팩토링 감사 스킬만 보관합니다.
 
 ## 플러그인
 
 | 경로 | 용도 | 상태 |
 |------|------|------|
-| [**`plugins/teo-stack`**](plugins/teo-stack/) | 의도 정렬(`/discuss`) + 리팩토링 감사(`/srp`, `/ocp`, `/naming-audit`) | 실사용 |
+| [**`plugins/teo-stack`**](plugins/teo-stack/) | 의도 정렬(`/discuss`) + reference map + 리팩토링 감사 | 실사용 |
 | [`archive/teo-project`](archive/teo-project/) | interactive-os 전용 과거 파이프라인 스킬 | 아카이브 |
 
 ## 사용 방침
 
 | 상황 | 기본 선택 |
 |------|-----------|
-| 구현, 디버깅, TDD, 이슈화, PRD, 코드베이스 개선 | Matt Pocock 계열 스킬 |
-| 표면 요청 뒤의 진짜 목적·범위가 불명확함 | `teo-stack`의 `/discuss` |
-| 파일 책임·확장 구조·네이밍을 점검하며 리팩토링 | `teo-stack`의 `/srp`, `/ocp`, `/naming-audit` |
+| 표면 요청 뒤의 진짜 목적·범위가 불명확함 | `/discuss` |
+| 표준·best practice·de facto·frontier 기준을 내부 맥락과 맞춰 봄 | `/reference` |
+| 파일 책임·확장 구조·네이밍·프론트엔드 경계를 점검하며 리팩토링 | `/srp`, `/ocp`, `/naming-audit`, `/app-owned-boundary-refactor`, `/entity-interface-refactor` |
 | 과거 interactive-os 전용 파이프라인 확인 | `archive/teo-project` 참고 |
 
 ## 설치

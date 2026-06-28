@@ -29,6 +29,8 @@
 - `v0.2.0` — `/discuss` 허브 승격, 허브-스포크 관계 복원
 - `v0.3.0` — `/team` 승격 (teo-universal → teo-stack 네이밍 변경 포함)
 - `v0.4.0` — Code Quality 3종(`/srp`, `/ocp`, `/naming-audit`) 승격
+- `v0.5.0` — `/glossary` 승격
+- `v0.8.0` — Matt Pocock 계열 미러 제거, 오리지널 스킬만 유지
 
 ## 추가 보류 항목
 
