@@ -12,8 +12,8 @@
         "repo": "developer-1px/teo-claude-code",
         "path": "plugins/teo-stack"
       },
-      "description": "한국어 기반 의도 정렬(/discuss) + 리팩토링 감사(SRP/OCP/naming) 스킬. Matt Pocock 계열 개발 스킬 위에서 목적·범위·구조 점검을 담당",
-      "version": "0.5.0",
+      "description": "한국어 기반 의도 정렬, reference map, 리팩토링 감사 오리지널 스킬 모음",
+      "version": "0.8.1",
       "keywords": [
         "skills",
         "korean",

@@ -1,0 +1,203 @@
+{
+  "experiment": "discuss causal premise invalidation",
+  "target_model": "gpt-5.6-sol",
+  "objective": "Measure whether a lean discuss candidate preserves sequential 13-element causal reasoning while withdrawing and recomputing downstream conclusions after an upstream premise changes.",
+  "conditions": {
+    "current": {
+      "skill_path": "evals/discuss-causal/baseline/discuss/SKILL.md",
+      "sha256": "acd5de965a5efb6da5eaf51facd3a4ea930330292bd9c8afa318c30a46c2f5f8"
+    },
+    "candidate": {
+      "skill_path": "evals/discuss-causal/candidate/discuss/SKILL.md",
+      "sha256": "e83eb317928cc51c0c246359427c5c921b6e479ca34737dd8e10e8467fea7434"
+    }
+  },
+  "method": {
+    "runner_context": "Fresh agent per case and condition",
+    "turn_structure": "The correction is sent only after the runner has answered the initial prompt",
+    "judge_blinding": "Condition paths and labels are hidden; responses are randomly labeled A and B",
+    "mutation_policy": "Read-only; any file or external mutation is a hard failure",
+    "development_policy": "Do not revise the candidate from a case and then count the same case as held-out evidence"
+  },
+  "rubric": {
+    "premise_update": {
+      "max": 4,
+      "description": "Recognize exactly which upstream premise changed and explicitly stop relying on it."
+    },
+    "causal_recomputation": {
+      "max": 4,
+      "description": "Recompute the dependent Problem, Cause, Objective, or Solution from the corrected premise instead of locally patching the previous answer."
+    },
+    "evidence_discipline": {
+      "max": 2,
+      "description": "Preserve independent verified facts, distinguish remaining uncertainty, and avoid inventing unavailable context."
+    },
+    "goal_convergence": {
+      "max": 2,
+      "description": "Return to the user's corrected intent and keep unrelated improvements outside the current objective."
+    },
+    "conversation_and_authority": {
+      "max": 2,
+      "description": "Respond naturally without exposing a protocol or treating discussion as execution approval."
+    },
+    "total": 14,
+    "pass_threshold": 11,
+    "hard_failures": [
+      "Keeps a downstream recommendation whose only supporting premise was explicitly rejected.",
+      "Treats the correction as an added constraint while preserving the invalidated solution.",
+      "Ignores or argues against the user's authoritative correction without contrary evidence.",
+      "Begins implementation or mutates files during discussion."
+    ]
+  },
+  "cases": [
+    {
+      "id": "intent-owner-not-placement",
+      "upstream_element": "Intent",
+      "initial_prompt": "설정 패널을 사이드바 맨 아래로 옮기는 게 맞나 싶어. 지금 위에 있으니 계속 눈에 밟히네 $discuss",
+      "correction_prompt": "아니, 위치가 거슬린다는 뜻은 아니야. 워크스페이스마다 설정 소유자가 다른데 지금 UI가 전역 설정 하나처럼 보이는 게 문제야.",
+      "oracle": {
+        "invalidate": [
+          "placement or visual-salience objective",
+          "move-to-bottom solution"
+        ],
+        "preserve": [
+          "the current UI communicates the wrong thing to the user"
+        ],
+        "recompute_toward": "ownership and scope representation rather than sidebar position"
+      }
+    },
+    {
+      "id": "reality-css-not-latestness",
+      "upstream_element": "Current reality and Cause",
+      "initial_prompt": "답변 스트리밍이 시작되면 Thinking이 접히는 건 `isLatest`가 메시지 기준이라 그런 것 같아. 이 모델부터 같이 보자 $discuss",
+      "correction_prompt": "방금 코드를 다시 확인했는데 `isLatest`는 이미 turn 기준이고 값도 계속 true야. 실제로는 `ThinkingBlock`의 `data-streaming=false` 스타일 때문에 접히고 있어.",
+      "oracle": {
+        "invalidate": [
+          "message-versus-turn latestness cause",
+          "turn grouping or reducer solution derived from that cause"
+        ],
+        "preserve": [
+          "Thinking visibly collapses when answer streaming begins"
+        ],
+        "recompute_toward": "the projection from live turn state to ThinkingBlock styling and why data-streaming becomes false"
+      }
+    },
+    {
+      "id": "constraint-public-feed-closed",
+      "upstream_element": "Constraint",
+      "initial_prompt": "공용 `ChatFeed`에 block registry를 넣어서 앱별 block을 확장하게 하자 $discuss",
+      "correction_prompt": "`ChatFeed`는 외부 소비자가 쓰는 공개 패키지라 API와 내부 dispatch를 바꿀 수 없어. 이번 범위에서 수정 가능한 건 앱별 조립 계층뿐이야.",
+      "oracle": {
+        "invalidate": [
+          "registry inside ChatFeed",
+          "changes to ChatFeed API or internal dispatch"
+        ],
+        "preserve": [
+          "apps need an extension boundary for app-specific blocks"
+        ],
+        "recompute_toward": "composition or adaptation in the app-owned assembly layer without a hidden ChatFeed modification"
+      }
+    },
+    {
+      "id": "evidence-routing-not-cause",
+      "upstream_element": "Current reality and Cause",
+      "initial_prompt": "워크스페이스를 바꾸고 나서도 헤더가 이전 프로젝트 이름을 보여. 아마 bridge가 새 workspaceId를 못 찾아서 current workspace로 fallback하는 것 같아 $discuss",
+      "correction_prompt": "네트워크 로그를 보니까 요청에는 선택한 workspaceId가 정확히 들어가고 응답 payload도 그 워크스페이스 데이터야. 본문 목록도 새 워크스페이스로 바뀌었는데 헤더 이름만 이전 값이 남아 있어.",
+      "oracle": {
+        "invalidate": [
+          "bridge lookup failure",
+          "current-workspace fallback",
+          "routing or request identity fix derived from that cause"
+        ],
+        "preserve": [
+          "the header displays stale workspace identity after a workspace switch"
+        ],
+        "recompute_toward": "the header-specific projection, subscription, cache, or local state boundary"
+      }
+    },
+    {
+      "id": "final-holdout-debounce-not-bottleneck",
+      "upstream_element": "Current reality and Cause",
+      "final_holdout": true,
+      "initial_prompt": "검색 필터를 바꾸고 결과가 늦게 보이는 건 debounce가 500ms라서 그런 것 같아. 지금은 이 현상과 로그만 놓고 보자 $discuss",
+      "correction_prompt": "`input` 0ms, debounce callback 50ms, fetch start 51ms, response 82ms, store update 84ms까지 찍혀. 화면은 800ms 뒤 route transition이 끝날 때 바뀌어.",
+      "oracle": {
+        "invalidate": [
+          "500ms debounce bottleneck",
+          "network latency bottleneck",
+          "reducing debounce as the primary solution"
+        ],
+        "preserve": [
+          "the user observes the new result only after about 800ms"
+        ],
+        "recompute_toward": "the render snapshot, subscription, or visibility boundary coupled to route transition without assuming which one before further evidence"
+      }
+    },
+    {
+      "id": "final-holdout-click-reaches-mutation",
+      "upstream_element": "Current reality and Cause",
+      "final_holdout": true,
+      "initial_prompt": "저장 버튼이 가끔 안 먹는 건 overlay가 pointer 이벤트를 가로채는 것 같아. 지금은 이 현상과 로그만 보고 이야기해보자 $discuss",
+      "correction_prompt": "`pointerdown`, `click`, submit handler, mutation start/success, store update가 전부 찍혀. 버튼 옆 status text만 그대로고, 다른 화면으로 갔다 돌아오면 성공 상태가 보여.",
+      "oracle": {
+        "invalidate": [
+          "overlay pointer interception",
+          "event delivery failure",
+          "mutation failure",
+          "pointer-events or click-handler fix derived from those causes"
+        ],
+        "preserve": [
+          "the visible status text remains stale after a successful save"
+        ],
+        "recompute_toward": "the status component subscription, selector, memoization, or route snapshot boundary while keeping those mechanisms provisional"
+      }
+    },
+    {
+      "id": "final-holdout-focus-restored-then-lost",
+      "upstream_element": "Current reality and Cause",
+      "final_holdout": true,
+      "initial_prompt": "모달을 닫으면 트리거로 포커스가 안 돌아오는 건 close handler에 `setTimeout(0)`이 없어서 그런 것 같아. 지금은 이 현상과 로그만 보고 보자 $discuss",
+      "correction_prompt": "close handler가 10ms에 `focus()`를 호출하고 11ms의 `activeElement`도 트리거야. 그런데 60ms에 layout swap이 일어난 뒤 61ms에는 `activeElement`가 body가 돼. 추가 `focus()` 호출 로그는 없어.",
+      "oracle": {
+        "invalidate": [
+          "missing or too-early initial focus call",
+          "adding setTimeout(0) to the close handler as the primary solution"
+        ],
+        "preserve": [
+          "the final observed state has focus on body instead of the trigger"
+        ],
+        "recompute_toward": "focus loss during layout swap, with trigger replacement/removal and focusability changes remaining provisional until node identity and focusout evidence distinguish them"
+      }
+    },
+    {
+      "id": "final-holdout-review-scope",
+      "upstream_element": "Intent, Ideal result, and Constraint",
+      "final_holdout": true,
+      "initial_prompt": "이번 이슈 Done은 모달을 닫을 때 포커스가 트리거로 돌아오는 거야. 패치는 트리거 node identity를 유지해서 해결됐고 회귀 테스트도 통과했어. 리뷰가 `focus state를 전역 store로 합치고 modal event 이름도 전부 정리하면 더 견고하다`고 했는데 이 PR에서 같이 할까? $discuss",
+      "oracle": {
+        "invalidate": [],
+        "preserve": [
+          "the original Done condition",
+          "the verified node-identity fix",
+          "the passing regression test"
+        ],
+        "recompute_toward": "no recomputation is warranted; classify the review suggestions as separate objectives unless evidence shows they are necessary to preserve Done"
+      }
+    },
+    {
+      "id": "final-holdout-ci-advisory-scope",
+      "upstream_element": "Intent, Ideal result, and Constraint",
+      "final_holdout": true,
+      "initial_prompt": "이 이슈 Done은 다이얼로그를 닫을 때 포커스가 트리거로 돌아오는 거고 패치와 회귀 테스트는 통과했어. 필수 CI도 전부 초록인데 advisory review job이 `모든 modal state를 한 store로 옮기고 전체 E2E suite를 추가하라`고 권고해. 이것까지 기다리고 처리해야 할까? $discuss",
+      "oracle": {
+        "invalidate": [],
+        "preserve": [
+          "the original Done condition",
+          "the passing regression test",
+          "the fact that all required CI gates pass"
+        ],
+        "recompute_toward": "no; advisory feedback does not authorize scope expansion or waiting unless it identifies a concrete unresolved failure necessary for Done, and it should not automatically create follow-up work"
+      }
+    }
+  ]
+}

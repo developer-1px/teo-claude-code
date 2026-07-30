@@ -1,0 +1,144 @@
+{
+  "experiment": "discuss causal premise invalidation",
+  "date": "2026-07-30",
+  "target_model": "gpt-5.6-sol",
+  "artifacts": {
+    "current_skill_sha256": "acd5de965a5efb6da5eaf51facd3a4ea930330292bd9c8afa318c30a46c2f5f8",
+    "final_candidate_sha256": "e83eb317928cc51c0c246359427c5c921b6e479ca34737dd8e10e8467fea7434",
+    "current_skill_lines": 183,
+    "final_candidate_lines": 131,
+    "current_skill_words": 1342,
+    "final_candidate_words": 1009
+  },
+  "method": {
+    "runners": "Fresh-context GPT-5.6 agents, one agent per case and condition",
+    "turn_integrity": "The correction or new evidence was sent only after the initial response completed",
+    "judges": "Separate fresh-context GPT-5.6 agents",
+    "blinding": "Judges received anonymous A/B responses without skill paths or condition names",
+    "mutation_policy": "All forward tests were read-only",
+    "score_total": 14,
+    "hard_failure_overrides_score": true
+  },
+  "initial_blind_comparison": {
+    "status": "directional development evidence",
+    "cases": [
+      {
+        "id": "intent-owner-not-placement",
+        "current": 11,
+        "candidate": 13,
+        "winner": "candidate"
+      },
+      {
+        "id": "reality-css-not-latestness",
+        "current": 13,
+        "candidate": 14,
+        "winner": "candidate"
+      },
+      {
+        "id": "constraint-public-feed-closed",
+        "current": 13,
+        "candidate": 14,
+        "winner": "candidate"
+      }
+    ],
+    "aggregate": {
+      "current": 37,
+      "candidate": 41,
+      "maximum": 42,
+      "current_hard_failures": 0,
+      "candidate_hard_failures": 0
+    },
+    "finding": "Both conditions recomputed downstream conclusions after explicit corrections. The candidate's gain came from stronger evidence boundaries and a more natural surface, not from proving that the current skill could not roll back."
+  },
+  "iteration_regressions": [
+    {
+      "name": "competing code referents",
+      "failure": "The first candidate found both ChatFeed owners in two of three runs and silently stopped at the root implementation once.",
+      "change": "Require a cheap filename and symbol inventory across repository root and nested apps/workspaces/packages before narrowing an unqualified code concept.",
+      "result": "3/3 runs found both materially different ChatFeed owners."
+    },
+    {
+      "name": "over-broad premise invalidation",
+      "failure": "New evidence disproved bridge fallback, but the candidate also discarded an adjacent header route/session hypothesis that remained compatible with the evidence.",
+      "change": "Identify the narrowest contradicted premise and downgrade uncertain dependent conclusions instead of discarding adjacent hypotheses.",
+      "result": "Targeted rerun scored candidate 14 versus current 13."
+    },
+    {
+      "name": "unresolved mechanisms inside a verified boundary",
+      "failure": "The candidate found the route-transition boundary but omitted the render-versus-occlusion discriminator in one of three runs.",
+      "change": "Keep mechanisms inside a verified boundary provisional and name the cheapest distinguishing evidence.",
+      "result": "3/3 targeted reruns exposed the remaining mechanism fork and discriminator."
+    },
+    {
+      "name": "review feedback becoming a work queue",
+      "failure": "The candidate kept the PR scope but told the user to create a follow-up issue solely from review feedback.",
+      "change": "Treat review as smell/leak evidence, not as an objective, issue, or work queue; require independent user adoption or causal necessity.",
+      "result": "The targeted rerun no longer mandated follow-up work."
+    }
+  ],
+  "post_iteration_holdouts": [
+    {
+      "id": "final-holdout-focus-restored-then-lost",
+      "current": {
+        "score": 13,
+        "hard_failure": false
+      },
+      "candidate": {
+        "score": 14,
+        "hard_failure": false
+      },
+      "winner": "candidate",
+      "finding": "The candidate more clearly separated the verified layout-swap boundary from provisional removal, replacement, and focusability mechanisms."
+    },
+    {
+      "id": "final-holdout-ci-advisory-scope",
+      "current": {
+        "score": 10,
+        "hard_failure": true
+      },
+      "candidate": {
+        "score": 14,
+        "hard_failure": false
+      },
+      "winner": "candidate",
+      "finding": "The current skill preserved the PR scope but automatically routed advisory feedback to a separate issue. The candidate kept follow-up optional and contingent on independent value or concrete unresolved evidence."
+    }
+  ],
+  "observed_non_wins_before_iteration": [
+    {
+      "id": "final-holdout-debounce-not-bottleneck",
+      "current": 14,
+      "candidate": 13,
+      "cause": "The candidate omitted the remaining render-versus-occlusion discriminator in one run."
+    },
+    {
+      "id": "final-holdout-click-reaches-mutation",
+      "current": 14,
+      "candidate": 13.5,
+      "cause": "The candidate stated a likely subscription failure more narrowly than the evidence allowed."
+    },
+    {
+      "id": "final-holdout-review-scope",
+      "current": 14,
+      "candidate": 11,
+      "candidate_hard_failure": true,
+      "cause": "The candidate converted review feedback into mandatory follow-up issue work."
+    }
+  ],
+  "decision": {
+    "install_candidate": true,
+    "reason": "After targeted corrections, the candidate passed the measured regressions and won both new post-iteration holdouts while reducing prompt volume and eliminating default protocol-shaped output.",
+    "not_claimed": [
+      "The evaluation does not prove universal superiority.",
+      "The current skill already performed causal rollback well on explicit corrections.",
+      "The score differences are directional and not statistically calibrated."
+    ]
+  },
+  "limitations": [
+    "The suite is small and hand-authored from observed conversation patterns.",
+    "Runners and judges used the same model family.",
+    "Several cases became development regressions after they exposed a failure; only post-iteration holdouts are treated as final generalization evidence.",
+    "The final review-specific change has one unseen advisory-CI holdout.",
+    "No human blind judge was used."
+  ]
+}

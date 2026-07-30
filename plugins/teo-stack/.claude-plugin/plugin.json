@@ -1,6 +1,6 @@
 {
   "name": "teo-stack",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "한국어 기반 의도 정렬, reference map, 리팩토링 감사 오리지널 스킬 모음",
   "author": {
     "name": "유용태",
