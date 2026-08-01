@@ -1,0 +1,4 @@
+interface:
+  display_name: "Migrate to Codex"
+  short_description: "Migrate instructions, skills, agents, and config"
+  default_prompt: "Use $migrate-to-codex to migrate these supported artifacts into Codex."

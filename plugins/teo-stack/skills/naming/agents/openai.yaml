@@ -1,0 +1,4 @@
+interface:
+  display_name: "Naming"
+  short_description: "Evaluate and improve code names"
+  default_prompt: "Use $naming to evaluate names in this code and propose standard, responsibility-aligned renames."

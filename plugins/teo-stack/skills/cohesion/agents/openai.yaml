@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cohesion"
+  short_description: "Find related code and propose cohesive folders"
+  default_prompt: "Use $cohesion to find code that should move together and propose a cohesion-focused refactor."

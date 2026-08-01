@@ -1,0 +1,7 @@
+interface:
+  display_name: "Main"
+  short_description: "Return safely to updated main"
+  default_prompt: "Use $main to return this repo safely to an updated main branch."
+
+policy:
+  allow_implicit_invocation: false

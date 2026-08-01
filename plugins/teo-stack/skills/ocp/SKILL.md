@@ -172,10 +172,10 @@ return registry.get(data.type)?.tag ?? "div"
 
 실행 순서:
 1. descriptor/strategy 타입을 정의한다.
-2. 값 또는 함수 필드를 처리하는 `resolve` 헬퍼를 만든다.
+2. 값 또는 함수 필드 해석이 두 곳 이상에서 반복될 때만 `resolve` 헬퍼를 만든다. 한 소비자뿐이면 기존 표현이나 직접 조회를 유지한다.
 3. registry, `defineXxx`, discovery, strategy 중 선택한 확장 지점을 구현한다.
 4. 기존 case별 값을 descriptor/strategy로 옮긴다.
-5. 소비자 함수를 registry 조회 + `resolve` + fallback으로 교체한다.
+5. 소비자 함수를 registry 조회와 필요한 최소 해석으로 교체한다.
 6. 기존 import와 호출부를 최소 범위로 갱신한다.
 
 검증:

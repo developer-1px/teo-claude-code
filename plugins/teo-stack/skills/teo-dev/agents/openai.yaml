@@ -1,0 +1,7 @@
+interface:
+  display_name: "Teo Dev"
+  short_description: "Discuss handoff to PR, merge, and cleanup"
+  default_prompt: "Use $teo-dev to take the agreed software change from discussion through PR."
+
+policy:
+  allow_implicit_invocation: true

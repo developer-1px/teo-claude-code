@@ -31,6 +31,7 @@
 - `v0.4.0` — Code Quality 3종(`/srp`, `/ocp`, `/naming-audit`) 승격
 - `v0.5.0` — `/glossary` 승격
 - `v0.8.0` — Matt Pocock 계열 미러 제거, 오리지널 스킬만 유지
+- `v0.9.0` — 현재 개인 Codex 등록 스킬 15개를 전체 하위 트리와 함께 다시 미러링
 
 ## 추가 보류 항목
 
