@@ -1,0 +1,4 @@
+interface:
+  display_name: "Research"
+  short_description: "생태계 수렴 방향 또는 외부 기준과의 거리를 조사"
+  default_prompt: "$research를 사용해 이 주제의 생태계 수렴 방향을 근거와 함께 조사해 주세요. 로컬 적용 판단은 제가 요청할 때만 추가해 주세요."

@@ -12,8 +12,8 @@
         "repo": "developer-1px/teo-claude-code",
         "path": "plugins/teo-stack"
       },
-      "description": "현재 Codex 개인 스킬 미러와 한국어 의도 정렬, reference map, 리팩토링 감사 스킬 모음",
-      "version": "0.9.2",
+      "description": "현재 Codex 개인 스킬 미러와 한국어 의도 정렬, ecosystem research, 리팩토링 감사 스킬 모음",
+      "version": "0.9.3",
       "keywords": [
         "skills",
         "codex-skills",

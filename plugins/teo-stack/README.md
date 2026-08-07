@@ -23,7 +23,7 @@
 
 ## Repo-only 스킬
 
-`explain`, `ideal`, `reference`, `reframe`
+`explain`, `ideal`, `research`, `reframe`
 
 ## 퇴역 스킬
 
