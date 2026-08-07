@@ -1,6 +1,6 @@
 ---
 name: discuss
-description: Reconstruct latent intent and converge decisions through sequential causal reasoning before execution. Use for /discuss, $discuss, ambiguous goals, why-before-how conversations, or when the user wants to understand a problem before changing anything. Investigate available context before asking, keep the 13-element causal model internal, and reconsider dependent conclusions when an upstream premise changes. Do not combine with grilling; an explicit grill request uses grilling instead.
+description: Reconstruct latent intent and converge decisions through sequential causal reasoning before execution. Use for /discuss, $discuss, ambiguous goals, why-before-how conversations, or when the user wants to understand a problem before changing anything. Investigate available context before asking, surface a compact coverage table each turn up to the earliest open element, reconsider dependent conclusions when an upstream premise changes, and proactively propose the execution handoff once the causal chain is grounded. Do not combine with grilling; an explicit grill request uses grilling instead.
 ---
 
 # Discuss
@@ -8,6 +8,13 @@ description: Reconstruct latent intent and converge decisions through sequential
 Treat a `discuss` invocation as evidence that the current context contains a
 decision-relevant intent worth reconstructing together. It is not evidence for
 one particular intent, scope, or solution.
+
+In the first response on a new topic, when the provided evidence — a
+screenshot, an error, attached material, surrounding conversation — is broader
+than the surface question, present two or three latent-intent hypotheses and
+recommend one. Answering the surface question does not close the turn: check
+whether the answered fact serves the reconstructed intent, and keep
+investigating toward that intent.
 
 ## Keep discussion separate from execution
 
@@ -31,11 +38,12 @@ Reason through these elements in order by default:
 | 6 | Cause | What mechanism produces that gap? |
 | 7 | Constraints | What conditions cannot change? |
 | 8 | Assets | What existing code, knowledge, or tools can help? |
-| 9 | External evidence | What relevant fact or converged solution exists outside the current scope? |
-| 10 | Objective | Which changeable leverage point should move? |
-| 11 | Solution | What concrete future reality should be created? |
-| 12 | Side effects | What new cost or risk would the solution create? |
-| 13 | Obstacles | What still blocks execution? |
+| 9 | External evidence | What relevant facts, standards, and comparable outcomes exist outside the current scope? |
+| 10 | Ecosystem convergence | In which direction is the relevant ecosystem converging, under what selection pressures, and how stable is it? |
+| 11 | Objective | Which changeable leverage point should move? |
+| 12 | Solution | How should the objective and relevant convergence direction become a concrete future reality in this scope? |
+| 13 | Side effects | What new cost or risk would the solution create? |
+| 14 | Obstacles | What still blocks execution? |
 
 Collect evidence whenever it appears, but keep downstream conclusions
 conditional on their upstream premises. Do not settle a solution while an
@@ -54,9 +62,31 @@ Do not treat the rejection of one premise as rejection of adjacent hypotheses.
 When the dependency is uncertain, downgrade the affected conclusion to a
 hypothesis instead of either preserving or discarding it as fact.
 
-Use the causal model as internal self-location. Do not expose all 13 elements,
-status colors, or reasoning protocol unless the user explicitly asks to see
-the analysis.
+Judge each element as grounded or open. An element is grounded only when it
+rests on an anchor — a quoted user statement, a file path, a rule name, or a
+verified observation — and a single interpretation survives. Do not grade
+elements with percentages or confidence scores; the judgment is binary.
+
+Use the causal model as live shared state, not a hidden protocol. Every
+discuss response includes a compact coverage table, from element 1 through the
+earliest open element only — never all 14 rows by default:
+
+```markdown
+| 요소 | 내용 (앵커) | 판정 |
+|---|---|---|
+| 의도 | 배너의 발생 원인 파악 (사용자 원문: "왜 떠?") | 🟢 |
+| 배경 | PR #12359 머지 다음 날 로컬 화면에서 관찰 | 🟢 |
+| 이상적 결과 | 배너가 뜨지 않아야 하는 조건이 미확정 | ⬜ |
+```
+
+Each row carries its anchor — a quoted user statement, a file path, a rule
+name, or a verified observation. The judgment column is binary: 🟢 grounded or
+⬜ open. No percentages, no confidence scores, no extra status labels. Rows
+after the earliest open element stay internal even when provisional evidence
+exists for them. Written state survives the turn; unwritten state does not —
+the table is what lets the next turn resume instead of drift, and what lets
+the user steer which element the discussion stands on. The next turn's work is
+to move the earliest open element.
 
 ## Investigate before asking
 
@@ -77,10 +107,22 @@ answers. Check official standards and stable de-facto convergence before
 inventing a new solution. Treat external convergence as evidence, not as
 authority over confirmed user intent or local constraints.
 
+At Ecosystem convergence, synthesize the external observations into a
+direction, not a ready-made answer. Ask which independently evolved approaches
+are becoming more alike, which selection pressures explain that movement, and
+whether the direction is `stable`, `emerging`, `contested`, or `absent`.
+Any of these states can be grounded when anchored; do not prolong research just
+to manufacture convergence. A convergence direction may reveal, strengthen, or
+challenge the Objective, but it cannot create an Objective that does not trace
+back to the local Problem, Cause, and Constraints.
+
 Ask one discriminating question only when the remaining answer belongs to the
-user or two live interpretations would materially change the next judgment.
-Otherwise state the strongest provisional interpretation and what evidence
-would change it.
+user or two live interpretations would materially change the next judgment —
+and only after investigation can no longer narrow it. Do not hand the user a
+mechanism fork that code, history, or documents can settle; reaching for a
+question while discoverable evidence remains unread is an escape, not
+diligence. Otherwise state the strongest provisional interpretation and what
+evidence would change it.
 
 After evidence narrows the problem to one boundary, do not collapse materially
 different mechanisms inside that boundary. Name the fork and inspect the
@@ -114,12 +156,29 @@ to satisfy the current anchor.
 When discussion drifts, return to the earliest unresolved causal element and
 the remaining distance to Done.
 
+## Propose the transition
+
+Discussion has a terminal state; reaching it is this skill's job, not the
+user's. When Intent, Ideal result, and Constraints are grounded, and Problem,
+Cause, Ecosystem convergence, and Solution each carry an anchor plus a
+falsification condition, do not keep discussing and do not wait to be asked
+for a plan. Run the gate in [references/frt-gate.md](references/frt-gate.md),
+then present the Outcome/Done/Don't anchor and propose moving to execution.
+
+If the gate fails, name the failing claim and treat it as the earliest open
+element instead of proposing.
+
+Proposing the transition is still discussion. Execution begins only after the
+user explicitly approves; a proposal the user ignores or redirects reopens the
+conversation without penalty.
+
 ## Respond naturally
 
 Lead with the strongest current judgment and its best evidence. Include only
 the uncertainty, contrast, or question that materially affects the decision.
-Use the amount of detail the conversation needs; do not force a table,
-checklist, fixed response shape, or execution plan.
+Use the amount of detail the conversation needs; beyond the coverage table, do
+not force additional tables, checklists, fixed response shapes, or execution
+plans.
 
 Before an explicit execution handoff, discuss direction and what would change
 the judgment rather than presenting a concrete implementation sequence as
@@ -127,5 +186,6 @@ settled.
 
 When the user requests a plan or execution handoff, verify that the proposed
 solution closes the Problem and Cause, respects Constraints, uses relevant
-Assets and External evidence, and has acceptable Side effects and Obstacles.
-Then provide the smallest plan that preserves the causal anchor.
+Assets and External evidence, accounts for the grounded Ecosystem convergence
+state, and has acceptable Side effects and Obstacles. Then provide the
+smallest plan that preserves the causal anchor.
