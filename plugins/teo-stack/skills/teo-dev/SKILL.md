@@ -1,6 +1,6 @@
 ---
 name: teo-dev
-description: "Personal software-delivery workflow for an explicit handoff from discussion to execution. Use after discussing a code change when the user says 진행해, 그렇게 하자, 해봐, 알아서 진행, 이슈 따고 진행, or otherwise asks Codex to autonomously take the agreed scope through issue setup, implementation, verification, progress comments, commits, push, and PR. Also use for an explicit follow-up request to address review or CI, merge, and clean the worktree. Do not use while discussion is still provisional, for read-only diagnosis or status, or when the user explicitly chooses another workflow."
+description: "Personal software-delivery workflow for an explicit handoff from discussion to execution. Use after discussing a code change when the user says 진행해, 그렇게 하자, 해봐, 알아서 진행, 이슈 따고 진행, or otherwise asks Codex or Claude Code to autonomously take the agreed scope through issue setup, implementation, verification, progress comments, commits, push, and PR. Also use for an explicit follow-up request to address review or CI, merge, and clean the worktree. Do not use while discussion is still provisional, for read-only diagnosis or status, or when the user explicitly chooses another workflow."
 ---
 
 # Teo Dev
@@ -19,9 +19,9 @@ Take an agreed software change to an opened PR with lightweight, evidence-driven
 
 The execution handoff authorizes normal in-scope lifecycle actions through PR: issue creation or updates, project status updates, branch or worktree creation, implementation, verification, commits, push, and PR creation. It does not authorize merge by default and never broadens the agreed scope. A `mergeable` state, green check, approval, or "merge possible" verdict describes capability only; it is not an instruction, authorization, or obligation to merge.
 
-## Lock and carry the Goal Anchor
+## Lock and carry the Execution Contract
 
-Carry one scope contract unchanged from discussion through issue, implementation, review, and PR:
+Carry one semantic contract unchanged from discussion through issue, implementation, review, and PR. Its required core is:
 
 ```markdown
 ### Goal Anchor
@@ -31,6 +31,8 @@ Carry one scope contract unchanged from discussion through issue, implementation
 ```
 
 - Reuse the confirmed Goal Anchor from `discuss` when present. Otherwise derive it from the user's request and verified evidence before implementation.
+- When `discuss` provides Success Evidence, Canonical Vocabulary, Guardrails, Smells, Replan Triggers, or Work Topology, preserve the applicable sections with the Goal Anchor. Do not invent missing optional sections as ceremony.
+- Keep changing run state—current phase, observations, active hypothesis, blockers, and next verification—out of the stable contract and in working-plan or progress comments.
 - Treat the first locked anchor as immutable history. Only an explicit user-approved `contract delta` may change it.
 - Record an approved delta as an append-only before/after note with its reason and authorization. Do not rewrite the original issue text or comment so the expansion disappears.
 - Keep only user-approved deferred objectives visible and outside Done.
@@ -88,11 +90,18 @@ Classify unavailable or conflicting state explicitly. Do not turn failed lookups
 
 Before broad implementation, add a concise working-plan comment containing:
 
-- the exact Goal Anchor;
+- the exact Goal Anchor and any applicable Execution Contract sections;
 - scope and explicit exclusions;
 - a phase tree;
 - planned verification;
 - known risks, dependencies, blockers, and deferred objectives.
+
+Choose the lightest work topology that preserves ownership and causality:
+
+- use one issue for one causal objective and one PR, even when it has several dependent phases;
+- split issues only for independently ownable, deployable, or reviewable objectives, and state their dependency edges;
+- when unresolved decisions dominate a multi-session effort, resolve a decision map before creating implementation issues;
+- never turn a simple checklist into an issue graph for appearance's sake.
 
 ### 2. Create the correct workspace
 
@@ -122,6 +131,12 @@ Update the issue at meaningful boundaries:
 - when scope, ownership, or a blocker changes;
 - when a non-obvious technical decision is worth retaining;
 - when the PR is opened.
+
+Include the latest verified waypoint, current frontier, new observations,
+blockers or unavailable checks, and next verification when those facts matter.
+If an agreed smell or replan trigger appears, stop extending the implementation
+plan and return to the invalidated causal premise. Do not silently reinterpret
+the contract to fit the existing diff.
 
 Do not comment on every edit. For a meaningful structural change, prefer a compact ASCII before/after tree. Put durable, non-obvious learning in a distinct note rather than burying it in a generic progress log.
 

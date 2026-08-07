@@ -163,7 +163,15 @@ user's. When Intent, Ideal result, and Constraints are grounded, and Problem,
 Cause, Ecosystem convergence, and Solution each carry an anchor plus a
 falsification condition, do not keep discussing and do not wait to be asked
 for a plan. Run the gate in [references/frt-gate.md](references/frt-gate.md),
-then present the Outcome/Done/Don't anchor and propose moving to execution.
+then read [references/execution-contract.md](references/execution-contract.md)
+and produce the smallest applicable Execution Contract. Present its Goal
+Anchor and propose moving to execution.
+
+The Execution Contract is the stable semantic handoff, not a new workflow or
+tracker. `discuss` owns its meaning; repository-specific issue tooling projects
+it into the durable work item; the execution workflow preserves it and records
+changing run state separately. Keep repository labels, branch conventions,
+project fields, and PR mechanics out of this skill.
 
 If the gate fails, name the failing claim and treat it as the earliest open
 element instead of proposing.
