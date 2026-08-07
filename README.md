@@ -9,6 +9,7 @@ Claude Code / Codex용 개인 스킬 마켓플레이스. 현재 실사용 플러
 | 경로 | 용도 | 상태 |
 |------|------|------|
 | [**`plugins/teo-stack`**](plugins/teo-stack/) | 개인 Codex 스킬 미러 + repo 전용 오리지널 스킬 | 실사용 |
+| [`archive/teo-stack/skills`](archive/teo-stack/skills/) | teo-stack에서 퇴역한 개인 스킬 | 아카이브 |
 | [`archive/teo-project`](archive/teo-project/) | interactive-os 전용 과거 파이프라인 스킬 | 아카이브 |
 
 ## 사용 방침
@@ -17,7 +18,7 @@ Claude Code / Codex용 개인 스킬 마켓플레이스. 현재 실사용 플러
 |------|-----------|
 | 표면 요청 뒤의 진짜 목적·범위가 불명확함 | `/discuss` |
 | 표준·best practice·de facto·frontier 기준을 내부 맥락과 맞춰 봄 | `/reference` |
-| 파일 책임·확장 구조·네이밍·프론트엔드 경계를 점검하며 리팩토링 | `/srp`, `/ocp`, `/naming-audit`, `/app-owned-boundary-refactor`, `/entity-interface-refactor` |
+| 파일 책임·확장 구조·네이밍·프론트엔드 경계를 점검하며 리팩토링 | `/srp`, `/ocp`, `/naming`, `/app-owned-boundary-refactor`, `/entity-interface-refactor` |
 | 과거 interactive-os 전용 파이프라인 확인 | `archive/teo-project` 참고 |
 
 ## 설치

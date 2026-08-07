@@ -4,9 +4,9 @@
 
 ## 구성
 
-- Codex 등록본 미러: `~/.codex/skills`에서 `.system`을 제외한 15개 스킬
-- repo-only 스킬: 현재 Codex에는 등록되지 않았지만 repo에 유지하는 8개 스킬
-- 전체: 23개 스킬
+- Codex 등록본 미러: `~/.codex/skills`에서 `.system`을 제외해 이 repo에 미러한 14개 스킬
+- repo-only 스킬: 현재 Codex에는 등록되지 않았지만 repo에 유지하는 4개 스킬
+- 전체: 18개 활성 스킬
 
 ## 동기화 기준
 
@@ -19,11 +19,17 @@
 
 ## Codex 등록본 미러
 
-`app-owned-boundary-refactor`, `cohesion`, `conflict`, `discuss`, `doubt`, `entity-interface-refactor`, `go-preflight-tree`, `layer-abstraction-refactor`, `main`, `migrate-to-codex`, `naming`, `ocp`, `responsibility-surface-refactor`, `srp`, `teo-dev`
+`app-owned-boundary-refactor`, `cohesion`, `conflict`, `discuss`, `doubt`, `entity-interface-refactor`, `layer-abstraction-refactor`, `main`, `migrate-to-codex`, `naming`, `ocp`, `responsibility-surface-refactor`, `srp`, `teo-dev`
 
 ## Repo-only 스킬
 
-`explain`, `glossary`, `ideal`, `minto`, `naming-audit`, `reference`, `reframe`, `team`
+`explain`, `ideal`, `reference`, `reframe`
+
+## 퇴역 스킬
+
+`glossary`, `go-preflight-tree`, `minto`, `naming-audit`, `team`은 활성
+플러그인에서 제거하고 [`../../archive/teo-stack/skills`](../../archive/teo-stack/skills/)에
+보관한다.
 
 ## 설치
 
