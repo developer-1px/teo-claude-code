@@ -13,7 +13,7 @@
         "path": "plugins/teo-stack"
       },
       "description": "현재 Codex 개인 스킬 미러와 한국어 의도 정렬, ecosystem research, 리팩토링 감사 스킬 모음",
-      "version": "0.9.3",
+      "version": "0.10.0",
       "keywords": [
         "skills",
         "codex-skills",
@@ -21,7 +21,9 @@
         "korean",
         "discuss",
         "toc",
-        "research"
+        "research",
+        "same-lens",
+        "bug-audit"
       ]
     }
   ]

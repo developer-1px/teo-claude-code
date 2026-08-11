@@ -18,6 +18,7 @@ Claude Code / Codex용 개인 스킬 마켓플레이스. 현재 실사용 플러
 |------|-----------|
 | 표면 요청 뒤의 진짜 목적·범위가 불명확함 | `/discuss` |
 | 생태계 수렴 방향만 보거나 외부 기준과 내부 맥락을 비교함 | `/research` (`convergence` / `reference`) |
+| 한 버그의 같은 원인이 다른 곳에도 있는지 전수 조사하고 이슈 후보로 정리함 | `/same-lens` |
 | 파일 책임·확장 구조·네이밍·프론트엔드 경계를 점검하며 리팩토링 | `/srp`, `/ocp`, `/naming`, `/app-owned-boundary-refactor`, `/entity-interface-refactor` |
 | 과거 interactive-os 전용 파이프라인 확인 | `archive/teo-project` 참고 |
 

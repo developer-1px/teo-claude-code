@@ -4,9 +4,9 @@
 
 ## 구성
 
-- Codex 등록본 미러: `~/.codex/skills`에서 `.system`을 제외해 이 repo에 미러한 14개 스킬
+- Codex 등록본 미러: `~/.codex/skills`에서 `.system`을 제외해 이 repo에 미러한 15개 스킬
 - repo-only 스킬: 현재 Codex에는 등록되지 않았지만 repo에 유지하는 4개 스킬
-- 전체: 18개 활성 스킬
+- 전체: 19개 활성 스킬
 
 ## 동기화 기준
 
@@ -19,7 +19,7 @@
 
 ## Codex 등록본 미러
 
-`app-owned-boundary-refactor`, `cohesion`, `conflict`, `discuss`, `doubt`, `entity-interface-refactor`, `layer-abstraction-refactor`, `main`, `migrate-to-codex`, `naming`, `ocp`, `responsibility-surface-refactor`, `srp`, `teo-dev`
+`app-owned-boundary-refactor`, `cohesion`, `conflict`, `discuss`, `doubt`, `entity-interface-refactor`, `layer-abstraction-refactor`, `main`, `migrate-to-codex`, `naming`, `ocp`, `responsibility-surface-refactor`, `same-lens`, `srp`, `teo-dev`
 
 ## Repo-only 스킬
 

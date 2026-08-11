@@ -1,0 +1,4 @@
+interface:
+  display_name: "Same Lens"
+  short_description: "같은 결함 렌즈로 전수 조사하고 이슈 후보를 준비합니다"
+  default_prompt: "Use $same-lens to reconstruct this bug’s defect lens, audit every applicable occurrence, and prepare MECE issue packets without making changes."
