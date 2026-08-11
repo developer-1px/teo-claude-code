@@ -17,6 +17,13 @@ Take an agreed software change to an opened PR with lightweight, evidence-driven
 - Do not create a product goal unless the user explicitly asks for one.
 - Do not invoke `devx` from this workflow unless the user explicitly overrides this rule in the current request.
 
+`진행해` and equivalent approval authorize execution of the last agreed
+semantic contract. They do not authorize a new interpretation, additional
+solution, or scope first introduced while drafting an issue, plan, or PR. If a
+preceding `discuss` conversation did not present and confirm a Goal Anchor,
+stop before issue mutation and present the smallest Execution Contract for
+approval.
+
 The execution handoff authorizes normal in-scope lifecycle actions through PR: issue creation or updates, project status updates, branch or worktree creation, implementation, verification, commits, push, and PR creation. It does not authorize merge by default and never broadens the agreed scope. A `mergeable` state, green check, approval, or "merge possible" verdict describes capability only; it is not an instruction, authorization, or obligation to merge.
 
 ## Lock and carry the Execution Contract
@@ -36,6 +43,42 @@ Carry one semantic contract unchanged from discussion through issue, implementat
 - Treat the first locked anchor as immutable history. Only an explicit user-approved `contract delta` may change it.
 - Record an approved delta as an append-only before/after note with its reason and authorization. Do not rewrite the original issue text or comment so the expansion disappears.
 - Keep only user-approved deferred objectives visible and outside Done.
+
+### Enforce lossless issue projection
+
+Issue creation is serialization of the approved Execution Contract, not a new
+design step. Before creating or updating an issue, perform a semantic source
+check:
+
+- Map every title claim, Goal Anchor item, scope item, completion condition, and
+  implementation commitment to an exact approved contract item or quoted user
+  statement.
+- Permit repository-required metadata and verified current-state evidence only
+  when they do not change Outcome, Done, Don't, solution choice, or work scope.
+- Do not promote examples, analogies, rejected proposals, assistant ideas,
+  smells, or possible hardening into issue scope.
+- Keep an implementation mechanism out of the issue when the approved contract
+  specifies only an outcome and more than one mechanism remains valid.
+- If any semantic item has no source, remove it. If it appears necessary to
+  complete Done, stop and obtain an explicit contract delta before issue
+  mutation.
+
+After drafting, compare the issue back to the approved contract. Do not create
+or update it unless the issue entails no additional objective, acceptance
+condition, non-goal relaxation, component, or work item. Repository issue
+templates may reshape presentation but never meaning.
+
+After creating or updating the issue, fetch the authoritative remote issue and
+run the projection check again against what was actually stored:
+
+- Map every contract item forward to the remote title, body, or authoritative
+  scope comment, and map every semantic issue item back to the contract.
+- Confirm that a fresh executor could recover the same Outcome, Done, Don't,
+  exact structural artifacts, and scope from the issue without this conversation.
+- Correct presentation or serialization loss, refetch, and repeat the check.
+  If the mismatch changes the contract, stop for an explicit contract delta.
+- For the initial scope projection, do not create the implementation workspace
+  or begin implementation until the remote issue passes this read-back gate.
 
 ### Recover after context loss
 
@@ -173,12 +216,37 @@ Express progress as distance remaining to the Goal Anchor, not elapsed time, fil
 - Link the owning issue and include executed and unavailable verification.
 - Add a final issue comment with the PR, completed acceptance, remaining risks, and follow-up items.
 
+After creating or updating the PR, fetch the authoritative remote issue, PR
+body, changed files or diff, and verification state. Run this correlation gate:
+
+- Confirm that the PR links and, when repository convention requires it, closes
+  the one owning issue.
+- Map every issue contract and Done item to the PR diff or concrete verification
+  evidence; do not let the PR body stand in for the actual diff.
+- Map every semantic PR claim and changed surface back to an issue contract item
+  or a stated causal dependency required to preserve Done or Don't.
+- Correct metadata or serialization loss, refetch, and repeat the check. Repair
+  implementation gaps before reporting completion. Stop for an explicit
+  contract delta when the mismatch changes Outcome, Done, Don't, or scope.
+
+Do not report `pr-open` until the issue and PR pass this bidirectional check.
+
+For a frontend product change covered by the installed `show-me` skill, confirm
+that the worktree HEAD matches the remote PR head, then run `show-me` from that
+worktree. Put the PR URL and the resulting `verified` or `shown-unverified`
+localhost URL together in the final user handoff, not in an issue, PR body, or
+PR comment. Treat the URL as an ephemeral local preview, never as a deployment
+or shared URL. If `show-me` returns `not-shown`, report the reason without
+inventing a URL. For backend-only or otherwise inapplicable work, report
+`show-me: non-applicable`.
+
 The default terminal state is `pr-open`. Stop after confirming that the PR exists and report:
 
 - issue and project status;
 - branch or worktree;
 - commits and PR;
 - verification evidence;
+- the `show-me` status and local preview URL when applicable;
 - remaining or blocked items.
 
 Do not merge merely because the user said `진행해`, because a reviewer says the PR is mergeable, or because all checks are green. If the initial request explicitly includes merge, treat that as Phase 2 authorization.
