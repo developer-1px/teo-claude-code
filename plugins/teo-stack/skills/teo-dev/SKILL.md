@@ -21,14 +21,15 @@ Take an agreed software change to an opened PR with lightweight, evidence-driven
 semantic contract. They do not authorize a new interpretation, additional
 solution, or scope first introduced while drafting an issue, plan, or PR. If a
 preceding `discuss` conversation did not present and confirm a Goal Anchor,
-stop before issue mutation and present the smallest Execution Contract for
+stop before issue mutation and present the smallest deterministic Execution Contract for
 approval.
 
 The execution handoff authorizes normal in-scope lifecycle actions through PR: issue creation or updates, project status updates, branch or worktree creation, implementation, verification, commits, push, and PR creation. It does not authorize merge by default and never broadens the agreed scope. A `mergeable` state, green check, approval, or "merge possible" verdict describes capability only; it is not an instruction, authorization, or obligation to merge.
 
 ## Lock and carry the Execution Contract
 
-Carry one semantic contract unchanged from discussion through issue, implementation, review, and PR. Its required core is:
+Carry one semantic contract unchanged from discussion through issue,
+implementation, review, and PR. Its always-present navigation core is:
 
 ```markdown
 ### Goal Anchor
@@ -37,11 +38,37 @@ Carry one semantic contract unchanged from discussion through issue, implementat
 - Don't: [non-goals and invariants that must remain unchanged]
 ```
 
+This core never replaces the material grounded decisions and exact artifacts
+that make the handoff deterministic.
+
 - Reuse the confirmed Goal Anchor from `discuss` when present. Otherwise derive it from the user's request and verified evidence before implementation.
-- When `discuss` provides Success Evidence, Canonical Vocabulary, Guardrails, Smells, Replan Triggers, or Work Topology, preserve the applicable sections with the Goal Anchor. Do not invent missing optional sections as ceremony.
+- When `discuss` provides Grounded Decision Context, Success Evidence,
+  Canonical Vocabulary, Guardrails, Smells, Replan Triggers, Work Topology, or
+  exact structure, mapping, and behavior artifacts, preserve the applicable
+  sections with the Goal Anchor. Do not invent missing optional sections as
+  ceremony.
+- Treat material discussion artifacts as contract content. Preserve corrected
+  premises that changed the model, canonical distinctions and names, recurring
+  rejected models, executor discretion, and approved ASCII diagrams when they
+  carry decisions. Do not compress them into Goal Anchor prose, scope bullets,
+  or an implementation checklist.
+- Prefer the discussion's approved ASCII diagram for relationships, flow,
+  hierarchy, mappings, state transitions, ownership boundaries, and
+  before/after structure. Preserve names, direction, nesting, cardinality,
+  states, and exclusions verbatim or in a demonstrably lossless equivalent.
+  Do not add decorative diagrams for simple facts or lists.
+- Treat the Goal Anchor as a compact navigation aid, not the entire handoff.
+  Preserve every grounded decision whose omission would let reasonable
+  executors choose materially different targets, scope, owners, dependency
+  directions, structures, behaviors, fallback policies, invariants, or
+  completion evidence.
 - Keep changing run state—current phase, observations, active hypothesis, blockers, and next verification—out of the stable contract and in working-plan or progress comments.
 - Treat the first locked anchor as immutable history. Only an explicit user-approved `contract delta` may change it.
 - Record an approved delta as an append-only before/after note with its reason and authorization. Do not rewrite the original issue text or comment so the expansion disappears.
+- When a delta follows renewed discussion, project the full changed decision
+  artifact, not only its revised Outcome/Done/Don't. Carry forward unaffected
+  approved artifacts, replace artifacts invalidated by the corrected premise,
+  and preserve the correction and rejected prior model when either could recur.
 - Keep only user-approved deferred objectives visible and outside Done.
 
 ### Enforce lossless issue projection
@@ -53,6 +80,13 @@ check:
 - Map every title claim, Goal Anchor item, scope item, completion condition, and
   implementation commitment to an exact approved contract item or quoted user
   statement.
+- Map every material discussion artifact forward: controlling intent,
+  model-changing correction, canonical vocabulary and distinction, ownership
+  or dependency relation, mapping, state or command flow, approved ASCII
+  diagram, recurring rejected model, and executor discretion.
+- Map every material grounded decision from the approved discussion forward
+  into the contract and issue. A backward-only source check prevents invention
+  but does not prevent omission.
 - Permit repository-required metadata and verified current-state evidence only
   when they do not change Outcome, Done, Don't, solution choice, or work scope.
 - Do not promote examples, analogies, rejected proposals, assistant ideas,
@@ -66,15 +100,28 @@ check:
 After drafting, compare the issue back to the approved contract. Do not create
 or update it unless the issue entails no additional objective, acceptance
 condition, non-goal relaxation, component, or work item. Repository issue
-templates may reshape presentation but never meaning.
+templates may reshape presentation but never meaning or collapse exact
+decisions into broader prose.
 
 After creating or updating the issue, fetch the authoritative remote issue and
 run the projection check again against what was actually stored:
 
 - Map every contract item forward to the remote title, body, or authoritative
   scope comment, and map every semantic issue item back to the contract.
-- Confirm that a fresh executor could recover the same Outcome, Done, Don't,
-  exact structural artifacts, and scope from the issue without this conversation.
+- Compare structural artifacts, not just prose claims. A diagram or mapping
+  fails read-back if a name, direction, nesting relation, cardinality, state,
+  or inclusion/exclusion boundary changed or disappeared.
+- Run the Fresh Executor Test: assume the executor has the repository and issue
+  but none of this conversation. Confirm that the executor can reproduce the
+  same Outcome, Done, Don't, grounded decisions, exact artifacts, and scope
+  without reopening any material choice. If two reasonable interpretations
+  remain, restore the approved decision that closes the fork; if no approved
+  decision exists, stop for renewed discussion instead of guessing.
+- Run a Discussion Continuity Test: reread the source conversation and point
+  each material decision artifact to its remote issue representation. The issue
+  fails even when its Outcome is accurate if it loses the canonical model,
+  corrected distinction, rejected model, or approved ASCII structure that gave
+  the outcome one meaning.
 - Correct presentation or serialization loss, refetch, and repeat the check.
   If the mismatch changes the contract, stop for an explicit contract delta.
 - For the initial scope projection, do not create the implementation workspace
@@ -151,6 +198,16 @@ Choose the lightest work topology that preserves ownership and causality:
 - Follow the repository's branch and worktree policy exactly.
 - Prefer an issue-linked branch when the repository requires one.
 - Check current branches and worktrees before creating another copy.
+- Immediately before creating an issue branch or worktree, identify the
+  repository-defined base branch and its authoritative remote, fetch that
+  remote, and update the local base with `git pull --ff-only`. Create the new
+  branch from the fetched remote base tip, and verify that its merge-base or
+  starting commit matches that tip. Do not rely on a base checkout fetched
+  earlier in the session.
+- If the base checkout is dirty, cannot fast-forward, or has diverged from the
+  authoritative remote, do not merge, rebase, reset, or create the work branch
+  from the stale base. Preserve the existing state and stop to resolve the base
+  ownership or divergence explicitly.
 - Bootstrap dependencies from the current worktree's own lockfiles. Never borrow another checkout's dependency tree.
 
 ### 3. Implement from cause to effect

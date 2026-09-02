@@ -143,6 +143,12 @@ continuing.
 Once Intent, Ideal result, and Constraints are grounded, maintain a compact
 anchor of Outcome, Done, and Don't.
 
+The Goal Anchor is a navigation aid, not a substitute for the grounded
+decisions that control implementation. Keep it concise, but do not compress
+material scope, ownership, structure, behavior, rationale, or boundary
+decisions into generic Outcome, Done, or Don't statements. The full Execution
+Contract carries those decisions; the Goal Anchor points back to them.
+
 Keep the anchor stable against downstream solution ideas, reviews, severity
 labels, and generic best practices. Reopen it when the user corrects an
 upstream premise or stronger evidence falsifies one. A useful but causally
@@ -164,14 +170,109 @@ Cause, Ecosystem convergence, and Solution each carry an anchor plus a
 falsification condition, do not keep discussing and do not wait to be asked
 for a plan. Run the gate in [references/frt-gate.md](references/frt-gate.md),
 then read [references/execution-contract.md](references/execution-contract.md)
-and produce the smallest applicable Execution Contract. Present its Goal
+and produce the smallest deterministic Execution Contract. Present its Goal
 Anchor and propose moving to execution.
+
+## Contract settled solutions
+
+Whenever presenting a solution as settled, recommended for adoption, or ready
+to record in a pre-execution issue, include an Execution Contract. Do this even
+when the user has not yet authorized implementation. A solution without its
+contract is still a hypothesis: label it accordingly and do not write an issue
+from it.
+
+Treat the contract as a lossless semantic projection of the discussion, not a
+summary of its conclusion. Preserve every material discussion artifact that
+prevents the next executor from reopening a decision the conversation already
+closed. These artifacts can include:
+
+- the user's intent and decision criterion in the vocabulary that controlled
+  the discussion;
+- a corrected premise when the correction changed the canonical model;
+- canonical names, distinctions, mappings, ownership, dependency direction,
+  state or command flow, and included or excluded boundaries;
+- a rejected model when code or convention could make it look attractive again;
+- choices deliberately left to executor discretion; and
+- an ASCII diagram that carried an approved relationship, sequence, hierarchy,
+  mapping, state transition, or before/after structure.
+
+Do not preserve the whole transcript. Preserve the smallest set of material
+decisions and artifacts whose removal could cause a capable executor, after
+rereading the repository, to reconstruct a materially different model. Do not
+replace those artifacts with Goal Anchor prose, a work-scope list, or a generic
+implementation plan.
+
+Prefer an ASCII diagram when the settled meaning depends on relationships,
+boundaries, flow, hierarchy, mapping, state transition, or before/after
+structure. If the discussion already approved such a diagram, reproduce it
+verbatim or in a demonstrably meaning-equivalent form. Names, direction,
+nesting, cardinality, state, and inclusion or exclusion are semantic content,
+not formatting. When an upstream premise changes, retire every affected
+diagram and redraw it before contracting the revised solution. Do not create a
+decorative diagram for a simple fact or list.
+
+The contract must preserve every confirmed decision whose omission could make
+reasonable executors choose materially different targets, scope, owners,
+dependency directions, structures, behaviors, fallback policies, invariants,
+or completion evidence. Preserve the grounded Problem, Cause, decision
+rationale, and included or excluded boundary whenever they close such a fork.
+
+If the discussion settled a component tree, route or product surface,
+one-to-one mapping, ownership boundary, dependency direction, state
+transition, fallback classification, API shape, naming dictionary, or ordered
+sequence, reproduce that artifact in the contract rather than compressing it
+into prose. Put it under the smallest applicable contract section, usually
+`Grounded Decision Context`, `Target Structure`, `Canonical Mapping`, or
+`Behavior Contract`.
+
+Before drafting or updating a pre-execution issue:
+
+- reread the latest user-approved solution and Goal Anchor;
+- reread the material corrections, canonical vocabulary, diagrams, mappings,
+  rejected models, and delegated choices that produced that solution;
+- write the Execution Contract first;
+- map every material grounded decision forward into the contract and every
+  contract item backward to its discussion anchor;
+- project the contract into the issue without weakening exact names,
+  hierarchy, boundaries, invariants, exclusions, or completion evidence; and
+- compare the finished issue back to the contract item by item.
+
+Do not substitute broad phrases such as "separate responsibilities", "follow
+the agreed structure", or "refactor appropriately" for a confirmed concrete
+structure. If a fresh executor would need to infer a material decision, the
+contract and issue are incomplete.
 
 The Execution Contract is the stable semantic handoff, not a new workflow or
 tracker. `discuss` owns its meaning; repository-specific issue tooling projects
 it into the durable work item; the execution workflow preserves it and records
 changing run state separately. Keep repository labels, branch conventions,
 project fields, and PR mechanics out of this skill.
+
+### No-reinterpretation covenant
+
+Treat the Execution Contract as a projection of the grounded discussion, never
+as a fresh synthesis opportunity. Every Outcome, Done, Don't, Success Evidence,
+Guardrail, and work-scope implication must trace to an explicit user-approved
+statement or a causally necessary consequence already established in the
+grounded model.
+
+- Do not turn an example, analogy, rejected proposal, assistant suggestion, or
+  observed smell into an objective, deliverable, component, or work item.
+- Do not revive a withdrawn conclusion when compressing the discussion into the
+  contract.
+- Do not treat `proceed`, `진행해`, or equivalent execution approval as approval
+  for content first introduced while drafting the contract, issue, or plan.
+- If the user asks to proceed before a Goal Anchor has been presented and
+  confirmed, present the smallest deterministic Execution Contract first. Do
+  not create or update an issue until the user approves that semantic handoff.
+
+Before proposing execution, run both directions of the source check. Compare
+each contract item and structural artifact against its discussion anchor and
+remove any unmatched item. Then compare every material grounded decision and
+artifact forward into the contract. If one is missing, restore it without
+weakening its exact meaning. When an unmatched or missing item reveals that the
+discussion never closed a material decision, reopen the earliest affected
+causal element instead of guessing.
 
 If the gate fails, name the failing claim and treat it as the earliest open
 element instead of proposing.
@@ -187,6 +288,11 @@ the uncertainty, contrast, or question that materially affects the decision.
 Use the amount of detail the conversation needs; beyond the coverage table, do
 not force additional tables, checklists, fixed response shapes, or execution
 plans.
+
+When explaining relationships, sequences, boundaries, competing
+interpretations, or premise changes, prefer a compact ASCII diagram when it
+makes the reasoning easier to grasp. Use it as part of the answer rather than
+as a mandatory checkpoint or decorative summary.
 
 Before an explicit execution handoff, discuss direction and what would change
 the judgment rather than presenting a concrete implementation sequence as
