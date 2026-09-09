@@ -1,64 +1,47 @@
 ---
 name: naming
-description: Evaluate and improve names in code, APIs, files, folders, UI semantics, domain models, and documentation. Use when the user asks for naming review, rename/refactor naming, standard/de-facto terminology such as W3C ARIA/RFC/HTTP/HTML/CSS/DOM names, consistency rules, ambiguous names, responsibility-aligned names, concept reduction, 같은 이름 다른 의미, 다른 이름 같은 의미, 이름 기준표, or 이름 변경.
+description: "Review or improve names in code, APIs, files, UI, and domain models using semantic and usage evidence. Use for $naming, naming review, 이름 변경, ambiguous names, or vocabulary consistency."
 ---
 
 # Naming
 
-Use objective naming evidence before proposing renames. Prefer names that are stable, standard, responsibility-aligned, and reduce the number of concepts a reader must carry.
+Choose names that match the responsibility and reduce ambiguity. A familiar
+name is useful only when it denotes the same concept.
 
-## Priority
+## Evidence
 
-Apply this order. Do not prefer a lower rule over a higher rule without explaining why.
+Prefer an exact normative term when the code implements that standard concept,
+then the official platform term, established domain vocabulary, and consistent
+local language. Otherwise name the responsibility directly.
 
-1. **Normative standard name**: Use exact terms from stable standards when the code models that concept: W3C ARIA roles/states/properties, RFC terms, HTTP methods/status/header names, HTML/CSS/DOM/Web API names, ISO/IANA names, language/runtime official terms.
-2. **Stable platform or framework name**: Use official names from the platform, framework, or library already used by the repo.
-3. **De-facto domain name**: Use the term most practitioners would recognize when no formal standard exists.
-4. **Local ubiquitous language**: Use the repo's existing domain vocabulary when it is consistent and not misleading.
-5. **Responsibility name**: Name by what the thing owns or decides, not by incidental implementation details.
-6. **Short descriptive name**: Use only when no standard, de-facto, or local domain term exists.
+Local product meaning and explicit user terminology still matter. Do not force
+an approximate standards term onto a different domain concept. Verify uncertain
+standards or current library terms in primary sources before relying on them.
 
-When standards or de-facto terms are uncertain, verify against official specifications or primary docs before making a rename recommendation.
+Check sibling names, public contracts, consumers, and the distinction the name
+needs to express. Flag both the same name with different meanings and different
+names with the same meaning. Do not invent a synonym when one established term
+already fits.
 
-## Evaluation Table
+## Decision and changes
 
-Before renaming, produce a table. Keep it compact.
+Rename for a concrete gain: clearer responsibility, standard alignment, less
+ambiguity, or fewer concepts. For several candidates, a compact table of
+current name, meaning, evidence, proposed name, and decision is useful.
+One obvious rename does not require a scoring matrix.
 
-| Item | Current name | Responsibility | Standard/de-facto match | Evidence | Stability | Consistency | Ambiguity | Concept reduction | Decision | Proposed name |
-|---|---|---|---|---|---|---|---|---|---|---|
-| File/class/function/prop | Existing name | What it actually owns/does | Exact/near/none + source term | Spec/doc/local usage/source line | High/medium/low | Fits/breaks local rule | None/same-name-different-meaning/different-name-same-meaning | Reduces/neutral/increases | Keep/rename/split/merge | New name |
+A naming review does not authorize edits. When a rename is requested or already
+approved, update the scoped definition and consumers without asking again.
+Preserve actual external contracts unless a breaking change or migration is
+authorized. Internal re-exports alone are not evidence of an external contract.
 
-Use the columns as checks:
+Follow ecosystem spelling and repository conventions. Prefer verbs for actions,
+nouns for values and structures, and predicate-like boolean names where they
+clarify meaning. Judge names such as data, store, manager, and helper in context
+instead of treating them as forbidden tokens.
 
-- **Responsibility**: The name must match the reason the thing changes. If one name covers multiple responsibilities, propose split names or a smaller concept.
-- **Standard/de-facto match**: Prefer exact spelling and casing conventions of the source vocabulary when practical. Do not invent synonyms for established names.
-- **Evidence**: Cite the strongest available basis: normative spec section, official docs, framework docs, de-facto ecosystem usage, local domain docs, or concrete repo references. Use `none` when the recommendation is judgment-based.
-- **Stability**: Prefer names unlikely to change because they come from standards, protocols, public APIs, or durable domain facts.
-- **Consistency**: Check sibling names, folder patterns, exported API style, boolean prefixes, event names, command names, and nouns vs verbs.
-- **Ambiguity**: Flag same name with different meanings and different names with the same meaning. Resolve by merging vocabulary or adding precise qualifiers.
-- **Concept reduction**: Prefer a rename that lets multiple local concepts collapse into one standard or domain concept. Reject names that add another synonym.
+If one name hides multiple responsibilities, describe that finding. Do not
+silently expand a naming task into structural refactoring.
 
-## Rename Rules
-
-- Rename only when the table shows a concrete gain: standard alignment, reduced ambiguity, clearer responsibility, or fewer concepts.
-- Preserve public API names unless the user asked for a breaking rename or a migration path is provided.
-- Keep casing and grammar consistent with the target ecosystem: `aria-*`, HTTP header casing conventions, TypeScript camelCase/PascalCase, React prop conventions, CLI kebab-case, database snake_case, etc.
-- Use verbs for commands and side-effecting functions. Use nouns for values, entities, components, and data structures.
-- Use boolean names that read as predicates: `is`, `has`, `can`, `should`, unless the repo has a stronger existing convention.
-- Avoid vague containers such as `data`, `info`, `manager`, `helper`, `util`, `common`, `misc`, unless they are the established term for the responsibility.
-- If the better name reveals two responsibilities, prefer splitting over finding a broader name.
-
-## Output
-
-For review-only requests:
-
-1. Show the evaluation table.
-2. List the concrete rename plan.
-3. Note any public API or migration risk.
-
-For implementation requests:
-
-1. Build the evaluation table first.
-2. Apply the selected renames with the smallest safe scope.
-3. Update tests, docs, imports, and references.
-4. Run focused verification.
+Verify affected references and relevant behavior, then report the names changed
+or retained, their reason, and any real compatibility implications.

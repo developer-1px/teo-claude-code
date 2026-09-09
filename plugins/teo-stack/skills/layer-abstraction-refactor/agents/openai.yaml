@@ -1,4 +1,4 @@
 interface:
-  display_name: "Layer Abstraction Refactor"
-  short_description: "레이어 entrypoint와 추상화 벽을 강제하는 리팩토링"
-  default_prompt: "Use $layer-abstraction-refactor to make upper layers enter lower layers only through explicit entrypoints."
+  display_name: "레이어 추상화 리팩터링"
+  short_description: "의미가 입증된 레이어 경계만 public contract로 강제"
+  default_prompt: "$layer-abstraction-refactor를 사용해 정본 경로와 실제 책임을 먼저 판별하고 의미 있는 추상화 벽만 남겨줘."

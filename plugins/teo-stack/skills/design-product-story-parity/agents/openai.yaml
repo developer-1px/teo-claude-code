@@ -1,0 +1,4 @@
+interface:
+  display_name: "Design–Product–Story Parity"
+  short_description: "디자인 정본과 제품 Story 렌더 경계를 정렬합니다"
+  default_prompt: "Use $design-product-story-parity to audit this Story Page against the design SSOT and real product path."

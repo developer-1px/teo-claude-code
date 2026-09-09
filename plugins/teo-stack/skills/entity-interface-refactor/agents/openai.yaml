@@ -1,0 +1,4 @@
+interface:
+  display_name: "Entity 인터페이스 리팩터링"
+  short_description: "UI command와 query의 실제 소유권을 인과관계로 정리"
+  default_prompt: "$entity-interface-refactor를 사용해 product command의 Feature 소유권과 Entity·Widget의 query 경계를 검토해줘."

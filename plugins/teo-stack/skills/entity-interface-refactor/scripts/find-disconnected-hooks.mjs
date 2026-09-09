@@ -3,19 +3,43 @@ import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 
-const require = createRequire(import.meta.url)
-const ts = await import(require.resolve('typescript', { paths: [process.cwd()] }))
-  .then((module) => module.default ?? module)
-
 const args = process.argv.slice(2)
+if (args.includes('--help')) {
+  console.log('Usage: node find-disconnected-hooks.mjs <source-path> [...] [--json] [--all] [--limit=N]')
+  console.log('Lists lexical connectivity candidates; it does not prove responsibility or command ownership.')
+  process.exit(0)
+}
+const unknown = args.filter((arg) => arg.startsWith('--') && !['--json', '--all'].includes(arg) && !arg.startsWith('--limit='))
+if (unknown.length > 0) {
+  console.error(`Unknown option: ${unknown.join(', ')}`)
+  process.exit(2)
+}
 const roots = args.filter((arg) => !arg.startsWith('--'))
 const json = args.includes('--json')
 const all = args.includes('--all')
 const limitArg = args.find((arg) => arg.startsWith('--limit='))
 const limit = limitArg ? Number(limitArg.split('=')[1]) : 80
 
-const scanRoots = roots.length > 0 ? roots : ['apps/frontend/web-ui/src/ui']
+if (roots.length === 0 || !Number.isSafeInteger(limit) || limit < 1) {
+  console.error('Provide at least one source path and a positive integer --limit. Use --help for usage.')
+  process.exit(2)
+}
+const missingRoots = roots.filter((root) => !fs.existsSync(path.resolve(root)))
+if (missingRoots.length > 0) {
+  console.error(`Source path unavailable: ${missingRoots.join(', ')}`)
+  process.exit(2)
+}
+const scanRoots = roots
 const rootDir = process.cwd()
+const require = createRequire(import.meta.url)
+let ts
+try {
+  ts = await import(require.resolve('typescript', { paths: [rootDir] }))
+    .then((module) => module.default ?? module)
+} catch (error) {
+  console.error(`TypeScript unavailable from the current project: ${error.message}`)
+  process.exit(2)
+}
 
 function collectFiles(target) {
   const absolute = path.resolve(rootDir, target)
@@ -24,7 +48,7 @@ function collectFiles(target) {
   if (stat.isFile()) return /\.(ts|tsx)$/.test(target) ? [absolute] : []
   const files = []
   for (const entry of fs.readdirSync(absolute, { withFileTypes: true })) {
-    if (entry.name === 'node_modules' || entry.name === 'dist' || entry.name === '.next') continue
+    if (entry.name === 'node_modules' || entry.name === 'dist' || entry.name.startsWith('.')) continue
     const child = path.join(absolute, entry.name)
     if (entry.isDirectory()) files.push(...collectFiles(child))
     else if (/\.(ts|tsx)$/.test(entry.name)) files.push(child)
@@ -316,7 +340,7 @@ function analyzeHook(file, sourceFile, hookNode, name, body) {
   const hasReturn = components.some((component) => component.reachesReturn)
   const detachedCount = components.filter((component) => !component.reachesReturn).length
   const severity = hasReturn && detachedCount > 0
-    ? components.some((component) => component.kind === 'side-effect') ? 'split' : 'review'
+    ? 'review'
     : meaningfulComponents.length > 1 ? 'review' : 'ignore'
 
   return {
@@ -359,11 +383,15 @@ function analyzeFile(absoluteFile) {
 }
 
 const files = [...new Set(scanRoots.flatMap(collectFiles))].sort()
+if (files.length === 0) {
+  console.error('No TypeScript source files found in the requested paths; no audit was performed.')
+  process.exit(2)
+}
 const results = files.flatMap(analyzeFile)
 const candidates = results
   .filter((result) => all || result.severity !== 'ignore')
   .sort((a, b) => {
-    const severityOrder = { split: 0, review: 1, ignore: 2 }
+    const severityOrder = { review: 0, ignore: 1 }
     return severityOrder[a.severity] - severityOrder[b.severity]
       || b.componentCount - a.componentCount
       || a.file.localeCompare(b.file)
@@ -382,5 +410,5 @@ if (json) {
       console.log(`  C${index + 1} ${component.kind}${component.reachesReturn ? ' return' : ''}: ${nodeLabels}`)
     }
   }
-  console.error(`hooks scanned: ${results.length}, candidates: ${candidates.length}`)
 }
+console.error(`files scanned: ${files.length}, hooks analyzed: ${results.length}, candidates: ${candidates.length}, shown: ${Math.min(limit, candidates.length)}`)

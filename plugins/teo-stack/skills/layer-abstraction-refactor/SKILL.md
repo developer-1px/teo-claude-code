@@ -1,140 +1,45 @@
 ---
 name: layer-abstraction-refactor
-description: Refactor layered code so dependency direction and abstraction walls are enforced through explicit layer entrypoints. Use for 레이어 추상화, 추상화 벽, facade-only imports, layer skipping, implementation-file imports, application/domain/foundation hierarchies, or public surface cleanup.
+description: 이름뿐인 중간 계층과 실제 추상화 벽을 구분한다. REST·runtime·host operation 분류, 정본 client 교체, facade·provider·port·entrypoint 존속 여부, layer skipping을 판단할 때 사용한다.
 ---
 
-# Layer Abstraction Refactor
+# 레이어 추상화 리팩터링
 
-Turn layer folders into enforceable abstraction walls. Upper layers may depend only in the allowed direction and must enter a lower layer through an explicit entrypoint instead of knowing its internal files.
+## 저장소의 정본 경로를 먼저 확인한다
 
-Use precise terms:
+아래는 이 역할을 표현하는 C* 구성의 예시다. 현재 저장소의 문서, exports,
+호출 경로로 실제 정본을 확인하고 적용한다. 다른 프로젝트에 이 라이브러리나
+폴더 구성을 도입하라는 지시가 아니다.
 
-- `layer entrypoint` or `facade`: hides a layer's implementation layout
-- `variability seam`: allows behavior substitution through multiple justified adapters
-- `package public API`: imports available to external package consumers
-
-Do not call every layer entrypoint a seam. Encapsulation and variability are different reasons to introduce a surface.
-
-## Establish invariants
-
-Adapt the names to the repository, then make the rules explicit:
-
-- the first path segment identifies a layer
-- dependencies flow only toward lower, more reusable layers
-- upper layers do not skip a required intermediate layer
-- cross-layer imports target an explicit adjacent-layer entrypoint
-- lower layers never import upper layers
-- entrypoint allowlists use exact paths, not broad globs
-- internal entrypoints do not automatically become package exports
-- documentation and automated checks enforce the same rules
-
-Keep an existing package public surface unless the user explicitly approves a breaking change. Do not widen package exports merely to make an internal refactor convenient.
-
-## Inspect before editing
-
-Read repository instructions and architecture docs, then inventory:
-
-```bash
-rg --files <src-root>
-```
-
-Map each path level:
-
-| Level | Expected meaning |
+| operation | 예시 경로 |
 |---|---|
-| first segment | layer |
-| second segment | owner, concept, or slice inside the layer |
-| deeper segment | technical role or private implementation |
+| REST resource | TanStack -> Orval operation/model -> 공통 HTTP mutator -> BE |
+| runtime execution | AG-UI public interface -> Cstar transport adapter -> WS/SSE |
+| host capability | 실제 browser·desktop capability adapter |
 
-Inspect package exports and all static imports/re-exports. Resolve source conventions such as TypeScript imports ending in `.js` back to their actual source files.
+- REST를 runtime provider나 port로 감싸지 않는다.
+- 정본 contract를 rename·forward만 하는 Entity API wrapper, provider port, runtime-client facade, 별도 DTO·동일 구조 mapper는 layer가 아니다.
+- target architecture에 없는 폴더 이름은 layer로 취급하지 않는다.
 
-Count at least:
+## 교체와 내부 분리를 구분한다
 
-- upper-to-adjacent-lower crossings
-- layer skips
-- reverse imports
-- imports targeting lower-layer implementation files
-- package exports added only for internal use
+- **정본 교체:** 새 정본으로 소비자를 옮기고 밀려난 내부 client·facade·provider·DTO·test·mock을 같은 변경에서 제거한다.
+- **내부 분리:** 검증된 외부 public surface는 유지하고 그 뒤의 구현 책임만 나눈다.
 
-Report counts with target paths and explain which lower-layer vocabulary leaks upward.
+승인된 정본 교체에서는 중복 책임을 그대로 남기는 facade를 추가하지 않는다.
+실제 외부 계약을 보호하는 호환층은 전환 조건을 명시해 유지할 수 있다.
+동작·정책이 있는 adapter와 단순 전달 계층을 먼저 구분한다.
 
-## Classify smells
+## 실제 경계의 기준
 
-Treat these as violations:
+중간 계층은 다음 중 하나를 관측 가능하게 수행할 때만 경계다.
 
-- layer skip, such as `application` importing `foundation` through a required `domain` layer
-- reverse dependency from lower to upper
-- implementation leak through imports such as `domain/document/state/runtime`
-- facade in name only that re-exports the entire lower layer
-- package export widened for a repository-internal entrypoint
-- a role-only folder such as `types` or `utils` occupying the owner/slice level
-- different category kinds mixed at the same path depth
+- 값을 변환하거나 검증한다.
+- 실패 상태를 새로 분류한다.
+- 인증·소유권·routing policy를 결정한다.
+- 복수의 실제 구현 중 하나를 선택한다.
+- 삭제하면 caller가 새로 알아야 하는 사실이 생긴다.
 
-A technical file such as `types.ts` may be valid inside an owner-named slice. It is a smell only when the role name replaces the owner.
+해당하지 않으면 정본 contract로 직접 연결한다. 모든 cross-layer import를 entrypoint로 보내는 checker를 만들지 않고, 입증된 target layer graph만 검사한다.
 
-Explain each smell as a change-propagation problem: which upper imports must change when lower implementation moves?
-
-## Design the target wall
-
-Prefer this shape when it matches the repository:
-
-```text
-src/
-  application/<concept>/index
-  domain/<concept>/index
-  foundation/<concept>/index
-```
-
-Define allowed crossings explicitly:
-
-```text
-application -> domain/<concept>/index
-domain      -> foundation/<concept>/index
-```
-
-An entrypoint should expose the narrow contract the upper layer needs, not mirror every internal file. Preserve standard and domain vocabulary in exported names.
-
-Prove the structure on one representative owner before migrating the rest:
-
-1. add or narrow the lower-layer entrypoint
-2. move one upper-layer import family to it
-3. confirm the upper layer no longer names lower implementation files
-4. move an internal lower file and verify upper imports remain unchanged
-
-## Refactor in crossing-sized steps
-
-1. Add the required lower-layer entrypoint without widening package exports.
-2. Redirect one crossing family to the entrypoint.
-3. Move misplaced orchestration or runtime code to its actual owner.
-4. Leave only upper-layer policy, use-case composition, or framework adaptation above.
-5. Remove obsolete re-exports and compatibility paths.
-6. Add exact allowed entrypoints to the repository's layer checker.
-7. Update the repository's architecture SSOT with the same rules.
-8. Repeat only after focused verification passes.
-
-Use `git mv` for real moves and preserve unrelated worktree changes.
-
-## Verify mechanically
-
-Use repository commands first. At minimum verify:
-
-- typecheck, focused tests, and relevant build
-- reverse imports: zero
-- skipped-layer imports: zero unless explicitly documented
-- non-entrypoint crossings: zero
-- package exports unchanged unless deliberately approved
-- old internal import paths: zero
-
-The checker should enforce exact layer names, direction, adjacency, and allowed entrypoint paths. Avoid prefix or glob exceptions that turn the wall into a convention-only rule.
-
-## Completion criteria
-
-Finish only when:
-
-- every cross-layer import follows the documented direction
-- upper layers know only adjacent lower-layer entrypoints
-- lower implementation files can move without upper import changes
-- internal entrypoints and external package APIs remain distinct
-- the checker and architecture SSOT agree
-- no temporary alias or broad barrel remains without an explicit compatibility window
-- relevant tests, typecheck, and build pass
+`layer entrypoint`는 구현 배치를 감추고 `variability seam`은 복수 구현을 교체한다. 캡슐화와 교체 가능성을 같은 존재 이유로 취급하지 않는다.

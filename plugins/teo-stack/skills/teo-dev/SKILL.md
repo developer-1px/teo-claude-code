@@ -1,333 +1,154 @@
 ---
 name: teo-dev
-description: "Personal software-delivery workflow for an explicit handoff from discussion to execution. Use after discussing a code change when the user says 진행해, 그렇게 하자, 해봐, 알아서 진행, 이슈 따고 진행, or otherwise asks Codex or Claude Code to autonomously take the agreed scope through issue setup, implementation, verification, progress comments, commits, push, and PR. Also use for an explicit follow-up request to address review or CI, merge, and clean the worktree. Do not use while discussion is still provisional, for read-only diagnosis or status, or when the user explicitly chooses another workflow."
+description: "Take an agreed software change through issue setup, implementation, verification, commit, push, and PR after an explicit execution handoff such as 진행해 or 이슈 따고 진행. Also handles requested review, CI, merge, and cleanup follow-ups. Excludes provisional discussion, read-only status, and a different workflow chosen by the user."
 ---
 
 # Teo Dev
 
-Take an agreed software change to an opened PR with lightweight, evidence-driven execution. Treat merge and cleanup as a separate, explicitly authorized follow-up.
+Deliver the agreed change to a verified, opened PR. Merge and cleanup require
+authorization for those actions, which may already be present in the request.
 
-## Preserve the handoff boundary
+## Scope and authority
 
-- Treat discussion, diagnosis, and proposals as provisional until the user explicitly says to proceed.
-- Interpret `진행해`, `그렇게 하자`, `해봐`, `알아서 진행`, and equivalent approval after a software discussion as the execution handoff.
-- Use the preceding conversation as the scope source. Do not ask the user to repeat context already available in the thread, repository, issue, or docs.
-- Reconstruct the objective, observable acceptance, in-scope and out-of-scope surfaces, constraints, and supporting evidence before mutation.
-- Investigate an uncertainty before asking. Ask one question only when the answer cannot be discovered and would materially change the result.
-- Do not create a product goal unless the user explicitly asks for one.
-- Do not invoke `devx` from this workflow unless the user explicitly overrides this rule in the current request.
+Use the conversation, owning issue, and applicable repository rules to recover
+the outcome, completion evidence, boundaries, and settled decisions. Do not ask
+the user to repeat available context.
 
-`진행해` and equivalent approval authorize execution of the last agreed
-semantic contract. They do not authorize a new interpretation, additional
-solution, or scope first introduced while drafting an issue, plan, or PR. If a
-preceding `discuss` conversation did not present and confirm a Goal Anchor,
-stop before issue mutation and present the smallest deterministic Execution Contract for
-approval.
+An explicit "진행해" or equivalent handoff authorizes normal in-scope issue and
+project updates, linked branch or worktree creation, implementation,
+verification, progress comments, commits, push, and PR creation. A missing
+Goal Anchor or named Execution Contract does not require reapproval. Record
+the agreed scope and continue.
 
-The execution handoff authorizes normal in-scope lifecycle actions through PR: issue creation or updates, project status updates, branch or worktree creation, implementation, verification, commits, push, and PR creation. It does not authorize merge by default and never broadens the agreed scope. A `mergeable` state, green check, approval, or "merge possible" verdict describes capability only; it is not an instruction, authorization, or obligation to merge.
+Discussion agreement alone is not execution authorization. Green checks,
+review approval, and mergeability do not authorize merge. A merge request
+already given in the session remains valid; do not ask again.
 
-## Lock and carry the Execution Contract
+Respect the user's chosen workflow. Do not invoke repository-local devx or
+devx-batch unless the user explicitly names that skill in the current request.
+Create a product goal only when explicitly requested.
 
-Carry one semantic contract unchanged from discussion through issue,
-implementation, review, and PR. Its always-present navigation core is:
+## Carry the agreed decisions
 
-```markdown
-### Goal Anchor
-- Outcome: [the one user-visible or operational result]
-- Done: [observable evidence that closes the original gap]
-- Don't: [non-goals and invariants that must remain unchanged]
-```
+Keep a compact Outcome / Done / Don't anchor, with exact structure, vocabulary,
+ownership, mappings, behavior, and approved diagrams when these carry material
+decisions. Preserve relevant corrections, rejected models, and intentionally
+delegated choices. Reuse an existing discussion contract; do not invent
+optional sections.
 
-This core never replaces the material grounded decisions and exact artifacts
-that make the handoff deterministic.
+Before issue or PR publication, check both that all material decisions are
+represented and that no new outcome, deliverable, or boundary relaxation has
+been introduced. Routine implementation choices and necessary regression
+repairs within scope do not require a separate "contract delta."
 
-- Reuse the confirmed Goal Anchor from `discuss` when present. Otherwise derive it from the user's request and verified evidence before implementation.
-- When `discuss` provides Grounded Decision Context, Success Evidence,
-  Canonical Vocabulary, Guardrails, Smells, Replan Triggers, Work Topology, or
-  exact structure, mapping, and behavior artifacts, preserve the applicable
-  sections with the Goal Anchor. Do not invent missing optional sections as
-  ceremony.
-- Treat material discussion artifacts as contract content. Preserve corrected
-  premises that changed the model, canonical distinctions and names, recurring
-  rejected models, executor discretion, and approved ASCII diagrams when they
-  carry decisions. Do not compress them into Goal Anchor prose, scope bullets,
-  or an implementation checklist.
-- Prefer the discussion's approved ASCII diagram for relationships, flow,
-  hierarchy, mappings, state transitions, ownership boundaries, and
-  before/after structure. Preserve names, direction, nesting, cardinality,
-  states, and exclusions verbatim or in a demonstrably lossless equivalent.
-  Do not add decorative diagrams for simple facts or lists.
-- Treat the Goal Anchor as a compact navigation aid, not the entire handoff.
-  Preserve every grounded decision whose omission would let reasonable
-  executors choose materially different targets, scope, owners, dependency
-  directions, structures, behaviors, fallback policies, invariants, or
-  completion evidence.
-- Keep changing run state—current phase, observations, active hypothesis, blockers, and next verification—out of the stable contract and in working-plan or progress comments.
-- Treat the first locked anchor as immutable history. Only an explicit user-approved `contract delta` may change it.
-- Record an approved delta as an append-only before/after note with its reason and authorization. Do not rewrite the original issue text or comment so the expansion disappears.
-- When a delta follows renewed discussion, project the full changed decision
-  artifact, not only its revised Outcome/Done/Don't. Carry forward unaffected
-  approved artifacts, replace artifacts invalidated by the corrected premise,
-  and preserve the correction and rejected prior model when either could recur.
-- Keep only user-approved deferred objectives visible and outside Done.
+When the outcome or scope must change, describe the specific change and seek
+only the missing authorization. Record material approved changes and their
+reason where the repository keeps scope. Do not turn review suggestions into
+new objectives or register unrelated follow-up issues without a request.
 
-### Enforce lossless issue projection
+After compaction or handoff, recover the authoritative issue and scope changes,
+then reconcile the current diff and remaining work. Read PR state when it is
+relevant. Preserve completed work and unaffected decisions.
 
-Issue creation is serialization of the approved Execution Contract, not a new
-design step. Before creating or updating an issue, perform a semantic source
-check:
+## Establish the issue and workspace
 
-- Map every title claim, Goal Anchor item, scope item, completion condition, and
-  implementation commitment to an exact approved contract item or quoted user
-  statement.
-- Map every material discussion artifact forward: controlling intent,
-  model-changing correction, canonical vocabulary and distinction, ownership
-  or dependency relation, mapping, state or command flow, approved ASCII
-  diagram, recurring rejected model, and executor discretion.
-- Map every material grounded decision from the approved discussion forward
-  into the contract and issue. A backward-only source check prevents invention
-  but does not prevent omission.
-- Permit repository-required metadata and verified current-state evidence only
-  when they do not change Outcome, Done, Don't, solution choice, or work scope.
-- Do not promote examples, analogies, rejected proposals, assistant ideas,
-  smells, or possible hardening into issue scope.
-- Keep an implementation mechanism out of the issue when the approved contract
-  specifies only an outcome and more than one mechanism remains valid.
-- If any semantic item has no source, remove it. If it appears necessary to
-  complete Done, stop and obtain an explicit contract delta before issue
-  mutation.
+Read applicable AGENTS.md and the repository's issue, branch, verification, and
+contribution procedures. Load architecture documentation for the affected
+responsibility, not every document in the repository.
 
-After drafting, compare the issue back to the approved contract. Do not create
-or update it unless the issue entails no additional objective, acceptance
-condition, non-goal relaxation, component, or work item. Repository issue
-templates may reshape presentation but never meaning or collapse exact
-decisions into broader prose.
+Inspect branch, remotes, worktrees, dirty state, and the owning issue or PR.
+Preserve unrelated user and agent work. Resolve ownership from evidence;
+failed lookups do not justify guessing a branch, account, or issue.
 
-After creating or updating the issue, fetch the authoritative remote issue and
-run the projection check again against what was actually stored:
+Reuse the issue that owns the agreed objective, or create one using repository
+rules. Use one causal objective per issue and PR unless the repository specifies
+otherwise. Split only genuinely independent outcomes. Record the scope and
+planned validation in the issue; add a separate working-plan comment only when
+it contributes information beyond the body.
 
-- Map every contract item forward to the remote title, body, or authoritative
-  scope comment, and map every semantic issue item back to the contract.
-- Compare structural artifacts, not just prose claims. A diagram or mapping
-  fails read-back if a name, direction, nesting relation, cardinality, state,
-  or inclusion/exclusion boundary changed or disappeared.
-- Run the Fresh Executor Test: assume the executor has the repository and issue
-  but none of this conversation. Confirm that the executor can reproduce the
-  same Outcome, Done, Don't, grounded decisions, exact artifacts, and scope
-  without reopening any material choice. If two reasonable interpretations
-  remain, restore the approved decision that closes the fork; if no approved
-  decision exists, stop for renewed discussion instead of guessing.
-- Run a Discussion Continuity Test: reread the source conversation and point
-  each material decision artifact to its remote issue representation. The issue
-  fails even when its Outcome is accurate if it loses the canonical model,
-  corrected distinction, rejected model, or approved ASCII structure that gave
-  the outcome one meaning.
-- Correct presentation or serialization loss, refetch, and repeat the check.
-  If the mismatch changes the contract, stop for an explicit contract delta.
-- For the initial scope projection, do not create the implementation workspace
-  or begin implementation until the remote issue passes this read-back gate.
+Read back a created or changed issue to verify the stored scope and links.
+Repair serialization loss before implementing dependent work.
 
-### Recover after context loss
+Create the required linked branch or worktree from the authoritative base.
+Fetch the relevant remote immediately before creation and verify the actual
+starting commit. A clean isolated worktree can start from the fetched remote
+tip without checking out or pulling a dirty local base. Preserve that dirty
+checkout. If repository rules require a local base update, follow them and
+report any actual conflict; do not merge or reset someone else's base.
 
-- Treat context compaction, session resumption, handoff, or uncertainty about the original objective as a recovery boundary.
-- Before any further mutation, reread the current working issue title and body, user-approved scope comments or contract deltas, and the current branch diff and PR state.
-- Reconstruct the Goal Anchor from those authoritative sources and map the existing diff and remaining work back to it.
-- Treat compacted summaries, previous plans, progress reports, and review comments as navigation aids, never as scope authority.
-- If the current diff or plan does not map to the reconstructed Goal Anchor, stop and report the mismatch instead of continuing.
+Use the current worktree's lockfiles and repository bootstrap procedure.
 
-Map every proposed task, code change, and review finding before acting:
+## Implement and verify
 
-```text
-proposal or finding
-├─ directly closes Done or repairs a regression introduced by this diff
-│  └─ current issue / PR
-├─ is causally required to close Done or preserve Don't
-│  └─ current issue / PR, with the causal chain stated
-├─ changes Outcome, adds Done, or relaxes Don't
-│  └─ STOP: propose a contract delta and obtain explicit user approval
-└─ otherwise
-   └─ leave as an observation; do not modify the current PR or create follow-up work without an explicit user request
-```
+Trace the producing mechanism, then make changes that close Done or preserve
+the agreed invariants. Use a specialized skill only when its actual capability
+helps this task. Do not run a ritual sequence of audits.
 
-Severity, reviewer preference, or a generic best practice never authorizes scope expansion by itself. A reviewer may expose a risk; they do not replace the user's scope authority. If an out-of-scope risk prevents safe merge or a required check from passing, use `blocked` or `stopped` until the user approves a contract delta or follow-up strategy.
+Keep the solution proportional to the problem. Preserve responsibility and
+ownership boundaries, and make degraded or unavailable states observable.
+Inspect nearby occurrences of the same regression inside the agreed scope;
+a local fix does not authorize a repository-wide cleanup.
 
-Treat review as a lens for discovering possible smells or leaks, not as an issue, acceptance condition, or work queue. Independently reproduce and map a finding before acting. If it becomes work, do that work because verified evidence shows a Done gap, a Don't violation, or a regression introduced by the current diff—not because a reviewer requested it.
+Derive validation from acceptance, risk, and the changed dependency surface.
+Complete repository-required checks and targeted behavior verification.
+Add a regression test when it demonstrates the defect or protects a meaningful
+invariant. Do not add tests that merely mirror a low-impact edit, repeat passed
+checks without new evidence, or broaden testing after the completion bar is met.
 
-Security and privacy findings are the hard exception. Investigate every available review finding that plausibly alleges a security or privacy problem, including secret exposure, authorization or ownership bypass, cross-user or cross-tenant data exposure, and mishandling of personal data. Resolve it before merge by either closing it as a false positive with concrete evidence or removing, redesigning, or fixing the risk and verifying the result. Never defer a valid security or privacy finding until after merge. If resolving it requires a contract delta, stop for explicit user approval and keep the PR unmerged.
+For frontend changes, exercise the actual route and interaction using the
+repository's preview contract and the user's browser preferences. Compare
+against design SSOT when applicable. A Story, screenshot, or typecheck alone
+does not establish that the product path works.
 
-Each execution phase must reduce the unresolved Done conditions. If it adds an unrelated surface, acceptance condition, or migration, stop and classify it before continuing.
+If a required check is unavailable, record the reason and the best available
+evidence without relabeling it as a pass. If the user reproduces the original
+symptom, treat acceptance as failed until evidence establishes a different
+cause or scope.
 
-## Load the local contract first
+Inspect the final diff for omissions, introduced regressions, and unrelated
+changes. Remove only this task's unjustified edits.
 
-1. Read every applicable `AGENTS.md`, repository instruction, architecture SSOT, and contribution rule.
-2. Let repository-local rules override this personal workflow.
-3. Inspect the repository, branch, remotes, dirty state, worktrees, related issues, linked branches, open PRs, labels, assignees, and visible work by other agents.
-4. Preserve unrelated user or agent changes. Do not take over a foreign, stale, or ambiguous worktree by guessing.
-5. Use repository-provided issue, branch, commit, PR, and cleanup skills when they apply.
+## Progress and PR
 
-Classify unavailable or conflicting state explicitly. Do not turn failed lookups into guessed ownership, a default issue, the latest branch, or a successful verification.
+Comment at meaningful milestones: a changed plan or blocker, verified behavior,
+a material decision, and PR creation. Keep stable scope in its authoritative
+location; report current evidence and remaining work without copying the whole
+contract each time. Follow repository language and artifact conventions.
 
-## Phase 1: Deliver to PR
+Before commit and push, use the repository's preflight and commit-message rules.
+Inspect remote state, divergence, conflicts, and required checks. Do not bypass
+guards or force-push shared history without authority.
 
-### 1. Establish one working issue
+Open the PR with the owning issue link, the actual resulting behavior, and
+executed or unavailable verification. Read back its stored body, issue linkage,
+diff, and relevant check state. Confirm that each acceptance condition has
+implementation or evidence, and that each changed surface belongs to scope.
 
-- Reuse the agreed issue when one already owns the work.
-- When landing work has no issue, create one using the repository's issue-creation rules and available tools.
-- Keep one causal objective and one PR in one issue. Put dependent phase tasks in comments instead of inflating the tracker with tiny issues.
-- Split work only when objectives, owners, deployability, or PRs are genuinely independent.
-- Mark the issue in progress using the repository's project workflow when supported.
-- Do not implement an ambiguously owned or concurrently active issue. Record the ownership conflict and stop or choose another authorized item.
+For frontend work, use show-me when available and applicable. Verify that the
+local worktree HEAD matches the PR head. Put the PR URL and verified or
+shown-unverified local URL together in the user handoff. The ephemeral local
+preview does not belong in shared GitHub artifacts.
 
-Before broad implementation, add a concise working-plan comment containing:
+The default endpoint is pr-open. Report the issue, PR, branch or worktree,
+verification, preview when relevant, and material remaining work.
 
-- the exact Goal Anchor and any applicable Execution Contract sections;
-- scope and explicit exclusions;
-- a phase tree;
-- planned verification;
-- known risks, dependencies, blockers, and deferred objectives.
+## Requested review, merge, and cleanup
 
-Choose the lightest work topology that preserves ownership and causality:
+For a review-response request, inspect findings, reproduce consequential claims,
+and fix verified acceptance gaps or regressions within scope. For landing,
+refresh the PR, authoritative base, conflicts, required checks, and blocking
+reviews. Wait only on required landing conditions or monitoring the user asked
+for. Advisory feedback does not become an automatic work queue.
 
-- use one issue for one causal objective and one PR, even when it has several dependent phases;
-- split issues only for independently ownable, deployable, or reviewable objectives, and state their dependency edges;
-- when unresolved decisions dominate a multi-session effort, resolve a decision map before creating implementation issues;
-- never turn a simple checklist into an issue graph for appearance's sake.
+Investigate credible security or privacy findings before merge. Resolve them
+with evidence or a verified fix; keep the PR unmerged if a valid risk requires
+a user decision outside current scope. Reviewer severity alone cannot expand
+scope.
 
-### 2. Create the correct workspace
+Merge only with existing user authorization and satisfied repository gates.
+Confirm the actual merged state, then update the issue or project as required.
+For authorized cleanup, use main when available, or the repository procedure,
+to remove only proven merged or redundant local work and update the base.
 
-- Follow the repository's branch and worktree policy exactly.
-- Prefer an issue-linked branch when the repository requires one.
-- Check current branches and worktrees before creating another copy.
-- Immediately before creating an issue branch or worktree, identify the
-  repository-defined base branch and its authoritative remote, fetch that
-  remote, and update the local base with `git pull --ff-only`. Create the new
-  branch from the fetched remote base tip, and verify that its merge-base or
-  starting commit matches that tip. Do not rely on a base checkout fetched
-  earlier in the session.
-- If the base checkout is dirty, cannot fast-forward, or has diverged from the
-  authoritative remote, do not merge, rebase, reset, or create the work branch
-  from the stale base. Preserve the existing state and stop to resolve the base
-  ownership or divergence explicitly.
-- Bootstrap dependencies from the current worktree's own lockfiles. Never borrow another checkout's dependency tree.
-
-### 3. Implement from cause to effect
-
-- Trace the current behavior and producing mechanism before editing.
-- Choose the smallest applicable personal or repository skill for a technical concern. Use specialized refactoring, naming, cohesion, doubt, design-import, browser, or document skills only when their trigger is present; do not run them as a ritual checklist.
-- Treat a terse correction as evidence of an underlying rule. Check the same defect class in nearby in-scope locations instead of patching only the named line.
-- Keep regression expansion inside the agreed objective. Record independent hardening or cleanup as follow-up work.
-- Map each work unit to a Done condition, a Don't invariant, or an explicit necessary dependency before editing. Do not implement an unmapped unit.
-- Challenge unnecessary concepts, files, flags, props, adapters, and fallback paths before adding new structure.
-- Reuse an existing component or abstraction when responsibility and behavior match, not merely because the appearance is similar.
-- Preserve explicit state and ownership boundaries. Make fallback, degraded, missing, stale, and unavailable states observable.
-- Keep the harness lightweight: do not require fixed agent roles, a fixed step count, or local workflow artifact directories.
-
-### 4. Keep progress externally legible
-
-Update the issue at meaningful boundaries:
-
-- after the initial plan is grounded;
-- after a phase changes the observable state;
-- when scope, ownership, or a blocker changes;
-- when a non-obvious technical decision is worth retaining;
-- when the PR is opened.
-
-Include the latest verified waypoint, current frontier, new observations,
-blockers or unavailable checks, and next verification when those facts matter.
-If an agreed smell or replan trigger appears, stop extending the implementation
-plan and return to the invalidated causal premise. Do not silently reinterpret
-the contract to fit the existing diff.
-
-Do not comment on every edit. For a meaningful structural change, prefer a compact ASCII before/after tree. Put durable, non-obvious learning in a distinct note rather than burying it in a generic progress log.
-
-Report progress using completed acceptance cases, routes, variants, scenarios, or verified behavior. Always distinguish:
-
-- completed and evidenced;
-- remaining;
-- blocked or unavailable;
-- deferred outside the current issue;
-- approved contract deltas, normally none.
-
-Express progress as distance remaining to the Goal Anchor, not elapsed time, file count, effort, or a guessed percentage.
-
-### 5. Verify the real outcome
-
-- Derive checks from acceptance and the changed dependency surface.
-- Run targeted tests, typecheck, build, lint, smoke, or integration checks required by the repository and risk.
-- For frontend behavior, run the actual application when feasible and inspect the real route and interaction in a browser.
-- Compare screenshots, layout, route variants, data states, and interaction behavior with the design SSOT when one exists.
-- Do not treat stories, fixtures, snapshots, or a green typecheck as proof of the product path when the live path can be exercised.
-- Make regression fixtures reproduce the observed production-shaped event or input path. A synthetic happy-path fixture that bypasses the reported data shape does not prove Done.
-- If the user demonstrates the original symptom after the work was reported complete, treat it as a failed acceptance of the same Goal Anchor until evidence proves it is a different cause or scope. Reopen or correct the owning issue instead of presenting the symptom as a new request.
-- Keep previously verified design and product contracts active through follow-up diagnosis. Do not replace an exact SSOT requirement with a newly generalized proposal that obscures whether the original acceptance passed.
-- If a required environment or dependency is unavailable, record the attempted command and classify verification as `unavailable`; do not substitute an easier check as success.
-- Before PR, inspect the full diff, search for omissions and the same regression class, and confirm that unrelated changes are absent.
-- Audit every changed file and behavior against the Goal Anchor or a stated necessary dependency. Remove only this workflow's orphaned edits; preserve unrelated pre-existing user or agent work.
-
-### 6. Commit, push, and open the PR
-
-- Split commits by meaningful change and follow the repository's commit-message rules.
-- Before push, inspect base divergence, remote branch state, conflicts, required lock freshness, and relevant checks.
-- Do not force-push shared history or bypass required checks.
-- Create the PR using the repository's assignee and body conventions.
-- Link the owning issue and include executed and unavailable verification.
-- Add a final issue comment with the PR, completed acceptance, remaining risks, and follow-up items.
-
-After creating or updating the PR, fetch the authoritative remote issue, PR
-body, changed files or diff, and verification state. Run this correlation gate:
-
-- Confirm that the PR links and, when repository convention requires it, closes
-  the one owning issue.
-- Map every issue contract and Done item to the PR diff or concrete verification
-  evidence; do not let the PR body stand in for the actual diff.
-- Map every semantic PR claim and changed surface back to an issue contract item
-  or a stated causal dependency required to preserve Done or Don't.
-- Correct metadata or serialization loss, refetch, and repeat the check. Repair
-  implementation gaps before reporting completion. Stop for an explicit
-  contract delta when the mismatch changes Outcome, Done, Don't, or scope.
-
-Do not report `pr-open` until the issue and PR pass this bidirectional check.
-
-For a frontend product change covered by the installed `show-me` skill, confirm
-that the worktree HEAD matches the remote PR head, then run `show-me` from that
-worktree. Put the PR URL and the resulting `verified` or `shown-unverified`
-localhost URL together in the final user handoff, not in an issue, PR body, or
-PR comment. Treat the URL as an ephemeral local preview, never as a deployment
-or shared URL. If `show-me` returns `not-shown`, report the reason without
-inventing a URL. For backend-only or otherwise inapplicable work, report
-`show-me: non-applicable`.
-
-The default terminal state is `pr-open`. Stop after confirming that the PR exists and report:
-
-- issue and project status;
-- branch or worktree;
-- commits and PR;
-- verification evidence;
-- the `show-me` status and local preview URL when applicable;
-- remaining or blocked items.
-
-Do not merge merely because the user said `진행해`, because a reviewer says the PR is mergeable, or because all checks are green. If the initial request explicitly includes merge, treat that as Phase 2 authorization.
-
-## Phase 2: Land and clean
-
-Enter this phase only when the user explicitly asks to merge, land, finish, or clean after PR.
-
-1. Apply the context-recovery gate first when context was compacted, resumed, handed off, or became uncertain.
-2. Refresh the PR, repository-required landing gates, base, conflicts, and formal blocking review state. Determine what is required from the local repository contract; a signal's CI, bot, or human delivery channel does not grant authority.
-3. Wait only for required landing gates. Do not wait for non-required review, analysis, or advisory checks.
-4. Read and address general review output only when the user explicitly requests review response or repository rules make it a blocking condition. If non-required review output is already available, do not turn it into a work queue; inspect any security or privacy allegation under the hard exception above.
-5. Before editing for a finding, record its evidence and Goal Anchor mapping. Address only verified Done gaps, Don't violations, regressions introduced by the current diff, and security or privacy risks. Leave other findings as observations; do not create follow-up work unless the user asks.
-6. For a contract delta, stop until the user explicitly approves it. A required subjective gate may prevent landing, but it cannot authorize scope expansion.
-7. Merge only when the user has explicitly authorized merge and repository rules and required gates permit it. Mergeability is a capability, not a command. Never use an administrative bypass without explicit authority.
-8. Confirm the merged state and update the issue or project status according to repository rules.
-9. Use the personal `main` skill when available to remove only worktrees and branches proven merged or redundant and to fast-forward the base branch.
-
-Finish in one explicit terminal state:
-
-- `landed-clean`: merged, cleanup verified, base branch current;
-- `pr-open`: PR exists but merge was not authorized or is still pending;
-- `blocked`: an external or ownership condition prevents safe progress;
-- `stopped`: scope or intent requires a user decision;
-- `no-change`: the requested outcome already exists or implementation is unnecessary.
-
-Never describe a fallback or partial terminal state as normal completion.
+Finish with the actual state: landed-clean, pr-open, blocked, stopped, or
+no-change. Describe a partial result or unavailable check explicitly.

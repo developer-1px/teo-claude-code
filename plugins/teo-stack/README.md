@@ -4,13 +4,13 @@
 
 ## 구성
 
-- Codex 등록본 미러: `~/.codex/skills`에서 `.system`을 제외해 이 repo에 미러한 15개 스킬
-- repo-only 스킬: 현재 Codex에는 등록되지 않았지만 repo에 유지하는 4개 스킬
-- 전체: 19개 활성 스킬
+- Codex 등록본 미러: 현재 실행 계정의 skills 디렉터리에서 `.system`을 제외해 이 repo에 미러한 20개 스킬
+- repo-only 스킬: 현재 Codex에는 등록되지 않았지만 repo에 유지하는 3개 스킬
+- 전체: 23개 활성 스킬
 
 ## 동기화 기준
 
-현재 Codex 등록본을 기준으로 한다.
+현재 실행 계정의 Codex 등록본을 기준으로 한다. 기본 경로는 `~/.codex/skills`이며, 계정별로 저장 위치가 다르면 현재 세션에 등록된 경로를 확인한다.
 
 - 같은 이름의 스킬은 Codex 등록본으로 덮어쓴다.
 - `SKILL.md`뿐 아니라 `agents`, `scripts`, `references`, `assets` 같은 전체 하위 트리도 동일하게 맞춘다.
@@ -19,11 +19,11 @@
 
 ## Codex 등록본 미러
 
-`app-owned-boundary-refactor`, `cohesion`, `conflict`, `discuss`, `doubt`, `entity-interface-refactor`, `layer-abstraction-refactor`, `main`, `migrate-to-codex`, `naming`, `ocp`, `responsibility-surface-refactor`, `same-lens`, `srp`, `teo-dev`
+`app-owned-boundary-refactor`, `canonical-module-audit`, `cohesion`, `conflict`, `design-product-story-parity`, `discuss`, `doubt`, `entity-interface-refactor`, `layer-abstraction-refactor`, `main`, `migrate-to-codex`, `naming`, `ocp`, `research`, `resolve-lint`, `responsibility-surface-refactor`, `same-lens`, `show-me`, `srp`, `teo-dev`
 
 ## Repo-only 스킬
 
-`explain`, `ideal`, `research`, `reframe`
+`explain`, `ideal`, `reframe`
 
 ## 퇴역 스킬
 

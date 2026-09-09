@@ -1,172 +1,69 @@
 ---
 name: research
-description: Research external standards, best practices, de-facto adoption, and frontier experiments by reading sources and synthesizing either the direction an ecosystem is converging or how a local option compares with external reference points. Use for research, 리서치, 조사, 생태계 수렴, 수렴 방향, 어디로 가고 있어, 요즘 흐름, standard, best practice, de facto, frontier, reference, 레퍼런스, 비교 사례, /research, or /reference. Use convergence mode when the user wants direction only; do not turn it into a recommendation or solution unless they ask for local comparison or adoption judgment.
+description: "Research external standards, practices, adoption, and experiments to explain ecosystem direction or compare a local option with relevant peers. Use for $research, /reference, ecosystem research, or an evidence-backed external comparison."
 ---
 
 # Research
 
-Read external sources for the user and turn them into a calibrated view of the
-field. Do not return a search log or a naked link list.
+Read sources and synthesize the answer the user needs. Keep direct evidence,
+inference, and adoption judgment distinguishable.
 
-## Choose one output mode
+## Match the requested question
 
-Select the narrowest mode from the user's wording and decision need.
+For ecosystem direction, explain what is converging, why, independent supporting
+signals, counter-signals, and how stable the direction is. Do not add a local
+adoption plan unless requested.
 
-### Convergence mode
+For a local comparison or adoption judgment, inspect the local target and
+constraints, identify comparable peers, and explain meaningful alignment and
+differences. When both are requested, establish the external evidence before
+the local judgment.
 
-Use when the user asks where an ecosystem is heading, what independently
-evolved approaches are becoming alike, or whether a direction is stable.
+An ordinary factual research question does not need to be recast as ecosystem
+convergence. Use the requested scope and depth.
 
-Answer only:
+## Relevant peers and evidence
 
-- the direction of movement;
-- the selection pressures producing it;
-- the independent signals that support it;
-- whether it is `stable`, `emerging`, `contested`, or `absent`;
-- counter-signals and what would falsify the synthesis; and
-- important unknowns.
+Compare implementation forms as well as topics. A skill's closest peers are
+reusable agent instructions; a library API's peers are comparable APIs.
+Do not substitute broad essays for evidence about a concrete artifact.
 
-Do not compare against the local project, recommend adoption, create an
-objective, or propose a solution unless the user asks. A direction is evidence,
-not a command.
+Distinguish:
 
-### Reference mode
+- standard: normative specifications and contracts;
+- maintained practice: official recommendations and reference implementations;
+- de-facto adoption: repeated independent implementations;
+- frontier: experiments or proposals whose durable form is unsettled.
 
-Use when the user asks how a local design, API, workflow, or proposal compares
-with external reference points or wants an adoption judgment.
+One vendor's guidance or several articles repeating it do not establish
+independent convergence. Recency alone does not establish a frontier direction.
+Prefer primary sources. Verify current or unstable claims and include dates
+when they affect the interpretation.
 
-In addition to the external evidence:
+Read sources supporting central claims. Extract what each establishes and the
+limitations of its context. Cite the source next to the claim, using short
+paraphrases rather than extensive copied text. Label inference and disagreement.
 
-- inspect the local target and its constraints before searching;
-- identify its implementation form and closest peer set;
-- compare its problem, constraints, and solution shape with those peers;
-- describe proximity as `close`, `adjacent`, `different`, or `unknown`; and
-- separate alignment, deliberate departure, and unresolved difference.
+## Calibrate the conclusion
 
-Recommendations belong only in this mode and remain subordinate to confirmed
-user intent and local rules.
+A direction is stable when durable standards, guidance, and adoption reinforce
+it; emerging when independent experiments move together; contested when credible
+approaches favor different constraints; absent when evidence supports no common
+direction. Insufficient evidence is an uncertainty, not proof of absence.
 
-If the request mixes both modes, present convergence first, then a clearly
-separated local comparison. Do not silently turn the first into the second.
+For local comparison, explain whether the closest peer is close, adjacent,
+different, or unknown and why. Recommendations remain subordinate to the
+user's intent and local constraints.
 
-## Lock the right peer set
+Stop when the requested claims have adequate support. Continue only for a
+material missing fact, a conflicting source, or requested breadth. Report
+unavailable evidence directly; do not keep searching to manufacture consensus.
 
-Compare the same form before the same topic. A skill's primary peers are other
-skills and reusable agent instructions, not every article about its subject. A
-library API's primary peers are comparable APIs and official migration guides,
-not general architecture essays.
+## Response
 
-Before searching, state the narrow research question and identify:
+Lead with the synthesis and its supporting explanation. Include relevant
+counter-evidence and unresolved facts. Use a table or diagram when it makes
+actual comparisons easier to assess; do not force a fixed report structure.
 
-- the target form;
-- the primary peer set;
-- adjacent peers used only when primary evidence is weak; and
-- broad background that must not carry the central claim.
-
-For reference mode, discover these from the local artifact instead of asking
-the user when files, docs, history, or code can settle them.
-
-## Separate evidence layers
-
-Keep these labels distinct throughout the synthesis:
-
-| Layer | Meaning | Strong sources |
-|---|---|---|
-| `standard` | normative contract or specification | standards bodies, specifications, official API contracts |
-| `bp` | maintained recommended practice | official guides, maintainers, reference implementations |
-| `de-facto` | repeated ecosystem adoption | several independent major implementations, migration patterns |
-| `frontier` | plausible but unsettled movement | proposals, experiments, recent issue discussions |
-
-One vendor statement cannot establish de-facto convergence. Several sources
-repeating each other are not independent signals. Recency alone does not make
-an experiment a frontier direction.
-
-Prefer primary and official sources. Use secondary sources to discover primary
-material or to establish broad adoption when primary evidence cannot show it.
-For current or unstable claims, search the web and include dates where they
-change the interpretation.
-
-## Read sources, not snippets
-
-For each source used in a central claim, extract:
-
-- what it actually establishes;
-- which evidence layer it belongs to;
-- how independent it is from the other signals; and
-- its limitation, selection bias, or incompatible context.
-
-Do not cite a source you did not read. Keep quotations short; normally
-paraphrase and link the source next to the supported claim.
-
-## Synthesize a direction
-
-Do not call a collection of alternatives convergence. A direction exists only
-when independently evolved approaches become more alike under identifiable
-selection pressures.
-
-Classify the result:
-
-- `stable`: standards, maintained guidance, and repeated adoption reinforce the
-  same direction over time;
-- `emerging`: independent experiments are moving together but the durable form
-  is not settled;
-- `contested`: credible approaches optimize for incompatible pressures and no
-  dominant direction survives context changes;
-- `absent`: evidence shows variety, isolated proposals, or too little movement
-  to infer a direction.
-
-Any classification is a valid result. Do not prolong research to manufacture a
-trend.
-
-## Present what the user needs to judge
-
-Lead with a one-sentence synthesis. Then explain the movement and why it is
-happening in short prose. Use a compact table or diagram only when it clarifies
-several exact comparisons or causal relationships.
-
-For convergence mode, use this semantic shape without forcing fixed headings:
-
-```text
-direction
-├─ selection pressures
-├─ independent stable signals
-├─ moving or frontier signals
-├─ counter-signals
-└─ stability and falsifier
-```
-
-For reference mode, add:
-
-```text
-local target
-├─ closest reference point and proximity
-├─ shared problem and constraints
-├─ meaningful differences
-└─ adoption judgment or deliberate departure
-```
-
-Give enough source interpretation that the user does not need to open every
-link to understand the judgment. Still provide direct links so they can verify
-it.
-
-## Relation to discuss
-
-`research` supplies external evidence to `discuss`.
-
-- Findings from either mode may ground External evidence.
-- Convergence mode may ground Ecosystem convergence.
-- Convergence mode must not fill Objective or Solution by itself.
-- Reference-mode recommendations may inform a Solution only after the local
-  Problem, Cause, and Constraints are grounded.
-
-## Stop conditions
-
-Stop and report bounded uncertainty when:
-
-- primary peers cannot be identified;
-- sources do not establish independent signals;
-- current claims cannot be verified;
-- evidence belongs to incompatible contexts; or
-- the field is genuinely contested or absent.
-
-Do not hide these states behind a confident recommendation.
+Research can inform a later decision or implementation. It does not by itself
+authorize new objectives, code changes, issue creation, or external actions.

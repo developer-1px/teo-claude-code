@@ -1,157 +1,35 @@
 ---
 name: app-owned-boundary-refactor
-description: Refactor frontend source trees so packages, layers, slices, segments, routes, and page-local code have explicit owners and dependency direction. Treat FSD names as examples rather than a required target. Use for src reorganization, app-owned versus reusable placement, route/page/widget residency, and layer smell removal.
+description: 프런트엔드 코드의 책임 종류와 배치 위치를 서로 다른 축으로 판별한다. app-owned와 reusable 배치, Page-local/global 승격, route/page/widget 위치, 명목상 FSD layer 제거를 검토할 때 사용한다.
 ---
 
-# App-Owned Boundary Refactor
+# 앱 소유 경계 리팩터링
 
-Reshape the source tree so a reader can answer four questions from paths and imports:
+현재 저장소의 역할 정의와 배치 계약에 적용한다. 아래 FSD 역할명은 책임을
+설명하는 어휘이며 동일한 폴더 구조를 새로 도입하라는 요구가 아니다.
+검토 요청이면 판정을 보고하고, 구현 요청이나 기존 승인이 있으면 해당 범위에서
+경계를 정리한다.
 
-1. Who owns this code?
-2. How widely is it reused in production?
-3. Which direction may dependencies flow?
-4. Is this a reusable package contract or app-owned implementation?
+## 서로 다른 두 축
 
-This skill owns placement, residency, and dependency direction. It does not redefine UI command/query ownership or props/store/dispatch conventions. When entity, feature, and widget semantics are in scope, apply `entity-interface-refactor` as the single source of truth for those decisions.
+- Feature·Entity·Widget 여부는 책임이 결정한다.
+- Page-local·app-global·package 여부는 production residency가 결정한다.
+- 한 Page에서만 쓰는 product command도 Page-local Feature다.
+- 소비자가 하나라는 이유로 component나 hook이 product command를 직접 소유하게 하지 않는다.
 
-## Discover the repository's vocabulary
+## Residency
 
-Before proposing a target tree:
+- re-export barrel은 production consumer로 세지 않는다. 실제 runtime owner까지 따라간다.
+- 예상 재사용은 global 배치의 근거가 아니다.
+- 서로 독립된 production owner가 실제로 공유할 때만 global로 승격한다.
+- 외부 package consumer와 같은 app 안의 독립 owner를 구분한다. 후자는 global 배치의 근거일 수 있지만 package public API의 근거는 아니다.
 
-- read repository instructions and architecture docs
-- inspect the dirty worktree and current branch
-- list the relevant source tree and package exports
-- map production importers, excluding tests, stories, fixtures, and generated files
-- inspect route entry points and first-level page composition
-- sample history for ambiguous ownership
+## 경계
 
-Do not force FSD names onto a repository that already expresses the same hierarchy with different terms.
-
-Use this generic hierarchy:
-
-```text
-layer > slice > segment
-```
-
-- A layer defines dependency direction.
-- A slice groups one independent owner or change reason.
-- A segment groups files by technical role inside that owner.
-
-Names such as `shared`, `entities`, `features`, `widgets`, and `pages` are examples of layers. Names such as `api`, `model`, `ui`, and `lib` are examples of segments. Role-only names such as `components`, `hooks`, `types`, and `utils` are usually weak slice names because they do not identify an owner.
-
-## Establish placement invariants
-
-Adapt these invariants to local terminology:
-
-- app-owned code may depend only toward lower, more reusable layers
-- a reusable package must not import app `src`
-- app-owned implementation must not leak into reusable package exports
-- sibling slices must not silently orchestrate each other
-- a public entry point must hide internal file layout when the repository uses facades
-- page-local code stays with its closest production owner until reuse is demonstrated
-- global placement requires real production ownership by multiple independent consumers, not anticipated reuse
-
-Do not create a layer, slice, barrel, wrapper, or alias merely to make the tree look symmetrical.
-
-## Determine production residency
-
-Classify every candidate by real importers:
-
-| Residency | Default placement |
-|---|---|
-| one route or page | page-local under that owner |
-| one stable domain family | the domain-owned slice |
-| multiple independent production owners | a justified global slice or reusable package |
-| story, fixture, or test only | keep near its owner or remove if obsolete |
-| no importer | investigate as dead or unfinished code |
-
-Do not count re-export barrels as independent consumers. Follow imports to the actual runtime owners.
-
-Promotion and demotion are both normal:
-
-- promote page-local code only after independent reuse exists
-- demote global code when it has only one real production owner
-
-## Preserve the route and screen map
-
-For route-based applications, keep the composition legible:
-
-```text
-route -> page -> first-level visible blocks -> local internals
-```
-
-The page should reveal major visible regions, their order, and route-level visibility. Do not hide the whole screen behind an opaque wrapper whose only job is to mirror the page. A first-level block should correspond to a recognizable screen region, not an arbitrary file-size split.
-
-Keep route-specific state, layout, and composition under the route or page unless another production owner genuinely shares them. Remove stale route-era names and wrappers once the migration is complete.
-
-When the repository uses entity/feature/widget layers, defer whether a block is query-only or command-owning to `entity-interface-refactor`; this skill decides only where the resulting owner belongs in the tree.
-
-## Test whether a seam is real
-
-Before preserving a wrapper, barrel, adapter, or public component, ask:
-
-- Does it hide volatile implementation?
-- Does it enforce dependency direction?
-- Does it serve multiple real production consumers?
-- Does it express a stable contract or invariant?
-
-If deleting the seam only shortens the import path and changes no responsibility, prefer deletion. Keep compatibility aliases only for an explicit migration window and remove them before declaring the refactor complete.
-
-## Build an evidence table
-
-Record the proposed moves before editing:
-
-| Path | Current owner | Production consumers | Dependency issue | Target owner | Decision evidence |
-|---|---|---:|---|---|---|
-
-The evidence should distinguish:
-
-- verified production imports
-- route/page ownership
-- package export constraints
-- inferred ownership that still needs confirmation
-
-Do not use file size alone as move evidence.
-
-## Refactor one owner at a time
-
-1. Freeze the target invariants for one owner.
-2. Move the owner and its tests, stories, styles, and local types together.
-3. Use `git mv` for actual moves.
-4. Update direct imports and public entry points.
-5. Remove obsolete aliases, barrels, wrappers, and empty directories.
-6. Run focused tests and typecheck before moving the next owner.
-7. Re-scan production importers and dependency direction.
-
-Preserve the existing UI and behavior unless the user explicitly asks for a redesign. Do not mix unrelated formatting or cleanup into the structural change.
-
-## Check dependency direction
-
-When the repository layout matches the bundled scanner, run:
-
-```bash
-node ~/.codex/skills/app-owned-boundary-refactor/scripts/check-boundaries.mjs <repo-root>
-```
-
-The scanner checks common app/package and layer-direction violations. Treat it as supporting evidence; inspect its assumptions before applying it to a differently named tree. Add a project-local equivalent when the convention is meant to become enforceable.
-
-Also run the repository's relevant:
-
-- typecheck and focused tests
-- architecture or import guards
-- production build
-- stale-path and old-name searches
-- package-boundary checks
-
-## Completion criteria
-
-The refactor is complete only when:
-
-- paths communicate owner, residency, and role
-- dependency direction is mechanically checkable
-- reusable packages do not depend on app implementation
-- route/page composition remains visible
-- page-local and global placement matches production reuse
-- temporary aliases and pass-through wrappers are removed or explicitly time-bounded
-- no duplicate command/query or interface convention has been introduced here
-- typecheck, focused tests, guards, and build remain green
+- FSD 이름은 목표 구조가 아니라 역할 이름의 예시다.
+- layer 방향은 이름 붙은 모든 폴더를 순서대로 통과하라는 뜻이 아니다.
+- policy·불변식·translation을 추가하지 않는 중간 owner는 경계가 아니다.
+- Page는 Page-local Widget·Feature·Entity UI를 모두 직접 import하고, 주요 화면 영역과 순서를 드러내는 최종 composition root다. 화면 전체를 그대로 감추는 wrapper를 Page 아래에 만들지 않는다.
+- Widget은 해당 영역을 통째로 show/hide해도 나머지 Page의 정체성·필수 흐름·배치가 어색하지 않은 독립 surface일 때만 만든다. 보이는 section이거나 여러 Entity를 import한다는 사실만으로는 Widget이 아니다.
+- Widget은 다른 Widget을 직접 import하지 않는다. 여러 Widget의 배치·순서·동시 노출은 Page가 조합한다. Widget 안의 시각적 위치에 다른 Widget이 필요하면 Page가 둘 다 import한 뒤 명시적 structural slot으로 자식 Widget을 전달할 수 있다. slot은 배치만 표현하고 자식 Widget의 command·store를 중계하지 않는다. 두 영역이 항상 함께 숨겨져야 한다면 하나의 Widget인지 다시 판별한다.
+- 정본 client나 protocol을 도입하면 대체된 내부 facade·provider·adapter를 같은 변경에서 제거한다.

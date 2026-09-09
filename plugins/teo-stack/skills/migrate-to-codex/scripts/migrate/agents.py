@@ -22,6 +22,7 @@ from migrate.common import (
     format_manual_migration_block,
     map_model_effort,
     map_model_name,
+    model_migration_notes,
     map_permission_mode,
     unsupported_frontmatter_fields,
 )
@@ -119,10 +120,12 @@ def render_agent_toml(
         "description": description,
     }
 
-    if model:
-        document["model"] = map_model_name(model)
-    if effort:
-        document["model_reasoning_effort"] = map_model_effort(model, effort)
+    target_model = map_model_name(model) if model else None
+    target_effort = map_model_effort(model, effort) if effort else None
+    if target_model:
+        document["model"] = target_model
+    if target_effort:
+        document["model_reasoning_effort"] = target_effort
     sandbox_mode = map_permission_mode(permission_mode)
     if sandbox_mode:
         document["sandbox_mode"] = sandbox_mode
@@ -130,6 +133,7 @@ def render_agent_toml(
     document["developer_instructions"] = TomlMultilineString(
         render_agent_body(
             body,
+            model_notes=model_migration_notes(model, effort),
             permission_mode=permission_mode,
             skills=skills,
             tools=tools,
@@ -149,9 +153,10 @@ def render_agent_body(
     tools: tuple[str, ...],
     disallowed_tools: tuple[str, ...],
     unsupported_fields: tuple[str, ...],
+    model_notes: tuple[str, ...] = (),
 ) -> str:
     sections = []
-    manual_notes: list[str] = []
+    manual_notes: list[str] = list(model_notes)
 
     sandbox_mode = map_permission_mode(permission_mode)
     if permission_mode and not sandbox_mode:
@@ -217,6 +222,8 @@ def render_agent_body(
 
 def agent_report_detail(
     *,
+    model: str | None = None,
+    effort: str | None = None,
     permission_mode: str | None,
     skills: tuple[str, ...],
     tools: tuple[str, ...],
@@ -225,6 +232,8 @@ def agent_report_detail(
     **_: object,
 ) -> str:
     caveats: list[str] = []
+    if model_migration_notes(model, effort):
+        caveats.append("model/effort")
     if skills:
         caveats.append("skills")
     if tools:
@@ -264,7 +273,8 @@ def agent_report_item(
     )
     append_report_item(
         report_items,
-        skills
+        model_migration_notes(metadata.get("model"), metadata.get("effort"))
+        or skills
         or tools
         or disallowed_tools
         or (permission_mode and not map_permission_mode(permission_mode))

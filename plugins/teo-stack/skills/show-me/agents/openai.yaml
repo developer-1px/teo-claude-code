@@ -1,0 +1,4 @@
+interface:
+  display_name: "Show Me"
+  short_description: "Discover, open, and verify a local worktree app"
+  default_prompt: "Use $show-me to discover the repository preview command, open the changed app, and verify it."

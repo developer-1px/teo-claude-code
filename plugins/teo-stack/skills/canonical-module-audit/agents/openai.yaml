@@ -1,0 +1,4 @@
+interface:
+  display_name: "Canonical Module Audit"
+  short_description: "같은 역할·책임이 하나의 정본 모듈을 쓰는지 감사"
+  default_prompt: "Use $canonical-module-audit to audit whether the same roles and responsibilities use one canonical module."

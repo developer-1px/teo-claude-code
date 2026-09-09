@@ -1,6 +1,6 @@
 ---
 name: same-lens
-description: Reconstruct the defect lens behind a reported or recently fixed bug, exhaustively audit every applicable occurrence, classify the population MECE, and prepare evidence-backed issue packets plus recurrence-prevention candidates without changing files or registering issues. Use for $same-lens, "같은 렌즈로 전수 조사", "이 기준으로 전체 다 봐줘", horizontal bug sweeps, checking whether the same root cause exists elsewhere, or preparing follow-up issues after a localized bug fix.
+description: "Audit every applicable occurrence of a known defect mechanism, reconcile coverage, and prepare issue packets and recurrence-prevention candidates. Use for $same-lens or 같은 렌즈로 전수 조사. The audit itself does not modify files or register issues."
 ---
 
 # Same Lens
@@ -195,7 +195,8 @@ guidance as equivalent to an enforceable guardrail.
 
 ## 7. Report the audit
 
-Lead with the strongest coverage judgment, then use this compact order:
+Lead with the strongest coverage judgment and preserve these report contents.
+Use the structure that fits the findings without forcing empty sections:
 
 1. **Lens** — invariant, mechanism, predicates, and falsifier.
 2. **Coverage** — search horizon, discovery signals, exclusions, blind spots,

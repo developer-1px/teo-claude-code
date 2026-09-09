@@ -1,0 +1,4 @@
+interface:
+  display_name: "Resolve Lint"
+  short_description: "원인을 보존하며 lint를 안전하게 줄이는 반복 작업"
+  default_prompt: "Use $resolve-lint to reduce lint findings without optimizing only for warning count."

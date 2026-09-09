@@ -41,7 +41,7 @@ for s in plugins/teo-stack/skills/*/; do
 done
 ```
 
-Codex 등록본을 repo에 동기화할 때는 `~/.codex/skills`의 `.system` 제외 디렉터리를 `plugins/teo-stack/skills`로 복사합니다. 같은 이름의 스킬은 Codex 등록본의 전체 하위 트리로 맞추고, repo에만 있는 스킬은 보존합니다.
+Codex 등록본을 repo에 동기화할 때는 현재 실행 계정의 skills 디렉터리(기본 `~/.codex/skills`)를 확인하고, `.system`을 제외한 개인 스킬을 `plugins/teo-stack/skills`로 복사합니다. 계정별로 저장 위치가 다르면 현재 세션에 등록된 경로를 사용합니다. 같은 이름의 스킬은 Codex 등록본의 전체 하위 트리로 맞추고, repo에만 있는 스킬은 보존합니다.
 
 ## 구성 문서
 

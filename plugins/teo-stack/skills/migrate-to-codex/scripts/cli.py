@@ -40,7 +40,7 @@ from migrate.common import (
     path_exists_with_exact_case,
 )
 from migrate.hooks import report_hooks
-from migrate.codex_config import convert_settings, validate_config_toml
+from migrate.codex_config import convert_settings, merge_codex_config, validate_config_toml
 from migrate.instructions import (
     INSTRUCTION_SOURCE_CANDIDATES,
     instruction_source_file,
@@ -454,9 +454,18 @@ def write_artifact(artifact: PlannedArtifact, target_root: Path) -> None:
     target_path.parent.mkdir(parents=True, exist_ok=True)
 
     if isinstance(artifact.payload, GeneratedText):
+        content = artifact.payload.content
+        if target_path.parts[-2:] == (".codex", "config.toml") and (
+            target_path.exists() or target_path.is_symlink()
+        ):
+            if target_path.is_symlink():
+                raise ValueError(
+                    "Existing Codex config is a symlink; resolve its owner before migration."
+                )
+            content = merge_codex_config(target_path.read_text(), content)
         if target_path.is_symlink():
             target_path.unlink()
-        target_path.write_text(artifact.payload.content)
+        target_path.write_text(content)
         return
 
     if isinstance(artifact.payload, SourceSymlink):

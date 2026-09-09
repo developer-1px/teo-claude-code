@@ -1,182 +1,55 @@
 ---
 name: entity-interface-refactor
-description: Refactor frontend entity, feature, and widget ownership with a causal UI command/query rule. Use for FSD boundaries, entity UI interaction, feature-only command ownership, props/viewModel/store/dispatch naming, capability leaks, entity shredding, and concept bloat.
+description: 프런트엔드의 UI event와 product command를 인과관계로 구분하고 Feature·Entity·Widget의 capability 경계를 판별한다. FSD 경계, command 소유권, Entity·Widget callback·dispatch·store 누출을 검토할 때 사용한다.
 ---
 
-# Entity Interface Refactor
+# Entity 인터페이스 리팩터링
 
-Make UI ownership mechanically reviewable:
+아래 역할을 사용하는 저장소의 명시적 계약에 적용한다. 일반 React callback이나
+라이브러리의 Store 명칭을 이 개인 경계 규칙만으로 위반 처리하지 않는다.
+리뷰 요청은 분석으로, 이미 승인된 리팩터링은 구현과 검증으로 마무리한다.
 
-- Only a feature may own UI commands. A feature may also own query-side state.
-- Entity and widget code is query-only.
-- `entities/**/api` may expose the full CRUD surface, mutation hooks, and cache consistency logic.
-- Interfaces must not carry command capability through query-only owners.
-- Names must reveal one owner and one concept instead of multiplying wrappers.
-
-This is a UI ownership convention, not a restriction on data-access APIs.
-
-## Classify by causal direction
-
-Trace what caused the state transition. Do not classify by whether the code calls `setState`, `dispatch`, or a mutation hook.
+## 인과관계
 
 ```text
-fact or authoritative observation -> projection -> render = Query
-user or system intent -> decision -> effect              = Command
+사실·관측 -> projection -> render = Query
+사용자·시스템 의도 -> 판단 -> effect = Command
 ```
 
-Use these owners:
+`setState`, `dispatch`, mutation hook, `onClick` 같은 문법으로 분류하지 않는다. event가 mutation·navigation·storage·runtime effect를 선택하면 product command다. 이미지 `onError`처럼 관측 결과를 표시하는 lifecycle callback은 command가 아니다.
 
-| Owner | May contain |
-|---|---|
-| `entities/**/api` | queries, CRUD clients, mutation hooks, cache invalidation and reconciliation |
-| entity model/UI | stable domain facts, pure transforms, read projections, rendering, observable lifecycle fallback |
-| feature | intent binding, interactive state, validation, actions, dispatch, mutation orchestration, navigation, clipboard, notification, storage or runtime commands |
-| widget | query-only composition of a visible multi-entity screen block |
-| shared | domain-free terminal controls, browser primitives, and general utilities |
+## 소유권
 
-A query may update a cache, read model, measurement, or rendered fallback after an authoritative observation. A feature is not command-only: it may keep query state coupled to its command lifecycle, such as validation, pending, error, or confirmation state.
+- product command는 Feature에서 시작한다.
+- 한 Page에서만 쓰는 command도 Page-local Feature다. 재사용 여부는 Feature 여부가 아니라 Feature의 위치를 결정한다.
+- Entity의 public UI interface는 query-only다.
+- Widget은 DOM event와 표시 상태를 소유할 수 있지만 product command capability를 public interface로 중계하지 않는다.
+- Page는 Page-local Widget·Feature·Entity UI를 직접 import하는 composition root다. Widget은 다른 Widget을 직접 import하지 않고, Widget 간 배치와 조합은 Page가 드러낸다. 시각적 중첩이 필요하면 Page가 둘 다 import해 명시적 structural slot으로 자식 Widget을 전달할 수 있다.
+- Entity API는 CRUD client, query·mutation hook, cache 정합성 로직을 소유할 수 있다. 데이터 접근 API의 mutation과 UI command 소유권을 혼동하지 않는다.
+- Feature는 repository가 정한 정본 operation contract를 직접 사용한다. 단순 전달 provider·port·facade를 요구하지 않는다.
 
-Classify in this order:
+## Capability 누출
 
-1. If it is a data-access operation, keep the client or hook in `entities/**/api`.
-2. If it binds intent, decides what the intent means, or performs an effect, place it in a feature.
-3. If its public interface accepts or exports command capability, place the capability-owning UI in a feature.
-4. If it only projects observations, classify it as query-side.
-5. Put single-entity query UI with the entity. Put multi-entity visual composition in a widget.
-6. If one component mixes both paths, split the query view from the feature-owned command seam.
+Entity와 Widget의 public interface에는 다음을 두지 않는다.
 
-When causal evidence is genuinely ambiguous, prefer feature ownership until the intent path is disproved.
+- `onSave`, `onDelete`, `onNavigate` 같은 product command callback
+- `Action`, `Dispatch`, state+dispatch tuple
+- router, clipboard, notification, storage, runtime command 객체
+- action menu나 control row처럼 command capability를 숨긴 `ReactNode` slot
+- 위 capability를 감춘 generic callback
 
-## Prevent capability leaks
+Widget은 self-contained Feature component를 렌더링할 수 있지만 Feature command의 운반층이 될 수 없다. 또한 다른 Widget을 직접 import해 Page의 화면 지도를 감추지 않는다. Page가 제공하는 structural slot은 자식 배치만 표현해야 하며 product command callback·dispatch·store를 감추는 capability slot으로 사용하지 않는다.
 
-Entity and widget interfaces must not accept, export, or relay:
+## 이름
 
-- command callbacks such as `onSave`, `onDelete`, or `onNavigate`
-- `Action`, `Dispatch`, or state-plus-dispatch store tuples
-- router, clipboard, notification, storage, or runtime command objects
-- interactive `ReactNode` slots such as action menus or control rows
-- generic callbacks that merely disguise one of the capabilities above
+- `dispatch`는 action union에만 쓴다. 단일 command는 동사로 이름 짓는다.
+- UI command family에서 `Store`는 state+dispatch tuple에만 쓴다.
+- 둘을 구분해야 할 때 내부 UI transition은 `Action`, 외부 capability 요청은 `Command`로 부른다.
+- 문법적 냄새는 위반이 아니다. 실제 위반은 product command가 Feature 밖에서 해석되거나 Entity·Widget interface로 전달되는 경우다.
 
-A widget may render a self-contained feature component. It must not become a transport layer for the feature's command capability. Compose the query widget and command feature at their real common owner, or let the feature own its command seam.
+## 선택적 후보 탐색
 
-Do not mistake DOM lifecycle callbacks for commands automatically. Trace the causal path. An image `onError` that exposes a visible fallback can remain query-side; a click handler that chooses a mutation cannot.
-
-## Keep command families coherent
-
-For a command-owning feature named `X`, use one exact prefix when the corresponding concepts exist:
-
-```ts
-type XState = ...;
-type XAction = ...;
-type XDispatch = (action: XAction) => void;
-type XStore = readonly [XState, XDispatch];
-```
-
-Apply these rules:
-
-- Do not invent missing family members only to complete the naming pattern.
-- Reserve `dispatch` for an action union. Name a single command with a verb such as `saveSchedule`.
-- Within frontend UI command families and component interfaces, reserve `Store` for a state-plus-dispatch tuple. A read-only prop bag is not a store. Internal persistence, registry, or cache modules should use their actual responsibility name.
-- Use `Action` for an internal UI transition and `Command` for an explicit request to an external capability when both concepts are needed.
-- Rename only after ownership is correct. Matching names do not repair a leaking interface.
-
-A prefix mismatch inside an existing family is a violation. A partial family is not.
-
-## Reduce interface concepts
-
-Treat `Props` as TypeScript plumbing, not a domain concept. Inline private single-use props by default.
-
-Keep a named props type only when at least one condition is true:
-
-- it is a stable public component surface
-- it has two or more production consumers
-- it is a real adapter seam
-- a generic, `forwardRef`, or similar TypeScript constraint makes the name useful
-- it expresses a stable entity interface rather than a temporary field list
-
-Prefer one cohesive entity, value object, or justified view model over shredded scalar fields. A view model is justified when it composes multiple entities or adds owner-derived UI state. It is not justified when it merely renames or rewraps one entity.
-
-Before adding any named `Props`, `State`, `View`, `ViewModel`, `Action`, `Dispatch`, `Store`, `Controller`, or `Adapter`, require it to do at least one job:
-
-- reduce facts a caller must know
-- express an invariant
-- hide behavior or volatile representation
-- collapse competing synonyms
-- serve a real multi-consumer or adapter seam
-
-Otherwise keep the representation local or reuse the existing concept.
-
-Removing a type name alone is not simplification. Reduce caller knowledge or delete the unnecessary seam.
-
-## Audit before moving code
-
-First inspect repository rules, architecture docs, the dirty worktree, the relevant tree, imports, production consumers, exports, tests, and recent history. Exclude stories, tests, fixtures, and generated files when measuring production residency.
-
-Record evidence in a compact table:
-
-| Item | Current responsibility | Causal path | Interface evidence | Decision |
-|---|---|---|---|---|
-
-Search for:
-
-- event bindings and interactive state in entities or widgets
-- mutation, router, clipboard, notification, storage, and runtime effects
-- callback, dispatch, action, store, or interactive-slot props crossing entity/widget interfaces
-- entity imports from feature, widget, page, or app code
-- duplicated prop interfaces and pure pass-through wrappers
-- private single-use `*Props`, one-field `Store`/`ViewModel`, `Store<never>`, `Dispatch<never>`, and synonym families
-- owner-prefix mismatches between `State`, `Action`, `Dispatch`, and `Store`
-
-When hooks appear disconnected from their owner, run:
-
-```bash
-node ~/.codex/skills/entity-interface-refactor/scripts/find-disconnected-hooks.mjs <ui-root>
-```
-
-Treat its output as candidate evidence, not an automatic violation.
-
-## Refactor in owner-sized slices
-
-1. Choose one entity, feature, or widget family.
-2. Draw its query and command causal paths.
-3. Split mixed components at the command seam.
-4. Move the complete command family together: UI, model, tests, stories, and command-specific types.
-5. Preserve entity API CRUD and cache behavior.
-6. Shrink the interface and delete obsolete wrappers or aliases.
-7. Align the remaining command-family names.
-8. Update project-local guards only for hard rules; keep heuristic smells in review tooling.
-9. Run focused tests after each owner-sized move.
-
-Use `git mv` for real moves. Do not combine unrelated formatting or cleanup with the ownership change.
-
-## Separate violations from review signals
-
-Automate these hard violations when the repository supports it:
-
-- UI command capability declared or interpreted outside its feature owner, or accepted, exported, or relayed by an entity or widget
-- command-family prefix mismatch
-- public UI command-family `Store` used for anything other than state plus dispatch
-- entity code importing a higher UI owner
-- entity API CRUD moved out merely to satisfy UI CQRS
-
-Review these as smells because context can justify them:
-
-- private single-use props types
-- one-field bags or view models
-- duplicated interfaces and pass-through wrappers
-- synonym proliferation or an overgrown concept family
-- lifecycle callbacks, measurements, fallbacks, and cache writes whose causal direction needs tracing
-
-## Verify
-
-Run the repository's relevant typecheck, focused tests, architecture guards, and production build. Then search for stale paths, old prefixes, duplicate interfaces, and compatibility aliases.
-
-The refactor is complete only when:
-
-- entity and widget production interfaces are query-only
-- every UI command has an identifiable feature owner
-- entity API CRUD and cache consistency remain intact
-- command families use one owner prefix without fabricated members
-- remaining named interfaces pass the concept gate
-- no temporary bridge, alias, or pass-through wrapper remains without a documented compatibility need
-- behavior, tests, and builds remain equivalent
+큰 hook의 연결되지 않은 계산을 살펴볼 때만
+`scripts/find-disconnected-hooks.mjs <검증된 소스 경로> [--json]`을 사용한다.
+현재 프로젝트에서 TypeScript를 읽는다. 결과는 lexical 연결성 후보이며
+command 소유권이나 책임 분리 판정이 아니다. 실제 lifecycle과 caller를 확인한다.

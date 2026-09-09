@@ -1,0 +1,4 @@
+interface:
+  display_name: "책임 표면 리팩터링"
+  short_description: "실제 public API를 유지하며 내부 구현을 책임별로 분리"
+  default_prompt: "$responsibility-surface-refactor를 사용해 검증된 public surface는 유지하고 내부 구현을 변경 이유별로 정리해줘."

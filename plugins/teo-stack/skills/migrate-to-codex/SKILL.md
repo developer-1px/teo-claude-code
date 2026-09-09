@@ -1,114 +1,98 @@
 ---
 name: migrate-to-codex
-description: Migrate supported instruction files, skills, agents, and MCP config into Codex project and global files.
+description: "Migrate selected Claude Code instructions, skills, agents, hooks, and MCP configuration into Codex files, preserving source files and unrelated target settings."
 ---
 
 # Migrate to Codex
 
-## Autonomy
+Complete the selected migration and verify the generated artifacts. Resolve the
+source, target, and requested surfaces from the user's request and existing
+context before writing.
 
-Keep going until the selected migration is completely done: run the migrator, inspect the report, fix migrated Codex instructions/skills/agents/MCP config, and re-run checks without stopping to ask for confirmation of the next step. If the user has selected a target, do not ask before creating, editing, replacing, or deleting generated Codex artifacts in that target (`AGENTS.md`, `.codex/`, `.agents/`, or `~/.codex/`). Preserve unrelated existing Codex config entries in `.codex/config.toml` or `~/.codex/config.toml`, such as `notify`, `projects`, `marketplaces`, or unrelated MCP servers; do not ask about them unless they fail validation or directly conflict with the migration. Do not edit source Claude Code files (`.claude/`, `~/.claude/`, `.mcp.json`, or `.claude.json`), unrelated project code, secrets, or another repository.
+## Boundaries
 
-## Migration Order
+Preserve source Claude files, secrets, unrelated code, and unrelated Codex
+configuration. Migration authorization covers the selected generated artifacts,
+not arbitrary existing skills or settings that happen to share a target root.
+Inspect collisions and retain user-maintained content.
 
-Run the migration in this order for each selected global or project source:
+Do not infer cross-provider model equivalence or force a personality. The
+converter omits Claude model and effort overrides and reports the unmapped
+selection. Preserve existing target choices or runtime inheritance; select Sol,
+Astra, or another model only from the user's workload, authorization, and current
+availability. An explicitly supplied target model ID is not a request to upgrade
+to the newest model.
 
-1. Start by using Codex's built-in TODO/task list tool. Do not create `MIGRATION_TODOS.md` or any TODO file unless the user explicitly asks. The TODO list input has a `plan` array whose items each have `step` and `status`; use statuses `pending`, `in_progress`, and `completed`. Make the TODOs specific to the selected artifacts. Before finishing, update the TODO list so every finished step is marked `completed` and no step remains `in_progress`. Use literal source → Codex target labels, for example:
-   - Inspect `.claude/commands` → Codex skills/prompts
-   - Inspect `.claude/agents` → `.codex/agents`
-   - Inspect `.mcp.json` → `.codex/config.toml` MCP servers
-   - Inspect `.claude/settings.json` hooks → `.codex/hooks.json`
-   - Migrate safe selected artifacts → Codex files
-   - Validate generated `.codex/config.toml`
-   - Validate generated `.codex/agents`
-   - Report migrated artifacts and manual-review items
+## Inspect and migrate
 
-2. Read `references/differences.md` (and refresh Codex docs if its `Docs last checked` date is old).
+Use the bundled CLI via its actual absolute path. Do not assume this skill is
+installed under a repository's .codex directory. Python 3.11 or newer is needed.
+For an existing target config, use an isolated environment with tomlkit
+(for example, `uv run --with tomlkit python <script> ...`) so comments and
+unrelated values survive merging. Conflicting existing values are reported
+without overwriting the file; resolve only the selected setting from the
+user's authorized choices, then continue.
 
-3. Scan and inspect before writing:
-   - `--scan-only` lists active and inactive source surfaces.
-   - `--plan` prints staged Codex artifact paths and report rows.
-   - `--doctor` summarizes readiness, manual-review work, and validation risks.
+Read [references/differences.md](references/differences.md) for the surfaces
+being migrated. It describes converter behavior; verify current product docs
+when a runtime-dependent mapping matters.
 
-4. Convert surfaces in the same order the CLI uses:
-   - instructions: `CLAUDE.md` / `AGENTS.md` to `AGENTS.md`
-   - plugins: report Claude plugin trees and marketplaces as manual migration work
-   - hooks: rewrite supported Claude hooks into `.codex/hooks.json` and enable `[features].codex_hooks = true`
-   - skills and commands: write Codex skills under `.agents/skills/`
-   - config: write `.codex/config.toml` from Claude model/sandbox settings and MCP servers, including `personality = "friendly"` when config is generated
-   - subagents: write Codex custom agents under `.codex/agents/`
+The useful CLI modes are:
 
-5. Dry-run, then write the selected target. Use `--replace` only when orphan generated skills or agents should be deleted.
+- --scan-only: inspect source surfaces without a target or writes.
+- --plan: inspect target paths, collisions, and report rows.
+- --doctor: inspect readiness and manual-review work.
+- --dry-run: inspect the proposed migration without deploying.
+- --validate-target: validate an existing generated target.
 
-6. Inspect the terminal output and `.codex/migrate-to-codex-report.txt` after real runs.
+Inspect the relevant plan, dry-run, then migrate the selected target. Use
+--mcp, --skills, or --subagents to select surfaces when appropriate.
+Instructions, hooks, and plugin reporting also participate according to the
+CLI plan; do not assume a flag limits every artifact category.
 
-7. Review generated artifacts in this order: `AGENTS.md`, `.agents/skills/`, `.codex/config.toml`, `.codex/hooks.json`, `.codex/agents/`, then report-only plugin items.
+Use --replace only when removing the enumerated orphan targets is explicitly
+in scope and their contents have been proven disposable. The CLI's "orphan"
+classification means absent from the source plan, not proven generated or safe
+to delete.
 
-8. Run `--validate-target` against each target after edits.
+Use an available task plan for a substantial migration. A particular TODO tool
+or status schema is not required.
 
-9. Re-run checks and `--dry-run` after edits.
+## Verify the result
 
-10. Return the final migration report as one markdown table per scope that has rows. The tables cover only the non-native follow-up migration work you performed, such as skills created from slash commands, subagents, MCP servers, hooks, unsupported/local plugin notes, and manual-review caveats. Include programmatic native import rows for config, instructions, skills, or supported plugins only if you personally migrated them in this follow-up run.
+Inspect the actual generated AGENTS.md, skills, config, hooks, and agent files
+for the selected surfaces, plus .codex/migrate-to-codex-report.txt.
+Resolve actionable manual-review items that can be fixed within the authorized
+target. Keep provider-specific semantics and unavailable mappings visible.
 
-    If only one scope has rows, render only the table with no heading. If multiple scopes have rows, render one heading before each table. Use `**User Config**` for user-scope rows. For project-scope rows, use the actual project folder name as the heading, for example `**northstar-support-portal**`; do not use `Current Project` as the heading. Do not add prose before or after the table output.
+Run --validate-target after edits. Validate meaningful runtime behavior when
+the migration changes hooks, permissions, tool routing, or model selection.
+TOML parsing alone does not prove these work.
 
-    Use exactly these columns:
-
-    **northstar-support-portal**
-
-    | Status | Item | Notes |
-    | --- | --- | --- |
-    | `Added` | `Slash command` pr-review | Converted into a Codex skill |
-    | `Added` | `Subagent` release-lead | Added as a Codex subagent |
-    | `Check before using` | `Hook` PreToolUse | Converted, but some Claude hook behavior differs in Codex |
-    | `Not Added` | `Hook` Notification | Codex does not have an equivalent notification hook |
-    | `Not Added` | `Plugin` team-macros | Plugin needs manual setup |
-
-    `Status` must be `Added`, `Check before using`, or `Not Added`. Use `Added` when a Codex-facing artifact was created or changed and needs no special review. Use `Check before using` when a Codex-facing artifact was created or changed but the migration changed semantics, inferred behavior, preserved tool rules as guidance, or dropped unsupported behavior. Use `Not Added` when a source artifact was detected but no Codex-facing artifact was created. `Item` combines the artifact type and concrete item name in one cell. Artifact type must be singular: `Skill`, `Slash command`, `Subagent`, `MCP`, `Hook`, or `Plugin`. Wrap the artifact type in inline code; write the item name as plain text after it. `Notes` is always required; never leave it empty. Keep notes short, plain, and literal. Avoid internal implementation terms such as runtime expansion. Prefer phrases like `Converted into a Codex skill`, `Added as a Codex subagent`, `Added to Codex config`, `Converted into a Codex hook`, `Converted, but some Claude hook behavior differs in Codex`, `Codex does not have an equivalent notification hook`, `Plugin needs manual setup`, or `Plugin marketplace needs manual setup`.
-
-## Self-Healing Loop
-
-Keep looping until the selected migration is complete:
-
-1. Run `--plan` or `--doctor`.
-2. Run the migration with `--dry-run`.
-3. Run the migration for real.
-4. Fix every generated `## MANUAL MIGRATION REQUIRED` block and every `manual_fix_required` or `skipped` report row that can be resolved inside Codex artifacts.
-5. Run `--validate-target`.
-6. Re-run the migrator and validator until the report and validator have no actionable generated-artifact fixes left.
-
-Do not edit source Claude Code files, unrelated project code, secrets, or another repository during this loop. If a report row requires source-provider changes or product judgment, leave the generated Codex artifact with clear manual guidance instead of changing the source.
+Do not rerun a writing conversion over manually corrected artifacts merely to
+make report rows disappear. Preview another run first and rerun it only when
+the generated result needs changing. Stop once the selected artifacts are
+correct and required checks pass; report unsupported or user-owned decisions
+without an indefinite self-healing loop.
 
 ## Commands
 
-Choose the migrator command.
+Replace the example paths with the resolved scope roots and quote paths with
+spaces. The CLI normalizes .claude and .codex scope paths; inspect --plan to
+verify the actual output locations.
 
-   ```bash
-   MIGRATE_TO_CODEX='python3 .codex/skills/migrate-to-codex/scripts/migrate-to-codex.py'
-   ```
+```sh
+python3 "/absolute/skill/path/scripts/migrate-to-codex.py" --help
+python3 "/absolute/skill/path/scripts/migrate-to-codex.py" --source "/source/scope" --scan-only
+python3 "/absolute/skill/path/scripts/migrate-to-codex.py" --source "/source/scope" --target "/target/scope" --plan
+python3 "/absolute/skill/path/scripts/migrate-to-codex.py" --source "/source/scope" --target "/target/scope" --dry-run
+python3 "/absolute/skill/path/scripts/migrate-to-codex.py" --source "/source/scope" --target "/target/scope"
+python3 "/absolute/skill/path/scripts/migrate-to-codex.py" --validate-target "/target/scope"
+```
 
-Inspect the migration before writing.
+## Handoff
 
-   ```bash
-   $MIGRATE_TO_CODEX --source ~/.claude/ --scan-only
-   $MIGRATE_TO_CODEX --source ~/.claude/ --target ~/.codex/ --plan
-   $MIGRATE_TO_CODEX --source ~/.claude/ --target ~/.codex/ --doctor
-   ```
-
-Dry-run, then run without `--dry-run`, for global and project.
-
-   ```bash
-   $MIGRATE_TO_CODEX --source ~/.claude/ --target ~/.codex/ --dry-run
-   $MIGRATE_TO_CODEX --source ~/.claude/ --target ~/.codex/
-   $MIGRATE_TO_CODEX --source ./.claude/ --target ./.codex/ --dry-run
-   $MIGRATE_TO_CODEX --source ./.claude/ --target ./.codex/
-   ```
-
-Run the post-migration validator against each target after edits.
-
-   ```bash
-   $MIGRATE_TO_CODEX --validate-target ~/.codex/
-   $MIGRATE_TO_CODEX --validate-target ./.codex/
-   ```
-
-Run `$MIGRATE_TO_CODEX --help` for flags (`--scan-only`, `--plan`, `--doctor`, `--validate-target`, defaults, and so on). Deep tables and more links are in `references/differences.md`.
+Report what was added or changed, what needs checking before use, what could
+not be migrated, and verification. Use a compact table when several artifacts
+need comparison, grouped by real scope when useful. State concrete limitations;
+do not hide missing capability behind a generic successful migration.

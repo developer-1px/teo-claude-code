@@ -44,38 +44,6 @@ class ScopePaths:
     is_global: bool
 
 
-@dataclass(frozen=True)
-class ModelMapping:
-    source_prefix: str
-    target_model: str
-    effort_mapping: tuple[tuple[str, str], ...]
-
-    def map_effort(self, effort: str) -> str:
-        for source_effort, target_effort in self.effort_mapping:
-            if effort == source_effort:
-                return target_effort
-        return effort
-
-
-MODEL_PREFIX_MAPPINGS = (
-    ModelMapping(
-        "claude-opus",
-        "gpt-5.4",
-        (("low", "low"), ("medium", "medium"), ("high", "high"), ("max", "xhigh")),
-    ),
-    ModelMapping(
-        "claude-sonnet",
-        "gpt-5.4-mini",
-        (("low", "medium"), ("medium", "high"), ("high", "xhigh"), ("max", "xhigh")),
-    ),
-    ModelMapping(
-        "claude-haiku",
-        "gpt-5.4-mini",
-        (("low", "low"), ("medium", "medium"), ("high", "high"), ("max", "xhigh")),
-    ),
-)
-
-
 class ArtifactKind(Enum):
     FILE = "file"
     SKILL = "skill"
@@ -379,20 +347,39 @@ def format_frontmatter(frontmatter: SimpleYamlFrontmatter, body: str) -> str:
     return f"---\n{rendered}\n---\n\n{body.lstrip()}"
 
 
-def map_model_name(model: str) -> str:
-    for mapping in MODEL_PREFIX_MAPPINGS:
-        if model.startswith(mapping.source_prefix):
-            return mapping.target_model
+def map_model_name(model: str) -> str | None:
+    """Preserve explicit target IDs; do not infer cross-provider equivalents."""
+    normalized = model.lower()
+    if normalized in {"inherit", "default"} or normalized.startswith(
+        ("claude-", "opus", "sonnet", "haiku")
+    ):
+        return None
     return model
 
 
-def map_model_effort(model: str | None, effort: str) -> str:
-    if not model:
-        return effort
-    for mapping in MODEL_PREFIX_MAPPINGS:
-        if model.startswith(mapping.source_prefix):
-            return mapping.map_effort(effort)
+def map_model_effort(model: str | None, effort: str) -> str | None:
+    """Provider effort names do not establish equivalent target behavior."""
+    if not model or map_model_name(model) is None:
+        return None
     return effort
+
+
+def model_migration_notes(model: str | None, effort: str | None = None) -> tuple[str, ...]:
+    notes: list[str] = []
+    if model and map_model_name(model) is None and model.lower() not in {"inherit", "default"}:
+        notes.append(
+            f"Source model `{model}` has no automatic Codex equivalent. "
+            "No model override was generated; keep the existing target or inherited "
+            "selection and choose an explicit target only from workload requirements "
+            "and current model availability."
+        )
+    if effort and map_model_effort(model, effort) is None:
+        notes.append(
+            f"Source effort `{effort}` was not mapped without an explicit target model. "
+            "No reasoning override was generated; verify the target model's supported "
+            "effort before adding one."
+        )
+    return tuple(notes)
 
 
 def map_permission_mode(permission_mode: str | None) -> str | None:

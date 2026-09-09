@@ -1,120 +1,17 @@
 ---
 name: responsibility-surface-refactor
-description: Stabilize a package or module public surface while moving implementation into responsibility-named internal slices. Use for layer-to-slice cleanup, package index or facade cleanup, public-API-preserving refactors, same-picture refactoring, or splitting modules by responsibility without changing consumer imports.
+description: 실제 외부 public surface를 보존하는 내부 책임 분리와 app-internal facade 제거를 구분한다. package index·facade를 유지한 리팩터링이나 public API 호환성 판단에 사용하며 내부 re-export 경로 보존에는 사용하지 않는다.
 ---
 
-# Responsibility Surface Refactor
+# 책임 표면 리팩터링
 
-Refactor toward this shape:
+검증된 외부 public contract의 내부 구현을 나눌 때 적용한다. 현재 consumer
+뿐 아니라 배포된 package export와 문서화된 호환성 약속도 계약의 근거다.
 
-```txt
-public surface / facade
-  -> small responsibility slices
-     -> lower-level domain/foundation primitives
-```
-
-The goal is not smaller files. The goal is a stable outside contract with internal code arranged by independent reasons to change.
-
-## Relation To Existing Skills
-
-Use this skill as an orchestration lens when several existing refactor instincts point to the same outcome.
-
-| Skill | It answers | This skill adds |
-|---|---|---|
-| `srp` | Does this file have more than one reason to change? | How to preserve a public facade while splitting many files/packages. |
-| `cohesion` | Which code should move together? | A target surface: stable entrypoint, hidden implementation slices, no new public churn. |
-| `app-owned-boundary-refactor` | Where should frontend app code live by layer? | Library/package-neutral rules for public API, internal layer direction, package entrypoints. |
-| `entity-interface-refactor` | What domain interface/name should entities expose? | Applies the same interface-first idea to packages/modules, not only frontend entities. |
-| `ocp` | Are variants scattered across consumers? | Keep extension points behind a facade when the split would otherwise create new edit sites. |
-| `naming` | Is the name aligned with responsibility and established vocabulary? | Keep internal names from drifting while the surface stays stable. |
-
-## Target Shape
-
-- `index.ts` or package root is a public barrel or thin facade only.
-- Existing public imports remain source-compatible unless the user explicitly asks for a breaking change.
-- Implementation files are named by responsibility, not by arbitrary role buckets.
-- Internal imports flow downward or inward; no value cycles and no type cycles.
-- A slice exposes the smallest API needed by the facade or sibling slice.
-- Tests stay focused on public behavior unless a new internal helper has meaningful standalone invariants.
-
-Possible technical segments inside an owner-named slice:
-
-```txt
-types       public and cross-slice contracts
-create      facade composition / lifecycle wiring
-plan        validation, capability checks, patch/action planning
-operations  command wrappers or execution mapping
-registry    keyed definitions and id lookup
-state       snapshots and in-memory state
-repository  persistence access
-read        query/read model construction
-copy        clone/snapshot copy helpers
-errors      error constructors and result mapping
-codec       encode/decode/version envelope logic
-host        environment adapter lookup
-watch       subscription/flush/status lifecycle
-```
-
-## Workflow
-
-1. **Map the public surface.**
-   Read package exports, tests, docs, and external imports. Write down what must remain import-compatible.
-
-2. **Identify change reasons.**
-   For the target file/module, list responsibilities by why they change: facade wiring, contracts, validation, planning, execution, persistence, search/read, state/listeners, host/codec, copy/error mapping.
-
-3. **Choose slices.**
-   Create only slices with a real independent reason to change. Do not split by LOC alone. Keep a large single-responsibility file intact.
-
-4. **Preserve the facade first.**
-   Make `index.ts` re-export the same public names from new files. Then move implementation behind it. Public API compatibility is the primary invariant.
-
-5. **Move by responsibility.**
-   Move related functions/types together. Prefer local imports between sibling slices over pass-through re-export chains. Do not add a new abstraction unless it removes real coupling.
-
-6. **Check direction.**
-   Scan for value cycles, type cycles, and layer inversions. A lower primitive layer must not import an upper facade/application layer.
-
-7. **Verify behavior and contract.**
-   Run focused typecheck/tests for touched packages, then the smallest root/package verify that proves public consumers still compile. Use build/smoke when packaging is part of the surface.
-
-## Preflight Template
-
-```markdown
-Surface: package/module and public entrypoints
-Must preserve: imports, exports, runtime behavior, package metadata
-Current mixed responsibilities:
-- types/contracts:
-- facade/lifecycle:
-- validation/planning:
-- execution/operations:
-- read/search/store/persistence:
-Target slices:
-- `index.ts`: public barrel/facade
-- `types.ts`: ...
-- `create.ts`: ...
-Risk checks:
-- public export diff:
-- value/type cycles:
-- layer direction:
-- verification:
-```
-
-## Split Rules
-
-- If a function exists only to compose public API, it belongs in `create.ts` or the facade.
-- If a type is part of the public API or used across segments, keep it in a contract segment such as `types.ts` inside the owner-named slice. Do not create a top-level `types` slice.
-- If code asks “can this happen?” or builds operations without applying them, put it in `plan.ts`, `guard.ts`, or a domain-specific planner.
-- If code applies patches, writes hosts, dispatches commands, or mutates state, put it in `operations.ts`, `apply.ts`, `commit.ts`, or a responsibility-specific state module.
-- If code encodes external formats or talks to browser/storage/clipboard, split `codec.ts` from `host.ts`.
-- Name mutable internals by their actual responsibility: `registry` for keyed definitions, `state` for snapshots, `repository` for persistence, or a domain term. In frontend UI command families, defer the public `Store` contract name to `entity-interface-refactor`.
-- If a slice name becomes vague (`utils`, `helpers`, `core`), stop and name the actual responsibility.
-
-## Completion Criteria
-
-- Public imports from the package/module still work.
-- Entry files are barrels or thin facades, not mixed implementation files.
-- Responsibility slices are named after change reasons.
-- No new import cycles or layer inversions.
-- Relevant typecheck/tests/build/smoke pass.
-- If tied to issues, comment with the concrete slices created, verification, and PR link.
+- `index.ts`에서 re-export된다는 사실은 public API의 증거가 아니다.
+- 같은 app 안의 importer 수는 package public API의 증거가 아니다.
+- 외부 consumer는 다른 package나 repository가 package export를 통해 사용하는 경우다. 저장소 안에서 consumer를 찾지 못했다고 배포된 외부 사용까지 없다고 단정하지 않는다.
+- 같은 app의 서로 다른 route·use case가 공유하면 global residency의 근거는 될 수 있지만 외부 호환성 보존 근거는 아니다.
+- app-internal facade가 정본 contract를 rename·forward만 하면 소비자를 원자적으로 옮기고 facade를 삭제한다.
+- 정본 client 교체를 public-surface-preserving refactor로 처리하지 않는다.
+- 실제 외부 계약을 유지하는 경우에만 facade 뒤의 구현을 독립된 변경 이유별로 나눈다.
