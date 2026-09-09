@@ -1,6 +1,6 @@
 ---
 name: teo-dev
-description: "Take an agreed software change through issue setup, implementation, verification, commit, push, and PR after an explicit execution handoff such as 진행해 or 이슈 따고 진행. Also handles requested review, CI, merge, and cleanup follow-ups. Excludes provisional discussion, read-only status, and a different workflow chosen by the user."
+description: "Take an agreed software change through issue setup, implementation, verification, commit, push, and PR after an explicit execution handoff such as 진행해 or 이슈 따고 진행. Excludes provisional discussion, read-only status, existing-PR landing follow-ups handled by merge, and a different workflow chosen by the user."
 ---
 
 # Teo Dev
@@ -34,7 +34,11 @@ Keep a compact Outcome / Done / Don't anchor, with exact structure, vocabulary,
 ownership, mappings, behavior, and approved diagrams when these carry material
 decisions. Preserve relevant corrections, rejected models, and intentionally
 delegated choices. Reuse an existing discussion contract; do not invent
-optional sections.
+optional sections. Scope a retraction to what the user actually withdrew.
+For a misrouted instruction, reconcile only its affected decisions and
+dependent edits while the original task remains authorized. If the user
+cancels the original objective, stop and follow their instructions for
+existing edits. Preserve unrelated work.
 
 Before issue or PR publication, check both that all material decisions are
 represented and that no new outcome, deliverable, or boundary relaxation has
@@ -84,6 +88,14 @@ Trace the producing mechanism, then make changes that close Done or preserve
 the agreed invariants. Use a specialized skill only when its actual capability
 helps this task. Do not run a ritual sequence of audits.
 
+Before adding a module, wrapper, or local implementation, locate the existing
+owner and API for that responsibility. Consume it directly or extend that
+owner when its responsibility covers the case. Introduce a new ownership
+boundary only when no appropriate owner exists, not merely to rename or forward
+an API. Internal decomposition by change reason can retain the existing owner
+and public contract. Similar-looking code with different responsibilities need
+not share an owner.
+
 Keep the solution proportional to the problem. Preserve responsibility and
 ownership boundaries, and make degraded or unavailable states observable.
 Inspect nearby occurrences of the same regression inside the agreed scope;
@@ -132,23 +144,14 @@ preview does not belong in shared GitHub artifacts.
 The default endpoint is pr-open. Report the issue, PR, branch or worktree,
 verification, preview when relevant, and material remaining work.
 
-## Requested review, merge, and cleanup
+## Handoff after PR creation
 
-For a review-response request, inspect findings, reproduce consequential claims,
-and fix verified acceptance gaps or regressions within scope. For landing,
-refresh the PR, authoritative base, conflicts, required checks, and blocking
-reviews. Wait only on required landing conditions or monitoring the user asked
-for. Advisory feedback does not become an automatic work queue.
+For existing-PR readiness, CI or review response, and authorized landing, use
+[merge](../merge/SKILL.md) when available. Carry forward the exact PR, agreed
+scope, verified revision, evidence, and existing authorization. If merge is
+already authorized for this change, continue through that handoff in the same task;
+otherwise pr-open remains the endpoint.
 
-Investigate credible security or privacy findings before merge. Resolve them
-with evidence or a verified fix; keep the PR unmerged if a valid risk requires
-a user decision outside current scope. Reviewer severity alone cannot expand
-scope.
-
-Merge only with existing user authorization and satisfied repository gates.
-Confirm the actual merged state, then update the issue or project as required.
-For authorized cleanup, use main when available, or the repository procedure,
-to remove only proven merged or redundant local work and update the base.
-
-Finish with the actual state: landed-clean, pr-open, blocked, stopped, or
-no-change. Describe a partial result or unavailable check explicitly.
+Use [main](../main/SKILL.md) when cleanup or return-to-base is requested. If either
+skill is unavailable, follow the repository's procedure within the same
+authorization. Report the actual outcome and any unavailable stage explicitly.

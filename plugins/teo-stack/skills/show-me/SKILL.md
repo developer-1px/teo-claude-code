@@ -17,8 +17,8 @@ repository.
 
 ## Outcome states
 
-- `verified`: Opened the exact local app in a controllable browser and walked
-  the changed flow.
+- `verified`: Opened the exact local app in a controllable browser, exercised
+  the changed flow, and confirmed its expected outcome.
 - `shown-unverified`: Opened the exact URL visibly, but the acceptance flow
   was not verified. State whether control was unavailable or an observed
   interaction failed, and what remains to inspect.
@@ -141,6 +141,8 @@ Lead with the outcome, exact URL, branch, and short HEAD. Then state the flow
 actually verified and anything that still requires the user's visual or product
 judgment.
 
-For `shown-unverified`, say that the browser was opened but not controlled and
-give the shortest manual path. For `not-shown`, report the attempted commands,
-the concrete blocker, and the single missing fact needed from the user.
+For `shown-unverified`, distinguish unavailable browser control from a flow
+that was exercised but failed or remained incomplete. State the actual gap
+and shortest remaining manual path; do not describe an observed failure as
+merely missing control. For `not-shown`, report the attempted commands, the
+concrete blocker, and the single missing fact needed from the user.

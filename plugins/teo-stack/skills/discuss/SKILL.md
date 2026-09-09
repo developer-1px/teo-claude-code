@@ -46,8 +46,10 @@ sequence of user questions:
 
 Keep dependent conclusions conditional on their premises. When a correction
 changes a premise, revise the conclusions and diagrams that depend on it,
-preserving unrelated verified facts. Do not absorb a rejected premise into a
-preferred solution as another constraint.
+preserving unrelated verified facts. Limit a retraction to what the user
+actually withdrew: a misrouted message does not cancel an otherwise authorized
+task, while cancellation of the original objective stops it. Do not absorb
+a rejected premise into a preferred solution as another constraint.
 
 Distinguish grounded decisions from open hypotheses using user statements,
 source locations, rules, or observations. A decision can be sufficiently
@@ -111,5 +113,16 @@ necessary, while completing independent authorized work.
 ## Response
 
 Lead with the current judgment, supporting evidence, and the uncertainty or
-next decision that matters. Use prose, a table, or a diagram according to the
-content. Preserve an approved diagram's meaning; its format need not be ASCII.
+next decision that matters. For code questions, anchor the explanation in actual
+files and symbols: who owns the decision, the call or data path, and relevant
+state changes. Distinguish the current implementation from a proposed model;
+pattern names alone are not an explanation.
+
+For a MECE request, identify the classified set and the classification axis,
+give each item one disposition on that axis, and expose unknowns. Keep
+independent axes separate; role and location are not competing categories.
+
+Honor an explicitly requested format. Otherwise prefer a compact ASCII flow
+or tree for structural or causal relationships and a table for repeated
+mappings, only when clearer than prose. Preserve an approved diagram's meaning.
+A simple answer does not need a diagram or a full causal-model inventory.

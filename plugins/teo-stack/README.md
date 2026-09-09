@@ -4,9 +4,9 @@
 
 ## 구성
 
-- Codex 등록본 미러: 현재 실행 계정의 skills 디렉터리에서 `.system`을 제외해 이 repo에 미러한 19개 스킬
+- Codex 등록본 미러: 현재 실행 계정의 skills 디렉터리에서 `.system`을 제외해 이 repo에 미러한 22개 스킬
 - repo-only 활성 스킬: 없음
-- 전체: 19개 활성 스킬
+- 전체: 22개 활성 스킬
 
 ## 동기화 기준
 
@@ -20,7 +20,7 @@
 
 ## Codex 등록본 미러
 
-`app-owned-boundary-refactor`, `canonical-module-audit`, `cohesion`, `conflict`, `design-product-story-parity`, `discuss`, `doubt`, `entity-interface-refactor`, `layer-abstraction-refactor`, `main`, `naming`, `ocp`, `research`, `resolve-lint`, `responsibility-surface-refactor`, `same-lens`, `show-me`, `srp`, `teo-dev`
+`app-owned-boundary-refactor`, `canonical-module-audit`, `cohesion`, `conflict`, `design-product-story-parity`, `discuss`, `doubt`, `drive`, `entity-interface-refactor`, `layer-abstraction-refactor`, `main`, `merge`, `naming`, `ocp`, `research`, `resolve-lint`, `responsibility-surface-refactor`, `resume-work`, `same-lens`, `show-me`, `srp`, `teo-dev`
 
 ## 퇴역 스킬
 

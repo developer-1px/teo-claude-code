@@ -1,0 +1,3 @@
+interface:
+  display_name: "Resume Work"
+  short_description: "Recover interrupted intent and actual work state"
