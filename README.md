@@ -2,13 +2,13 @@
 
 Claude Code / Codex용 개인 스킬 마켓플레이스. 현재 실사용 플러그인은 `teo-stack` 하나입니다.
 
-`teo-stack`은 현재 개인 Codex 등록 스킬을 그대로 미러링하고, 이 repo에서 직접 만든 의도 정렬·reference 스킬도 함께 보관합니다. OpenAI가 관리하는 `.system` 스킬은 미러링하지 않습니다.
+`teo-stack`은 현재 개인 Codex 등록 스킬을 그대로 미러링합니다. 퇴역한 개인 스킬과 과거 프로젝트 전용 스킬은 `archive/`에 보관합니다. OpenAI가 관리하는 `.system` 스킬은 미러링하지 않습니다.
 
 ## 플러그인
 
 | 경로 | 용도 | 상태 |
 |------|------|------|
-| [**`plugins/teo-stack`**](plugins/teo-stack/) | 개인 Codex 스킬 미러 + repo 전용 오리지널 스킬 | 실사용 |
+| [**`plugins/teo-stack`**](plugins/teo-stack/) | 개인 Codex 스킬 미러 | 실사용 |
 | [`archive/teo-stack/skills`](archive/teo-stack/skills/) | teo-stack에서 퇴역한 개인 스킬 | 아카이브 |
 | [`archive/teo-project`](archive/teo-project/) | interactive-os 전용 과거 파이프라인 스킬 | 아카이브 |
 
@@ -42,6 +42,8 @@ done
 ```
 
 Codex 등록본을 repo에 동기화할 때는 현재 실행 계정의 skills 디렉터리(기본 `~/.codex/skills`)를 확인하고, `.system`을 제외한 개인 스킬을 `plugins/teo-stack/skills`로 복사합니다. 계정별로 저장 위치가 다르면 현재 세션에 등록된 경로를 사용합니다. 같은 이름의 스킬은 Codex 등록본의 전체 하위 트리로 맞추고, repo에만 있는 스킬은 보존합니다.
+
+퇴역 목록은 [`plugins/teo-stack/README.md`](plugins/teo-stack/README.md)의 「퇴역 스킬」을 확인합니다. 다른 계정이나 예전 설치본에 사본이 남아 있어도 명시적 재등록 요청 없이 활성 미러로 복원하지 않습니다.
 
 ## 구성 문서
 
