@@ -1,81 +1,184 @@
 # Execution Contract
 
-Use this reference for a handoff whose meaning must survive issue creation,
-context compaction, or another executor. The contract records decisions; it
-does not introduce a separate approval workflow.
+Use this reference only when a grounded discussion is ready to cross into
+execution. The contract preserves meaning across issue creation, context
+compaction, session resume, agent handoff, implementation, and review. It is a
+handoff schema, not another user-invoked step.
 
-## What to preserve
+## Stable contract
 
-State the result, completion evidence, and scope boundaries. A small task can
-express these in a paragraph or a few bullets:
+Produce the smallest deterministic contract that lets a fresh executor
+reproduce the agreed direction without reopening any material decision.
+`Smallest` means removing only information whose absence cannot change a
+reasonable executor's choice of target, scope, owner, dependency direction,
+structure, behavior, fallback policy, invariant, or completion evidence. It
+does not mean minimizing headings, words, or issue-body length.
 
-- Outcome: the user-visible or operational result.
-- Done: observable evidence that closes the original gap.
-- Don't: relevant exclusions and invariants.
+```markdown
+### Goal Anchor
+- Outcome: [one user-visible or operational result]
+- Done: [observable evidence that closes the original gap]
+- Don't: [non-goals and invariants that must remain unchanged]
 
-Add the problem, cause, rationale, exact names, ownership, dependency direction,
-mapping, structure, state transitions, or fallback policy when they determine
-the solution. Preserve approved diagrams and concrete artifacts in a
-meaning-equivalent form. Record material corrected premises or rejected models
-when a fresh executor could otherwise repeat the rejected interpretation.
+### Success Evidence
+- [observation, acceptance case, test, state, or artifact that proves Done]
+```
 
-Keep deliberately delegated implementation choices open. Distinguish them from
-unresolved product or scope choices that could change the result. Do not invent
-headings, metrics, guardrails, deferred work, or a decision graph to fill a
-template.
+The Goal Anchor is a compact navigation aid, not the whole handoff. Add
+`Grounded Decision Context` whenever omitting the grounded problem, cause,
+rationale, boundary, or intentionally delegated choice would reopen a material
+fork:
 
-## Check meaning in both directions
+```markdown
+### Grounded Decision Context
+- Problem: [the concrete gap this work closes]
+- Cause: [the supported mechanism producing the gap; distinguish observation from inference]
+- Settled decisions:
+  - [exact decision] — [why it follows from the grounded discussion]
+- Boundaries:
+  - In: [included surface and why]
+  - Out: [adjacent surface excluded and why]
+- Executor discretion:
+  - [implementation choices intentionally left open]
+```
 
-Before handing off, check:
+Include only the entries that carry material meaning. Do not add empty fields.
+`Executor discretion` is not an unresolved decision: it records choices that
+the user deliberately left to implementation. A material choice that remains
+unresolved returns the discussion to its earliest affected causal element.
 
-- Every material agreed decision has a representation in the contract.
-- Every commitment in the contract traces to user intent, an adopted decision,
-  or a necessary dependency of the agreed result.
+Add these sections only when they prevent a real continuity risk:
 
-A capable executor with the repository and handoff should recover the same
-outcome, boundaries, owners, behavior, and completion evidence. Restore omitted
-decisions; remove invented commitments. Different equivalent implementation
-details are acceptable when the user left them to judgment.
+````markdown
+### Canonical Vocabulary
+- [term]: [one stable meaning used across issues, code, and progress reports]
 
-Examples, analogies, assistant suggestions, and review findings do not become
-scope merely because they appeared in the discussion.
+### Guardrails
+- [boundary that is more precise than Don't]
 
-## Authorization and changes
+### Smells
+- [early observable sign that the approach is drifting or hiding failure]
 
-An explicit request to proceed authorizes the already agreed scope even when
-the conversation did not name a Goal Anchor or produce this document.
-Record the handoff and proceed; do not ask the user to approve it again unless
-the reconstruction exposes a material unresolved choice or adds scope.
+### Replan Triggers
+- [observation that invalidates an assumption and requires renewed discussion]
 
-Preserve material scope changes with their reason and the user's authorization.
-A natural-language correction or approval can supply that authorization; no
-special phrase such as "contract delta" is required. Retain enough before/after
-context to make the change traceable without freezing presentation errors or
-forcing an append-only copy of every wording edit.
+### Work Topology
+- [single issue, phased single issue, independent issue graph, or decision map]
 
-## Stable decisions and current progress
+### Target Structure
+```text
+[exact approved hierarchy, ownership tree, or ordered composition]
+```
 
-Keep stable meaning distinct from current phase, observations, active
-hypotheses, blockers, and next checks. Reuse the contract after compaction or
-handoff and reconcile the actual diff with it. New evidence can disprove a
-mechanism without changing the authorized outcome; replan within scope when
-possible and ask only when the result or constraints must change.
+### Canonical Mapping
+- [approved source concept] = [approved target concept]
 
-Use one issue for one causal objective and one PR when the repository follows
-that convention. Dependent phases can stay in one issue. Split only for
-independently owned or delivered outcomes; use a decision map only when real
-unresolved dependencies justify it.
+### Behavior Contract
+- [trigger] -> [owner] -> [effect or observable state]
+````
 
-## Project into an issue
+Do not add empty headings, generic best practices, guessed metrics, or terms
+that matter only inside one implementation file. Each item must trace to the
+grounded causal model or FRT gate.
 
-When issue creation is authorized, place the contract in the repository's
-authoritative scope location. Follow its template without losing material
-decisions, exact artifacts, or exclusions. Preserve unrelated issue content.
+`Grounded Decision Context`, `Target Structure`, `Canonical Mapping`, and
+`Behavior Contract` are optional only when no material decision of that kind
+was settled. Once exact shape or rationale is part of the approved solution,
+preserving it is mandatory. Do not replace it with a prose summary; exact
+names, route or product surfaces, parent-child relations, one-to-one pairings,
+dependency direction, command ownership, fallback policy, and included or
+excluded boundaries are semantic contract content.
 
-Check the drafted issue against the contract in both directions. After writing,
-read back the stored issue and confirm that scope, links, and material artifacts
-survived serialization. Correct formatting or omission within the existing
-authorization; ask only when resolving the mismatch changes scope.
+Broad verbs such as `separate`, `align`, `preserve`, `clean up`, or `handle`
+do not carry a settled decision by themselves. When such wording controls
+implementation, name the affected target, owner, boundary, artifact, behavior,
+or evidence that gives it one material interpretation.
 
-Repository tooling owns labels, assignees, project state, branches, and PR
-mechanics. The execution workflow owns changing progress and verification.
+## Fresh Executor Test
+
+Before presenting or projecting the contract, assume the executor has the
+repository and durable issue but none of the discussion. If two reasonable
+executors could choose materially different targets, owners, boundaries,
+dependency directions, structures, behaviors, fallback policies, invariants,
+or completion evidence, the contract is ambiguous. Restore the grounded
+decision that closes the fork. If the discussion never closed it, reopen the
+earliest affected causal element instead of guessing.
+
+The test does not freeze incidental implementation details. Local names,
+equivalent internal representations, and other choices explicitly recorded as
+executor discretion remain open.
+
+## Separate stable meaning from run state
+
+The contract is stable. Execution state is not part of it.
+
+| Stable contract | Changing run state |
+|---|---|
+| Outcome, Done, Don't | current phase or frontier |
+| agreed success evidence | observations collected so far |
+| grounded decisions and executor discretion | active interpretation or proposed mechanism |
+| canonical vocabulary | active hypothesis |
+| guardrails and smells | blockers and unavailable checks |
+| replan triggers | next verification |
+
+Preserve the first contract as immutable history. A change to Outcome, Done,
+or Don't requires explicit user approval and an append-only contract delta.
+New observations may complete a condition or trigger replanning; they do not
+silently rewrite its meaning.
+
+## Choose the lightest topology
+
+1. **Small and clear, with no additional material decisions**: one issue with
+   Goal Anchor and Success Evidence. Add Grounded Decision Context or exact
+   artifacts whenever omitting them would reopen a material fork.
+2. **Phased but one causal objective and one PR**: one issue; put phases,
+   dependencies, observations, and the next verification in the execution
+   workflow's working-plan or progress comments.
+3. **Independently ownable, deployable, or reviewable objectives**: split
+   issues and state dependency edges. Give each issue its own contract.
+4. **Multi-session work dominated by unresolved decisions**: create a
+   Wayfinder-style decision map first. Decision nodes record questions,
+   evidence, and unlock conditions; create implementation issues only after
+   the relevant decisions converge.
+
+Do not create a graph merely because work has several steps. Use an issue
+graph only when independent ownership, delivery, or decision dependencies make
+the edges operationally meaningful.
+
+## Project into durable execution
+
+- Prefer the issue body when creating a new issue from the contract.
+- For an existing issue, use the repository's authoritative scope location or
+  an explicit approved scope comment; do not overwrite unrelated issue text.
+- Project the contract into the issue; do not reinterpret or improve it while
+  writing the title, background, scope, completion conditions, or sequence.
+- Repository issue templates are presentation containers. When their ordinary
+  headings cannot preserve a material decision losslessly, include the relevant
+  contract section explicitly instead of paraphrasing it into broader prose.
+- Include every exact structural artifact from the contract verbatim or in a
+  demonstrably lossless equivalent form. A fresh executor must not have to
+  reconstruct component placement, ownership, mapping, or behavior from broad
+  principles.
+- Before creating or updating the issue, map every semantic issue item to the
+  exact approved contract item or user statement that authorizes it. Repository
+  metadata and verified current-state evidence may be added, but they must not
+  create a new objective, deliverable, solution, acceptance condition, or
+  non-goal.
+- Treat examples, analogies, assistant proposals, rejected approaches, and
+  review observations as non-authoritative unless the user explicitly adopted
+  them into the contract. Omit unmatched items. If an unmatched item seems
+  necessary, stop and request a contract delta instead of inserting it.
+- Let repository-specific tooling add labels, assignees, project state,
+  branches, and PR conventions without changing the contract's meaning.
+- Let the execution workflow maintain run state and evidence in progress
+  comments. On resume, reread the durable contract before summaries or plans.
+- After drafting the issue, perform a reverse check: point each issue scope and
+  completion item back to the contract, and point each contract item forward to
+  an issue section. Do not create or update the issue while either direction has
+  an unmatched material item.
+- Run the Fresh Executor Test again against the durable issue. The issue fails
+  when it forces an executor to reopen a material decision that the discussion
+  and contract had already closed.
+- If a smell or replan trigger is observed, stop expanding the current plan.
+  Return to the earliest invalidated causal element and seek a contract delta
+  only when the stable contract must change.
