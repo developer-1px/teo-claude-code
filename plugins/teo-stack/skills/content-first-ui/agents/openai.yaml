@@ -1,0 +1,6 @@
+interface:
+  display_name: "콘텐츠부터 UI 구성"
+  short_description: "콘텐츠·도메인·어포던스·아이콘을 이해하고 기존 디자인에 매핑"
+  default_prompt: "$content-first-ui로 콘텐츠와 도메인부터 이해하고, 익숙한 어포던스와 아이콘을 검토한 뒤 결정트리에 따라 기존 디자인 시스템만 사용해 화면을 구성해줘."
+policy:
+  allow_implicit_invocation: true

@@ -88,13 +88,28 @@ Trace the producing mechanism, then make changes that close Done or preserve
 the agreed invariants. Use a specialized skill only when its actual capability
 helps this task. Do not run a ritual sequence of audits.
 
-Before adding a module, wrapper, or local implementation, locate the existing
-owner and API for that responsibility. Consume it directly or extend that
-owner when its responsibility covers the case. Introduce a new ownership
-boundary only when no appropriate owner exists, not merely to rename or forward
-an API. Internal decomposition by change reason can retain the existing owner
-and public contract. Similar-looking code with different responsibilities need
-not share an owner.
+Before adding a module, wrapper, or local implementation, recover the existing
+owner/API selected in discussion or locate it through the repository's maps,
+exports, and actual consumers. Read the contract and a relevant usage, not just
+the symbol name. A failed search is not proof that no suitable owner exists.
+
+Make the first relevant implementation use that owner with the requested data
+and behavior in the actual consumer path. Exercise the smallest useful case
+through existing checks or preview facilities before choosing a replacement.
+This is part of the authorized implementation, not a separate prototype,
+registry, report, or approval stage. Keep unrelated work and settled behavior.
+For UI, apply the owning frame or composed block, including its behavior and
+styles; importing its buttons while recreating the frame is not reuse.
+
+If the contract already proves a mismatch, identify the exact unsupported input,
+behavior, invariant, or responsibility without building a knowingly unsuitable
+trial. If execution is unavailable, record that limit rather than claiming the
+attempt passed or the capability is missing. Extend the same owner for a gap
+within its responsibility; introduce a new owner only for a demonstrated absent
+or distinct responsibility. Do not force reuse of code that violates the
+governing contract. Necessary compatibility changes may alter implementation
+while preserving the agreed interface. Internal decomposition by change reason
+can retain the existing owner and public contract.
 
 Keep the solution proportional to the problem. Preserve responsibility and
 ownership boundaries, and make degraded or unavailable states observable.
@@ -118,7 +133,10 @@ symptom, treat acceptance as failed until evidence establishes a different
 cause or scope.
 
 Inspect the final diff for omissions, introduced regressions, and unrelated
-changes. Remove only this task's unjustified edits.
+changes. For added owners, wrappers, or alternate UI paths, check the actual
+consumer wiring and the contract or trial evidence that justified the addition;
+an import alone does not prove delegation. Reconcile removed behavior with the
+agreed scope. Remove only this task's unjustified edits.
 
 ## Progress and PR
 

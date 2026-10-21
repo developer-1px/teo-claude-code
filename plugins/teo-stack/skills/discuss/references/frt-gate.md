@@ -18,7 +18,12 @@ a fixed table format is not required.
 1. The solution directly removes the Problem.
 2. The Cause is removed, not routed around.
 3. Every Constraint is respected.
-4. Existing Assets are reused; anything built new is justified against them.
+4. Existing Assets constrain the solution; additions are justified against them.
+   For implementation proposals, identify the owner, contract, and applicable
+   usage covering the request, and any uncovered requirement or responsibility
+   difference. A resource list or an unsuccessful name search is insufficient.
+   Distinguish inspected applicability from an executed trial; discussion does
+   not authorize implementation merely to satisfy this gate.
 5. The Solution follows, adapts, or deliberately departs from the grounded
    Ecosystem convergence direction, and the choice is explained.
 6. Side effects are named and smaller than the original problem.

@@ -43,6 +43,11 @@ fork:
 ```
 
 Include only the entries that carry material meaning. Do not add empty fields.
+When existing implementations determined the solution, carry the selected
+owner/API, its actual usage path, and any demonstrated gap into these sections. Preserve
+whether applicability was inspected or actually exercised, and carry any
+remaining check into Success Evidence. Do not replace that decision with
+"reuse existing code" or create a separate resource registry.
 `Executor discretion` is not an unresolved decision: it records choices that
 the user deliberately left to implementation. A material choice that remains
 unresolved returns the discussion to its earliest affected causal element.

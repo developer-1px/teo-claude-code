@@ -180,6 +180,26 @@ Prefer evidence in this order: confirmed user intent, delegated judgment,
 scoped rules and verified artifacts, official standards, strong de-facto
 standards, general principles, then inference.
 
+When Assets include existing implementations, connect the requested capability
+to an existing owner, its contract, and a working consumer or example when
+available. Use the repository's existing maps and catalogs; do not create
+another inventory by default. A list
+of resources is not yet evidence that a proposed solution uses them. Explain
+which part of the request the existing contract covers and the specific gap,
+if any. A failed name search does not establish absence; trace the responsibility
+through exports, callers, and adjacent implementations within the relevant scope.
+
+Let this evidence change the solution. Prefer direct use, then an extension of
+the same owner for a demonstrated gap, then a new owner for a distinct or absent
+responsibility. Existing code that violates the governing contract is not a
+reuse target merely because it exists. During discussion, inspect contracts and
+usage without implementing a trial. Carry the selected owner and unresolved
+applicability check into the existing handoff so execution starts by applying
+that resource, not by redesigning the capability.
+
+For non-implementation discussions, use the relevant source material, prior
+decisions, or existing work instead; do not invent an API mapping or code trial.
+
 After context compaction or uncertain continuity, reread the active request,
 primary issue or source artifact, and confirmed goal or distinctions before
 continuing.
@@ -276,9 +296,11 @@ grounded model.
   contract.
 - Do not treat `proceed`, `진행해`, or equivalent execution approval as approval
   for content first introduced while drafting the contract, issue, or plan.
-- If the user asks to proceed before a Goal Anchor has been presented and
-  confirmed, present the smallest deterministic Execution Contract first. Do
-  not create or update an issue until the user approves that semantic handoff.
+- If the user explicitly asks to proceed, preserve that authorization. Record
+  already grounded decisions in the smallest Execution Contract and continue;
+  the absence of a named Goal Anchor or contract does not require reapproval.
+  Ask only about a consequential unresolved choice or a change beyond the
+  authorized scope, not about routine implementation decisions.
 
 Before proposing execution, run both directions of the source check. Compare
 each contract item against its discussion anchor and remove any unmatched item.

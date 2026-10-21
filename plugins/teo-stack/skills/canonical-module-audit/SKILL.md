@@ -22,7 +22,7 @@ Apply this rule without a single-consumer exception:
 same role + same responsibility
               |
               v
-       canonical module exists? ---- no ---> create and register it
+       canonical module exists? ---- no ---> verify absence before proposing one
               |
              yes
               |
@@ -130,6 +130,16 @@ For every nonconforming occurrence, decide in this order:
 3. Create a new named module because no existing owner has that responsibility.
 4. Keep only composition or genuine product policy in the Host.
 
+Ground the choice in the owner's contract and an actual consumer when available.
+Map the requested input and behavior to that API before declaring a capability
+gap. A name-search miss is not evidence of a missing owner; use the coverage
+horizon and responsibility passports. An audit inspects and reports this mapping
+without modifying code. In an authorized refactor, first exercise direct use in
+the affected consumer unless the contract already proves it unsuitable. Extend
+or create only for the specific uncovered responsibility, and preserve existing
+behavior. Do not force reuse of an implementation that violates the governing
+contract or create a forwarding wrapper merely to claim canonical consumption.
+
 Choose the ecosystem position from knowledge and reason to change. Framework
 lifecycle belongs to its framework integration; platform events belong to the
 platform adapter; input-independent interaction meaning belongs to affordance;
@@ -141,7 +151,7 @@ module exists.
 
 ## 6. Close the actual ownership contract
 
-Completion requires one owner, the needed API, migrated in-scope consumers,
+For an authorized refactor, completion requires one owner, the needed API, migrated in-scope consumers,
 removal of displaced implementations, and verification of owner behavior and
 the actual consumer path.
 
