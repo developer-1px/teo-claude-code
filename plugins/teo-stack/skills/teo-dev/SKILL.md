@@ -8,6 +8,8 @@ description: "Take an agreed software change through issue setup, implementation
 Deliver the agreed change to a verified, opened PR. Merge and cleanup require
 authorization for those actions, which may already be present in the request.
 
+For refactoring and fixes, apply the [code reduction criteria](../doubt/SKILL.md#code-reduction): preserve behavior, use no net code growth as the completion criterion, remove displaced code, and report the task's additions, deletions, and any unmet reduction criterion. This does not invoke the rest of the doubt workflow.
+
 ## Scope and authority
 
 Use the conversation, owning issue, and applicable repository rules to recover

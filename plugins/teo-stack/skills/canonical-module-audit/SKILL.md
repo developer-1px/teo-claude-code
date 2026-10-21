@@ -14,6 +14,8 @@ By default, investigate and report without changing files or registering
 issues. Refactor only when the user explicitly authorizes implementation; that
 authorization does not include merge.
 
+For authorized refactors, apply the [code reduction criteria](../doubt/SKILL.md#code-reduction). Count owner and consumer changes together; introducing a canonical API does not justify leaving duplicate or forwarding code behind.
+
 ## Invariant
 
 Apply this rule without a single-consumer exception:

@@ -13,6 +13,8 @@ request or an existing execution handoff, make the scoped changes and verify
 them. Do not require a second approval merely because the destination needs
 ordinary engineering judgment.
 
+For implemented refactors, apply the [code reduction criteria](../doubt/SKILL.md#code-reduction). Better locality must not silently add wrappers or glue; count the complete move and remove displaced code.
+
 ## Evidence
 
 Start with the requested area or recent task context. Inspect callers, imports,

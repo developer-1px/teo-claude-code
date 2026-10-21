@@ -7,6 +7,8 @@ description: Reduce lint, static-analysis, guard, warning, and code-smell findin
 
 Reduce lint findings by removing their underlying causes. A lower finding count is progress evidence, never sufficient proof of code quality.
 
+For fixes, apply the [code reduction criteria](../doubt/SKILL.md#code-reduction). A lower lint count does not justify net code growth, moving the finding, or weakening tests and guards.
+
 ## Keep the loop active
 
 Work in small causal batches. Do not review every finding up front and do not create a separate ledger or report file unless the user requests one.
