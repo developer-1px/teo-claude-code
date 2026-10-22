@@ -189,9 +189,14 @@ which part of the request the existing contract covers and the specific gap,
 if any. A failed name search does not establish absence; trace the responsibility
 through exports, callers, and adjacent implementations within the relevant scope.
 
-Let this evidence change the solution. Prefer direct use, then an extension of
-the same owner for a demonstrated gap, then a new owner for a distinct or absent
-responsibility. Existing code that violates the governing contract is not a
+Let this evidence change the solution. Build through existing inputs and
+supported composition without changing the reused owner. A demonstrated gap
+justifies proposing an owner change, not silently implementing it. Carry the
+specific change, affected consumers, and whether it is already authorized into
+the handoff. Ask before changing a reused owner unless the user's request or
+prior approval explicitly covers that change; ordinary new consumer wiring
+within the existing contract needs no extra approval. A new owner still needs
+a distinct or absent responsibility, not a workaround for this boundary. Existing code that violates the governing contract is not a
 reuse target merely because it exists. During discussion, inspect contracts and
 usage without implementing a trial. Carry the selected owner and unresolved
 applicability check into the existing handoff so execution starts by applying

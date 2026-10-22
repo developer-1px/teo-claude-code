@@ -29,7 +29,7 @@ same role + same responsibility
              yes
               |
               v
-       API supports the case? ------- no ---> extend the canonical API
+       API supports the case? ------- no ---> propose extension; check authorization
               |
              yes
               |
@@ -127,8 +127,13 @@ nuance in the evidence.
 For every nonconforming occurrence, decide in this order:
 
 1. Use an existing public API unchanged.
-2. Extend the existing canonical module because its responsibility already
-   covers the case.
+2. Propose extending the existing owner for a demonstrated gap within its
+   responsibility. Building a new consumer does not authorize edits to reused
+   implementation, styles, defaults, or contracts. Describe the smallest change
+   and consumer impact and ask before applying it, unless an explicit change
+   request or prior approval already covers it. Use unchanged inputs and
+   supported composition without extra approval; do not copy or override the
+   owner to avoid asking.
 3. Create a new named module because no existing owner has that responsibility.
 4. Keep only composition or genuine product policy in the Host.
 

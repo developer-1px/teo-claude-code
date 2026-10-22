@@ -106,11 +106,18 @@ styles; importing its buttons while recreating the frame is not reuse.
 If the contract already proves a mismatch, identify the exact unsupported input,
 behavior, invariant, or responsibility without building a knowingly unsuitable
 trial. If execution is unavailable, record that limit rather than claiming the
-attempt passed or the capability is missing. Extend the same owner for a gap
-within its responsibility; introduce a new owner only for a demonstrated absent
-or distinct responsibility. Do not force reuse of code that violates the
-governing contract. Necessary compatibility changes may alter implementation
-while preserving the agreed interface. Internal decomposition by change reason
+attempt passed or the capability is missing. Build through the existing owner's
+inputs, options, and supported composition without editing that owner. If reuse
+requires changing its implementation, styles, defaults, or contract, prepare a
+concrete proposal naming the file/API, uncovered requirement, smallest change,
+and affected consumers; ask before applying that change. Continue independent
+work using unchanged contracts. Explicit requests to modify the owner and prior
+approval cover their stated scope; do not ask again. A general request to build
+something is not approval to extend its dependencies. Do not copy the owner or
+add overrides to evade this boundary. Introduce a new owner only for a
+demonstrated absent or distinct responsibility. Do not force reuse of code that violates the
+governing contract. Compatibility edits to reused code also follow this
+authorization boundary, even when its interface remains unchanged. Internal decomposition by change reason
 can retain the existing owner and public contract.
 
 Keep the solution proportional to the problem. Preserve responsibility and
