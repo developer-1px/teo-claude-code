@@ -1,0 +1,4 @@
+interface:
+  display_name: "Research"
+  short_description: "의도에서 고른 항목으로 경쟁사 as-is→to-be와 바꾼 이유·수렴 방향을 보고 액션 아이템까지"
+  default_prompt: "$research를 사용해 이 리서치가 왜 필요한지부터 추측하고, 경쟁사가 as-is에서 to-be로 왜 바꿨는지와 수렴 방향을 그림과 함께 조사한 뒤 우리 액션 아이템을 제안해 주세요."
