@@ -61,7 +61,17 @@ unavailable evidence directly; do not keep searching to manufacture consensus.
 
 ## Response
 
-Lead with the synthesis and its supporting explanation. Include relevant
+Open with **why this research was needed**, not just what triggered it: the
+situation (quote the requester's words), the unsolved problem or knowledge gap,
+why it matters and to whom, the one question this research answers, and what the
+answer will be used for (a decision, next action, or change in understanding).
+Link the issue or brief. Find these in the brief, the requesting session, or the
+issue before writing; mark what is unknown instead of inventing stakes or urgency.
+Every conclusion must answer this question (ICMJE: "the nature of the problem and
+its significance"; NN/g and GOV.UK research objectives; Minto SCQ). When the result
+is a written document, follow the `readable-research` skill for the full layout.
+
+Then lead with the synthesis and its supporting explanation. Include relevant
 counter-evidence and unresolved facts. Use a table or diagram when it makes
 actual comparisons easier to assess; do not force a fixed report structure.
 
