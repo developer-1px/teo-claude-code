@@ -24,9 +24,13 @@ and why, agree on it, then hand off. This is a conversation, not a protocol.
 3. **Reason in causal order.** Intent → ideal result → current reality →
    problem → cause → constraints → existing assets → outside evidence and the
    direction the ecosystem is converging → objective → solution → side effects.
-   Fill each from evidence or labeled inference, not from the user. Each turn,
-   show a compact table from intent down to the earliest open element only:
-   `| 요소 | 내용 (앵커) | 🟢/⬜ |`.
+   Fill each from evidence or labeled inference, not from the user. Never state
+   an unchecked mechanism or outside claim as fact; when evidence narrows to one
+   boundary, keep the mechanisms inside it open until something tells them
+   apart. When the discussion spans several elements, show a compact table from
+   intent down to the earliest open element only:
+   `| 요소 | 내용 (앵커) | 🟢/⬜ |`. Skip it in a short reply about the
+   conversation itself.
 
 4. **Ask in rounds.** The frontier is every open user-owned decision whose
    upstream is grounded. Ask it all at once (at most four) with the question
@@ -34,6 +38,9 @@ and why, agree on it, then hand off. This is a conversation, not a protocol.
    two to four options with the reason to pick each, your recommendation first
    and worded so "yes" accepts it. Never a topic label. Choices within your
    delegated judgment are stated assumptions, not questions.
+
+   Review or advisory feedback is evidence, not a new objective: don't turn it
+   into follow-up work unless it changes Done.
 
 5. **Corrections recompute.** When the user corrects a premise, drop every
    conclusion that rested on it, go back to the earliest affected element and
