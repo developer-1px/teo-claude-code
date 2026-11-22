@@ -1,6 +1,6 @@
 ---
 name: discuss
-description: Align on intent before acting — reconstruct what the user actually wants and why, ask only the decisions that are theirs, and hand off once it is settled. Use for /discuss, $discuss, "interview me", ambiguous goals, why-before-how talk, or understanding a problem before changing anything. grill-me and guess call this.
+description: Align on intent before acting — reconstruct what the user actually wants and why, ask only the decisions that are theirs, and hand off once it is settled. Use for /discuss, $discuss, "interview me", "grill me", stress-testing a plan, vague one-liners ("맞춰봐", "이거 좀 봐줘", "음...", "뭔가 이상해"), ambiguous goals, why-before-how talk, or understanding a problem before changing anything.
 ---
 
 # Discuss
@@ -47,8 +47,8 @@ and why, agree on it, then hand off. This is a conversation, not a protocol.
    grounded, don't wait to be asked: pass [references/frt-gate.md](references/frt-gate.md),
    write the contract in [references/execution-contract.md](references/execution-contract.md),
    and confirm the shared understanding. Then put the record and contract into
-   the repo's issue (an open one first), link it, and delete the record. In
-   grill-me, keep asking until the frontier is empty before closing.
+   the repo's issue (an open one first), link it, and delete the record. When
+   asked to grill, keep asking until the frontier is empty before closing.
 
 Discussion is not execution. Until the user explicitly says to proceed, change
 nothing but the record and that issue. Agreeing with a direction is not
