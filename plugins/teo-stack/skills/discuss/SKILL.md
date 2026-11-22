@@ -1,6 +1,6 @@
 ---
 name: discuss
-description: Reconstruct latent intent and converge decisions through sequential causal reasoning before execution. Use for /discuss, $discuss, ambiguous goals, why-before-how conversations, or when the user wants to understand a problem before changing anything. Investigate available context before asking, surface a compact coverage table each turn up to the earliest open element, reconsider dependent conclusions when an upstream premise changes, and proactively propose the execution handoff once the causal chain is grounded. Do not combine with grilling; an explicit grill request uses grilling instead.
+description: Reconstruct latent intent and converge decisions through sequential causal reasoning before execution. Use for /discuss, $discuss, ambiguous goals, why-before-how conversations, or when the user wants to understand a problem before changing anything. Investigate available context before asking, surface a compact coverage table each turn up to the earliest open element, reconsider dependent conclusions when an upstream premise changes, ask only user-owned decisions in frontier rounds with a recommendation, record each answer in an interview record, and proactively propose the execution handoff and issue once the causal chain is grounded. Also the one primitive behind interview me, grill-me (relentless rounds until no decision is open), and guess (a vague one-liner: lead with grounded intent hypotheses).
 ---
 
 # Discuss
@@ -16,11 +16,26 @@ recommend one. Answering the surface question does not close the turn: check
 whether the answered fact serves the reconstructed intent, and keep
 investigating toward that intent.
 
+Shape the first response by what the request already says:
+
+- A vague one-liner ("이거 좀 봐줘", "음...", "뭔가 이상해"): investigate
+  internal clues first (git status and log, recent files, memory, grep) and
+  lead with two or three intent hypotheses, each naming its clue and what you
+  would do if it is right. Research outside only after the user's reaction
+  gives a direction.
+- A concrete request: echo it back in your own words (what, for whom, why as
+  far as stated) with what you found that bears on it, so the user can see
+  whether you got its shape. If the why is missing, even when you can guess,
+  ask it as one open question in their terms with nothing to pick from.
+- Everything that matters is in the request: do not open a discussion.
+
 ## Keep discussion separate from execution
 
 Inspect, reason, compare, and draft during discussion. Do not modify files or
 configuration, create goals or issues, send external messages, or begin
-implementation until the user explicitly asks to proceed.
+implementation until the user explicitly asks to proceed. The interview record
+and its projection into an issue (see Keep an interview record) are the
+exceptions.
 
 Agreement with a diagnosis or direction is not by itself execution approval.
 
@@ -161,10 +176,9 @@ to manufacture convergence. A convergence direction may reveal, strengthen, or
 challenge the Objective, but it cannot create an Objective that does not trace
 back to the local Problem, Cause, and Constraints.
 
-Ask one discriminating question only when missing information prevents a
-reasonable answer or materially different interpretations require a user-owned
-choice — and only after investigation, inference, and delegated judgment can no
-longer resolve it. Do not hand the user a
+Ask only when missing information prevents a reasonable answer or materially
+different interpretations require a user-owned choice — and only after
+investigation, inference, and delegated judgment can no longer resolve it. Do not hand the user a
 mechanism fork that code, history, or documents can settle; reaching for a
 question while discoverable evidence remains unread is an escape, not
 diligence. Otherwise state the strongest provisional interpretation and what
@@ -208,6 +222,59 @@ decisions, or existing work instead; do not invent an API mapping or code trial.
 After context compaction or uncertain continuity, reread the active request,
 primary issue or source artifact, and confirmed goal or distinctions before
 continuing.
+
+## Ask in frontier rounds
+
+Finding facts is your job; decisions are the user's. When the frontier needs a
+fact from the environment, dispatch a fresh-context subagent to find it and do
+not block on it: only the questions downstream of that fact wait.
+
+The frontier is every open user-owned decision whose upstream elements are
+already grounded. Ask the whole frontier in one round (at most four, the
+question tool's limit) and wait for the answers before the next round. A
+question whose answer depends on another question open in the same round
+belongs to a later round.
+
+Write each question so it can be chosen without the earlier conversation:
+
+- first why it must be decided now: what forks and what changes with each
+  answer; then the question itself, as a real interrogative, never a topic
+  label;
+- two to four options, each with the reason to pick it (what you gain and what
+  you give up);
+- your recommendation first, with why, worded so that "yes" or picking the
+  first option accepts it.
+
+Use the question tool when one exists (AskUserQuestion, request_user_input).
+Each answer reshapes the tree: update the record, recompute the frontier, and
+ask the next round. In a grill-me session keep going until the frontier is
+empty; otherwise stop asking once remaining choices fall within delegated
+judgment, and state them as assumptions.
+
+## Keep an interview record
+
+From the first answered question, keep one file per topic outside the
+repository so shared working trees stay clean:
+`~/.local/state/discuss/<repo>/<YYYY-MM-DD>-<slug>.md`.
+
+```markdown
+# <topic>
+의도: <one sentence in your own words>
+## Q → A
+- Q: <question> → A: <answer> (추천 수락 | 다른 선택 | 직접 답)
+## 가정
+- <choice made within delegated judgment, not yet confirmed>
+```
+
+Append after every answer, before asking the next round, so an interrupted
+discussion resumes from the file. Read it first when resuming.
+
+When the gate in Propose the transition passes and the user confirms the shared
+understanding, project the record and Execution Contract into the durable work
+item with the repository's own issue tooling (an existing open issue first, a
+new one only when none covers it), link the issue in the record, then delete
+the record: the issue is the history from there on. Creating that issue is not
+execution approval.
 
 ## Keep the goal convergent
 
