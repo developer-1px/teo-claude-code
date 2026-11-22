@@ -1,4 +1,4 @@
 interface:
   display_name: "Discuss"
-  short_description: "Sequential causal intent and scope alignment"
+  short_description: "Align on intent before acting"
   default_prompt: "Use $discuss to reconstruct the intent and reason through the causal chain before deciding what to do."
